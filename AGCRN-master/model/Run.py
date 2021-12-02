@@ -20,10 +20,10 @@ from lib.TrainInits import print_model_parameters
 
 #*************************************************************************#
 Mode = 'train'
-DEBUG = 'True'
+DEBUG = 'False'
 DATASET = 'PEMSD8'      #PEMSD4 or PEMSD8
-# DEVICE = 'cuda:0'
-DEVICE = 'cpu'
+DEVICE = 'cuda:0'
+# DEVICE = 'cpu'
 MODEL = 'AGCRN'
 
 #get configuration

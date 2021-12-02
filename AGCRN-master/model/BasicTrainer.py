@@ -48,6 +48,7 @@ class Trainer(object):
                 if self.args.real_value:
                     label = self.scaler.inverse_transform(label)
                 loss = self.loss(output.cuda(), label)
+                # loss = self.loss(output, label)
                 #a whole batch of Metr_LA is filtered
                 if not torch.isnan(loss):
                     total_val_loss += loss.item()
@@ -58,6 +59,7 @@ class Trainer(object):
     def train_epoch(self, epoch):
         self.model.train()
         total_loss = 0
+        # device=torch.device='cpu'
         for batch_idx, (data, target) in enumerate(self.train_loader):
             data = data[..., :self.args.input_dim]
             label = target[..., :self.args.output_dim]  # (..., 1)

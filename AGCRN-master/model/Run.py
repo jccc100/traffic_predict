@@ -4,7 +4,7 @@ import sys
 file_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 print(file_dir)
 sys.path.append(file_dir)
-
+import csv
 import torch
 import numpy as np
 import torch.nn as nn
@@ -92,11 +92,11 @@ args.add_argument('--log_step', default=config['log']['log_step'], type=int)
 args.add_argument('--plot', default=config['log']['plot'], type=eval)
 args = args.parse_args()
 init_seed(args.seed)
-# if torch.cuda.is_available():
-#     torch.cuda.set_device(int(args.device[5]))
-# else:
-#     args.device = 'cpu'
-args.device = 'cpu'
+if torch.cuda.is_available():
+    torch.cuda.set_device(int(args.device[5]))
+else:
+    args.device = 'cpu'
+# args.device = 'cpu'
 
 
 # ######ceshi
@@ -104,22 +104,85 @@ args.device = 'cpu'
 #                                                                normalizer=args.normalizer,
 #                                                                tod=args.tod, dow=False,
 #                                                                weather=False, single=False)
+# # print(len(train_loader))
 #
-# # for batch_idx, (data, target) in enumerate(train_loader):
-# #     print(batch_idx)
-# #     print_model_parameters((data, target))
-# # print(train_loade)
-# for i in train_loader:
-#     print(i)
+# for batch_idx, (data, target) in enumerate(train_loader):
+#     print(batch_idx)
+#     print((data.shape, target.shape))
 #     break
+# # print(train_loade)
+# # for i in train_loader:
+# #     print(i)
+# #     break
 # print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 # exit()
 # ########
 
+#gen adj
+distance_file='../data/{}/distance.csv'.format(DATASET)
+print(distance_file)
+# exit()
+def get_adjacent_matrix(distance_file: str, num_nodes: int, id_file: str = None, graph_type="distance") -> np.array:
+    """
+    :param distance_file: str, path of csv file to save the distances between nodes.
+    :param num_nodes: int, number of nodes in the graph
+    :param id_file: str, path of txt file to save the order of the nodes.就是排序节点的绝对编号所用到的，这里排好了，不需要
+    :param graph_type: str, ["connect", "distance"]，这个就是考不考虑节点之间的距离
+    :return:
+        np.array(N, N)
+    """
+    A = np.zeros([int(num_nodes), int(num_nodes)])  # 构造全0的邻接矩阵
+
+    if id_file:  # 就是给节点排序的绝对文件，这里是None，则表示不需要
+        with open(id_file, "r") as f_id:
+            # 将绝对编号用enumerate()函数打包成一个索引序列，然后用node_id这个绝对编号做key，用idx这个索引做value
+            node_id_dict = {int(node_id): idx for idx, node_id in enumerate(f_id.read().strip().split("\n"))}
+
+            with open(distance_file, "r") as f_d:
+                f_d.readline() # 表头，跳过第一行.
+                reader = csv.reader(f_d) # 读取.csv文件.
+                for item in reader:   # 将一行给item组成列表
+                    if len(item) != 3: # 长度应为3，不为3则数据有问题，跳过
+                        continue
+                    i, j, distance = int(item[0]), int(item[1]), float(item[2]) # 节点i，节点j，距离distance
+                    if graph_type == "connect":  # 这个就是将两个节点的权重都设为1，也就相当于不要权重
+                        A[node_id_dict[i], node_id_dict[j]] = 1.
+                        A[node_id_dict[j], node_id_dict[i]] = 1.
+                    elif graph_type == "distance":  # 这个是有权重，下面是权重计算方法
+                        A[node_id_dict[i], node_id_dict[j]] = 1. / distance
+                        A[node_id_dict[j], node_id_dict[i]] = 1. / distance
+                    else:
+                        raise ValueError("graph type is not correct (connect or distance)")
+        return A
+
+    with open(distance_file, "r") as f_d:
+        f_d.readline()  # 表头，跳过第一行.
+        reader = csv.reader(f_d)  # 读取.csv文件.
+        for item in reader:  # 将一行给item组成列表
+            if len(item) != 3: # 长度应为3，不为3则数据有问题，跳过
+                continue
+            i, j, distance = int(item[0]), int(item[1]), float(item[2])
+
+            if graph_type == "connect":  # 这个就是将两个节点的权重都设为1，也就相当于不要权重
+                A[i, j], A[j, i] = 1., 1.
+            elif graph_type == "distance": # 这个是有权重，下面是权重计算方法
+                A[i, j] = 1. / distance
+                A[j, i] = 1. / distance
+            else:
+                raise ValueError("graph type is not correct (connect or distance)")
+
+    return torch.from_numpy(A)
+
+adj=get_adjacent_matrix(distance_file,args.num_nodes)
+# print(adj.shape)
+# print(type(adj))
+
 
 #init model
-model = Network(args)
+model = Network(args,adj)
 model = model.to(args.device)
+
+
 for p in model.parameters():
     if p.dim() > 1:
         nn.init.xavier_uniform_(p)
@@ -134,7 +197,7 @@ train_loader, val_loader, test_loader, scaler = get_dataloader(args,
                                                                weather=False, single=False)
 
 
-
+# exit()
 #init loss function, optimizer
 if args.loss_func == 'mask_mae':
     loss = masked_mae_loss(scaler, mask_value=0.0)
@@ -166,6 +229,8 @@ args.log_dir = log_dir
 #start training
 trainer = Trainer(model, loss, optimizer, train_loader, val_loader, test_loader, scaler,
                   args, lr_scheduler=lr_scheduler)
+# print(trainer.device)
+# exit()
 if args.mode == 'train':
     trainer.train()
 elif args.mode == 'test':

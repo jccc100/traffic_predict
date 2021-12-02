@@ -96,6 +96,7 @@ init_seed(args.seed)
 # else:
 #     args.device = 'cpu'
 args.device = 'cpu'
+args.device = 'cuda'
 
 
 # ######ceshi

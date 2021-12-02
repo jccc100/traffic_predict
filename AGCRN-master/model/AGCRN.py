@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from model.AGCRNCell import AGCRNCell,AGCRNCell2
+from model.AGCRNCell2 import AGCRNCell,AGCRNCell2
 
 class AVWDCRNN(nn.Module):
     def __init__(self, node_num, dim_in, dim_out, cheb_k, embed_dim, num_layers=1):
@@ -93,12 +93,12 @@ class AGCRN(nn.Module):
         self.output_dim = args.output_dim
         self.horizon = args.horizon
         self.num_layers = args.num_layers
+        args.embed_dim=2
         self.adj=Adj
         # self.default_graph = args.default_graph
         self.node_embeddings = nn.Parameter(torch.randn(self.num_node, args.embed_dim), requires_grad=True)
 
-        # self.encoder = AVWDCRNN(args.num_nodes, args.input_dim, args.rnn_units, args.cheb_k,
-        #                         args.embed_dim, args.num_layers)
+        # self.encoder = AVWDCRNN(args.num_nodes, args.input_dim, args.rnn_units, args.cheb_k,args.embed_dim, args.num_layers)
         self.encoder = AVWDCRNN2(args.num_nodes, args.input_dim, args.rnn_units, args.cheb_k,
                                 args.embed_dim, self.adj, args.num_layers)
 
@@ -140,6 +140,7 @@ if __name__=='__main__':
     args.add_argument('--num_layers', default=config['model']['num_layers'], type=int)
     args.add_argument('--embed_dim', default=config['model']['embed_dim'], type=int)
     args.add_argument('--cheb_k', default=config['model']['cheb_order'], type=int)
+    # args.add_argument('--embed_dim', default=2, type=int)
     args = args.parse_args()
 
     num_node = args.num_nodes

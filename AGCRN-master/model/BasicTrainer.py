@@ -47,8 +47,8 @@ class Trainer(object):
                 output = self.model(data, target, teacher_forcing_ratio=0.)
                 if self.args.real_value:
                     label = self.scaler.inverse_transform(label)
-                loss = self.loss(output.cuda(), label)
-                # loss = self.loss(output, label)
+                # loss = self.loss(output.cuda(), label)
+                loss = self.loss(output, label)
                 #a whole batch of Metr_LA is filtered
                 if not torch.isnan(loss):
                     total_val_loss += loss.item()
@@ -76,8 +76,8 @@ class Trainer(object):
             output = self.model(data, target, teacher_forcing_ratio=teacher_forcing_ratio)
             if self.args.real_value:
                 label = self.scaler.inverse_transform(label)
-            loss = self.loss(output.cuda(), label)
-            # loss = self.loss(output, label)
+            # loss = self.loss(output.cuda(), label)
+            loss = self.loss(output, label)
             loss.backward()
 
             # add max grad clipping

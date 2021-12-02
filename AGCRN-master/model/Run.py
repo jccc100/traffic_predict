@@ -22,8 +22,8 @@ from lib.TrainInits import print_model_parameters
 Mode = 'train'
 DEBUG = 'False'
 DATASET = 'PEMSD8'      #PEMSD4 or PEMSD8
-DEVICE = 'cuda:0'
-# DEVICE = 'cpu'
+# DEVICE = 'cuda:0'
+DEVICE = 'cpu'
 MODEL = 'AGCRN'
 #get configuration
 config_file = './{}_{}.conf'.format(DATASET, MODEL)
@@ -91,11 +91,11 @@ args.add_argument('--log_step', default=config['log']['log_step'], type=int)
 args.add_argument('--plot', default=config['log']['plot'], type=eval)
 args = args.parse_args()
 init_seed(args.seed)
-if torch.cuda.is_available():
-    torch.cuda.set_device(int(args.device[5]))
-else:
-    args.device = 'cpu'
-# args.device = 'cpu'
+# if torch.cuda.is_available():
+#     torch.cuda.set_device(int(args.device[5]))
+# else:
+#     args.device = 'cpu'
+args.device = 'cpu'
 
 
 # ######ceshi
@@ -172,7 +172,7 @@ def get_adjacent_matrix(distance_file: str, num_nodes: int, id_file: str = None,
 
     return torch.from_numpy(A)
 
-adj=get_adjacent_matrix(distance_file,args.num_nodes).to(args.device)
+adj=get_adjacent_matrix(distance_file,args.num_nodes).to(device=args.device)
 # print(adj.shape)
 # print(type(adj))
 
@@ -194,6 +194,7 @@ train_loader, val_loader, test_loader, scaler = get_dataloader(args,
                                                                normalizer=args.normalizer,
                                                                tod=args.tod, dow=False,
                                                                weather=False, single=False)
+
 
 
 # exit()

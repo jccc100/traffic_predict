@@ -46,7 +46,7 @@ def sym_norm_Adj(W):
     Symmetric normalized Laplacian: (D^hat)^1/2 A^hat (D^hat)^1/2; np.ndarray, shape (N, N)
     '''
     assert W.shape[0] == W.shape[1]
-    W=W.numpy()
+    W=W.cpu().detach().numpy()
     N = W.shape[0]
     W = W + np.identity(N) # 为邻居矩阵加上自连接
     D = np.diag(np.sum(W,axis=1))

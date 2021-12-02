@@ -87,7 +87,7 @@ class Spatial_Attention_layer(nn.Module):
 class spatialAttentionGCN(nn.Module):
     def __init__(self, Adj_matrix, in_channels, out_channels, dropout=.0):
         super(spatialAttentionGCN, self).__init__()
-        self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(Adj_matrix)).to(torch.float32)  # (N, N)
+        self.sym_norm_Adj_matrix = sym_norm_Adj(Adj_matrix).to(torch.float32)  # (N, N)
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.Theta = nn.Linear(in_channels, out_channels, bias=False)

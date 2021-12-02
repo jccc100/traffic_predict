@@ -118,8 +118,8 @@ class spatialAttentionGCN(nn.Module):
 class AVWGCN2(nn.Module):
     def __init__(self, dim_in, dim_out, Adj):
         super(AVWGCN2, self).__init__()
-        self.W = nn.Linear(dim_in, dim_out,bias=True)  # y = W * x
-        self.b = nn.Parameter(torch.Tensor(dim_out))
+        self.W = nn.Linear(dim_in, dim_out,bias=True).to(device=torch.device('cuda'))  # y = W * x
+        self.b = nn.Parameter(torch.Tensor(dim_out)).to(device=torch.device('cuda'))
         torch.nn.init.normal_(self.W.weight, mean=0, std=1)
         torch.nn.init.normal_(self.b, mean=0, std=1)
         self.adj=Adj

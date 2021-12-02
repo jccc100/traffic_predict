@@ -25,7 +25,6 @@ DATASET = 'PEMSD8'      #PEMSD4 or PEMSD8
 DEVICE = 'cuda:0'
 # DEVICE = 'cpu'
 MODEL = 'AGCRN'
-
 #get configuration
 config_file = './{}_{}.conf'.format(DATASET, MODEL)
 #print('Read configuration file: %s' % (config_file))

@@ -46,12 +46,13 @@ def sym_norm_Adj(W):
     Symmetric normalized Laplacian: (D^hat)^1/2 A^hat (D^hat)^1/2; np.ndarray, shape (N, N)
     '''
     assert W.shape[0] == W.shape[1]
-    W=W.cpu().detach().numpy()
+    # W=W.cpu().detach().numpy()
     N = W.shape[0]
-    W = W + np.identity(N) # 为邻居矩阵加上自连接
-    D = np.diag(np.sum(W,axis=1))
-    sym_norm_Adj_matrix = np.dot(np.sqrt(D),W)
-    sym_norm_Adj_matrix = np.dot(sym_norm_Adj_matrix,np.sqrt(D))
+    W = W + torch.from_numpy(np.identity(N)) # 为邻居矩阵加上自连接
+    # D = np.diag(np.sum(W,axis=1))
+    D = torch.diag(torch.sum(W,dim=1))
+    sym_norm_Adj_matrix = torch.dot(np.sqrt(D),W)
+    sym_norm_Adj_matrix = torch.dot(sym_norm_Adj_matrix,np.sqrt(D))
 
     return sym_norm_Adj_matrix
 

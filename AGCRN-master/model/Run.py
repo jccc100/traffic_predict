@@ -174,6 +174,9 @@ def get_adjacent_matrix(distance_file: str, num_nodes: int, id_file: str = None,
     return torch.from_numpy(A)
 
 adj=get_adjacent_matrix(distance_file,args.num_nodes).to(device=args.device)
+# adj=get_adjacent_matrix(distance_file,args.num_nodes)
+# print(adj)
+# exit()
 # print(adj.shape)
 # print(type(adj))
 

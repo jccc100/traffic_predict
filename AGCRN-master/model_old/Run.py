@@ -22,8 +22,8 @@ from lib.TrainInits import print_model_parameters
 Mode = 'train'
 DEBUG = 'False'
 DATASET = 'PEMSD8'      #PEMSD4 or PEMSD8
-DEVICE = 'cuda'
-# DEVICE = 'cpu'
+# DEVICE = 'cuda:0'
+DEVICE = 'cpu'
 MODEL = 'AGCRN'
 #get configuration
 config_file = './{}_{}.conf'.format(DATASET, MODEL)
@@ -95,8 +95,8 @@ init_seed(args.seed)
 #     torch.cuda.set_device(int(args.device[5]))
 # else:
 #     args.device = 'cpu'
-# args.device = 'cpu'
-args.device = 'cuda'
+args.device = 'cpu'
+# args.device = 'cuda'
 
 
 # ######ceshi

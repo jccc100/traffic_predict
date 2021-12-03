@@ -46,7 +46,7 @@ class Trainer(object):
 
                 output = self.model(data, target, teacher_forcing_ratio=0.)
                 if self.args.real_value:
-                    label = self.scaler.inverse_transform(label).to(torch.device('cuda'))
+                    label = self.scaler.inverse_transform(label)
                 loss = self.loss(output.cuda(), label)
                 # loss = self.loss(output, label)
                 #a whole batch of Metr_LA is filtered
@@ -75,8 +75,7 @@ class Trainer(object):
             #data and target shape: B, T, N, F; output shape: B, T, N, F
             output = self.model(data, target, teacher_forcing_ratio=teacher_forcing_ratio)
             if self.args.real_value:
-                label = self.scaler.inverse_transform(label).to(torch.device('cuda'))
-            
+                label = self.scaler.inverse_transform(label)
             loss = self.loss(output.cuda(), label)
             # loss = self.loss(output, label)
             loss.backward()

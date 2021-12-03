@@ -4,7 +4,7 @@ import torch.nn as nn
 import math
 import numpy as np
 
-device=torch.device('cuda')
+device='cpu'
 
 class AVWGCN(nn.Module):
     def __init__(self, dim_in, dim_out, cheb_k, embed_dim):
@@ -45,23 +45,14 @@ def sym_norm_Adj(W):
     ----------
     Symmetric normalized Laplacian: (D^hat)^1/2 A^hat (D^hat)^1/2; np.ndarray, shape (N, N)
     '''
-    W=W.to(device=torch.device('cpu'))
     assert W.shape[0] == W.shape[1]
-    W=W.cpu().detach().numpy()
+    # W=W.cpu().detach().numpy()
     N = W.shape[0]
-    W = W + np.identity(N) # 为邻居矩阵加上自连接
-    D = np.diag(np.sum(W,axis=1))
-    sym_norm_Adj_matrix = np.dot(np.sqrt(D),W)
-    # print("*****")
-    # print(sym_norm_Adj_matrix.device)
-    # print(D.device)
-    sym_norm_Adj_matrix = np.dot(sym_norm_Adj_matrix,np.sqrt(D))
-    # N = W.shape[0]
-    # W = W + torch.from_numpy(np.identity(N)) # 为邻居矩阵加上自连接
-    # # D = np.diag(np.sum(W,axis=1))
-    # D = torch.diag(torch.sum(W,dim=1))
-    # sym_norm_Adj_matrix = torch.dot(np.sqrt(D),W)
-    # sym_norm_Adj_matrix = torch.dot(sym_norm_Adj_matrix,np.sqrt(D))
+    W = W + torch.from_numpy(np.identity(N)) # 为邻居矩阵加上自连接
+    # D = np.diag(np.sum(W,axis=1))
+    D = torch.diag(torch.sum(W,dim=1))
+    sym_norm_Adj_matrix = torch.dot(np.sqrt(D),W)
+    sym_norm_Adj_matrix = torch.dot(sym_norm_Adj_matrix,np.sqrt(D))
 
     return sym_norm_Adj_matrix
 
@@ -92,11 +83,9 @@ class Spatial_Attention_layer(nn.Module):
         #     score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(in_channels)
         # print(self.W_1)
         # l_att=torch.einsum("c,bnc->bnc",self.W_1,x) # b n c
-         # b n c
+        l_att=x # b n c
         # print(x.permute(0,2,1).shape)
         # print(self.W_2.shape)
-        x=x.to(device=device)
-        l_att=x
         r_att=torch.einsum("bcn,nn->bcn",x.permute(0,2,1),self.W_2) # b c n
         # print("l:",l_att.shape)
         # print("r:",r_att.shape)
@@ -129,7 +118,7 @@ class spatialAttentionGCN(nn.Module):
         # print(in_channels)
         # print(out_channels)
         self.static=nn.Linear(in_channels,out_channels,bias=True)
-        self.alpha = nn.Parameter(torch.FloatTensor([0.0]), requires_grad=False)  # D
+        self.alpha = nn.Parameter(torch.FloatTensor([0.5]), requires_grad=True)  # D
         self.beta = nn.Parameter(torch.FloatTensor([0.5]), requires_grad=True)  # S
         self.in_channels = in_channels
         self.out_channels = out_channels
@@ -153,8 +142,7 @@ class spatialAttentionGCN(nn.Module):
         # print("x:",x.shape)
         static_out=self.static(x)
         # print("st",static_out.shape)
-        sym_norm_Adj_matrix=self.sym_norm_Adj_matrix.to(device)
-        static_out=torch.einsum("nn,bnc->bnc",sym_norm_Adj_matrix,x)
+        static_out=torch.einsum("nn,bnc->bnc",self.sym_norm_Adj_matrix,x)
         # print(static_out.shape)
         # static_out=torch.matmul(self.sym_norm_Adj_matrix,static_out)
         dy_out=torch.einsum("bnn,bnc->bnc",spatial_attention,x)

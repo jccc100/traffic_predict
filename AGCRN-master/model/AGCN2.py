@@ -129,8 +129,8 @@ class spatialAttentionGCN(nn.Module):
         # print(in_channels)
         # print(out_channels)
         self.static=nn.Linear(in_channels,out_channels,bias=True)
-        self.alpha = nn.Parameter(torch.FloatTensor([0.0]), requires_grad=False)  # D
-        self.beta = nn.Parameter(torch.FloatTensor([1.0]), requires_grad=False)  # S
+        self.alpha = nn.Parameter(torch.FloatTensor([1.0]), requires_grad=False)  # D
+        self.beta = nn.Parameter(torch.FloatTensor([0.0]), requires_grad=False)  # S
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.Theta = nn.Linear(in_channels, out_channels, bias=False)

@@ -163,9 +163,11 @@ class AVWDCRNN2(nn.Module):
     def forward(self, x, init_state, node_embeddings):
         #shape of x: (B, T, N, D)
         #shape of init_state: (num_layers, B, N, hidden_dim)
+        device=torch.device('cuda')
         assert x.shape[2] == self.node_num and x.shape[3] == self.input_dim
         seq_length = x.shape[1]
         b, t, n, d=x.shape
+        x.to(device=device)
         x=x.permute(0,2,3,1) # b n d t
         x=x.reshape(b*n,d,t) # b*n d t
         current_inputs = self.tcn(x).reshape(b,n,d,t).permute(0,3,1,2) # [b*n d t] --> [b n d t] -->[b t n d]

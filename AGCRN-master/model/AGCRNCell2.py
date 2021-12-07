@@ -41,7 +41,9 @@ class AGCRNCell2(nn.Module):
         self.adj=Adj
         # self.gate = AVWGCN(dim_in+self.hidden_dim, 2*dim_out, cheb_k, embed_dim)
         # self.update = AVWGCN(dim_in+self.hidden_dim, dim_out, cheb_k, embed_dim)
-        self.gate=AVWGCN2(dim_in+self.hidden_dim,2*dim_out,self.adj)
+        # self.gate_z=AVWGCN2(dim_in,dim_out,self.adj)
+        # self.gate_r=AVWGCN2(dim_in,dim_out,self.adj)
+        self.gate = AVWGCN2(dim_in + self.hidden_dim, 2 * dim_out, self.adj)
         self.update=AVWGCN2(dim_in+self.hidden_dim,dim_out,self.adj)
 
     def forward(self, x, state, node_embeddings):
@@ -51,12 +53,14 @@ class AGCRNCell2(nn.Module):
         #x: B, num_nodes, input_dim
         #state: B, num_nodes, hidden_dim
         # state = state.to(x.device)
-        # print("state:",state.shape)
+        print("state:",state.shape)
         state=state.to(device)
         x=x.to(device)
         input_and_state = torch.cat((x, state), dim=-1)
         z_r = torch.sigmoid(self.gate(input_and_state, node_embeddings))
         z, r = torch.split(z_r, self.hidden_dim, dim=-1)
+        # z=torch.sigmoid(self.gate_z(input_and_state,node_embeddings))
+        # r=torch.sigmoid(self.gate_r(input_and_state,node_embeddings))
         z=z.to(device)
         r=r.to(device)
         

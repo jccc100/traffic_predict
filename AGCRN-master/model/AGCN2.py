@@ -93,6 +93,7 @@ class Spatial_Attention_layer(nn.Module):
     def __init__(self, num_node,c_in,c_out,dropout=.0):
         super(Spatial_Attention_layer, self).__init__()
         global device
+        self.in_channels=c_in
         self.dropout = nn.Dropout(p=dropout)
         self.W_1 = torch.randn(c_in, requires_grad=True).to(device)
         self.W_2 = torch.randn(num_node,num_node, requires_grad=True).to(device)
@@ -107,37 +108,37 @@ class Spatial_Attention_layer(nn.Module):
         '''
         # batch_size, num_of_vertices, in_channels = x.shape
 
-        # if score_his!=None:
-        #     score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(in_channels)+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
-        # else:
-        #     score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(in_channels)
+        if score_his!=None:
+            score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
+        else:
+            score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)
         # print(self.W_1)
         # l_att=torch.einsum("c,bnc->bnc",self.W_1,x) # b n c
          # b n c
         # print(x.permute(0,2,1).shape)
         # print(self.W_2.shape)
-        x=x.to(device=device)
-        l_att=x
-        r_att=torch.einsum("bcn,nn->bcn",x.permute(0,2,1),self.W_2) # b c n
+        # x=x.to(device=device)
+        # l_att=x
+        # r_att=torch.einsum("bcn,nn->bcn",x.permute(0,2,1),self.W_2) # b c n
         # print("l:",l_att.shape)
         # print("r:",r_att.shape)
         # score=torch.einsum("bnc,bcn->bnn",l_att,r_att) # b n n
-        score=torch.matmul(l_att,r_att)
+        # score=torch.matmul(l_att,r_att)
         # print("score:",score.shape)
         # print("b_s:",self.b_s.shape)
         score=torch.sigmoid(score+self.b_s) # b n n + 1 n n = b n n
         # score=torch.einsum("nn,bnn->bnn",self.V_s,score)
         score=torch.matmul(self.V_s,score)
         #normalization
-        score=score-torch.max(score,1,keepdim=True)[0]
-        exp=torch.exp(score)
-        score_norm=exp/torch.sum(exp,1,keepdim=True)
+        # score=score-torch.max(score,1,keepdim=True)[0]
+        # exp=torch.exp(score)
+        # score_norm=exp/torch.sum(exp,1,keepdim=True)
         # score = self.dropout(F.softmax(score, dim=-1))  # the sum of each row is 1; (b, N, N)
-        score_his = score_norm
+        score_his = score
         # print(score_norm)
         # 公式6  返回注意力和更新的score_his用于下一次传参
         # return score.reshape((batch_size, num_of_timesteps, num_of_vertices, num_of_vertices)),score_his # (b t n n)
-        return score_norm,score_his # (b n n)
+        return score,score_his # (b n n)
 
 
 class spatialAttentionGCN(nn.Module):
@@ -169,12 +170,11 @@ class spatialAttentionGCN(nn.Module):
 
         # batch_size, num_of_vertices, in_channels = x.shape
         global device
-        # spatial_attention,score_his = self.SAt(x,score_his)  # (batch, N, N) 分数st
+        spatial_attention,score_his = self.SAt(x,score_his)  # (batch, N, N) 分数st
         #
         # # x = x.permute(0, 2, 1, 3).reshape((-1, num_of_vertices, in_channels))  # (b*t,n,f_in)
         # spatial_attention = spatial_attention.to(device)
         x = x.to(device)
-        # spatial_attention = spatial_attention.reshape((-1, num_of_vertices, num_of_vertices))  # (b, n, n)
         # print("x:",x.shape)
         # static_out=self.static(x)
         # print("st",static_out.shape)
@@ -183,10 +183,10 @@ class spatialAttentionGCN(nn.Module):
         # print(static_out.shape)
 
 
-        # dy_out=torch.einsum("bnn,bnc->bnc",spatial_attention,x)
+        dy_out=torch.einsum("bnn,bnc->bnc",spatial_attention,x)
         # print("st:",static_out.shape)
         # print("dy:",dy_out.shape)
-        # st_dy_out=self.alpha*static_out+self.beta*dy_out+self.gamma*x
+        st_dy_out=self.alpha*static_out+self.beta*dy_out+self.gamma*x
         st_dy_out=static_out
         # 公式7
         # return F.relu(self.Theta(torch.matmul(self.sym_norm_Adj_matrix.mul(spatial_attention), x))),score_his
@@ -224,8 +224,10 @@ class AVWGCN2(nn.Module):
         # print(static_out.shape)
         # static_out=F.softmax(static_out,dim=2)
         gcn_out,score_his=self.sp_att_gcn(x)
-        emb_out=self.emb_net(x,node_embeddings)
-        gcn_out=self.alpha*gcn_out+self.beta*emb_out
+        # emb_out=self.emb_net(x,node_embeddings)
+        # print("*********")
+        # print(gcn_out.shape,emb_out.shape)
+        # gcn_out=self.alpha*gcn_out+self.beta*emb_out
         # static_out_32=torch.tensor(static_out,dtype=torch.float32)
         # static_out=torch.as_tensor(static_out, dtype=torch.float32)
         # print("dyout:",dy_out.dtype)

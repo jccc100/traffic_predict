@@ -53,7 +53,7 @@ class AGCRNCell2(nn.Module):
         #x: B, num_nodes, input_dim
         #state: B, num_nodes, hidden_dim
         # state = state.to(x.device)
-        print("state:",state.shape)
+        # print("state:",state.shape)
         state=state.to(device)
         x=x.to(device)
         input_and_state = torch.cat((x, state), dim=-1)

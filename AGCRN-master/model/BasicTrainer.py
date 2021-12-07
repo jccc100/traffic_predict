@@ -174,6 +174,7 @@ class Trainer(object):
             model.load_state_dict(state_dict)
             args.device='cpu'
             model.to(args.device)
+            print("123456789jjj")
         model.eval()
         y_pred = []
         y_true = []

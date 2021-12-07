@@ -185,8 +185,8 @@ class Trainer(object):
                 y_true.append(label)
                 y_pred.append(output)
         y_true = scaler.inverse_transform(torch.cat(y_true, dim=0))
-        y_pred=y_pred.cpu()
-        y_true=y_true.cpu()
+        y_pred=y_pred.to(args.device)
+        y_true=y_true.to(args.device)
         if args.real_value:
             y_pred = torch.cat(y_pred, dim=0)
         else:

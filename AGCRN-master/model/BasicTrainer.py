@@ -201,14 +201,11 @@ class Trainer(object):
         print(y_pred.device)
         print(y_true.device)
         for t in range(y_true.shape[1]):
-            # mae, rmse, mape, _, _ = All_Metrics(y_pred[:, t, ...], y_true[:, t, ...],
-            #                                     args.mae_thresh, args.mape_thresh)
             mae, rmse, mape, _, _ = All_Metrics(y_pred[:, t, ...], y_true[:, t, ...],
-                                                None, 0.)
+                                                args.mae_thresh, args.mape_thresh)
             logger.info("Horizon {:02d}, MAE: {:.2f}, RMSE: {:.2f}, MAPE: {:.4f}%".format(
                 t + 1, mae, rmse, mape*100))
-        # mae, rmse, mape, _, _ = All_Metrics(y_pred, y_true, args.mae_thresh, args.mape_thresh)
-        mae, rmse, mape, _, _ = All_Metrics(y_pred, y_true, None, 0.)
+        mae, rmse, mape, _, _ = All_Metrics(y_pred, y_true, args.mae_thresh, args.mape_thresh)
         logger.info("Average Horizon, MAE: {:.2f}, RMSE: {:.2f}, MAPE: {:.4f}%".format(
                     mae, rmse, mape*100))
 

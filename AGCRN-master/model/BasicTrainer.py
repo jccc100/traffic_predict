@@ -179,14 +179,14 @@ class Trainer(object):
         y_true = []
         with torch.no_grad():
             for batch_idx, (data, target) in enumerate(data_loader):
-                data = data[..., :args.input_dim]
-                label = target[..., :args.output_dim]
+                data = data[..., :args.input_dim].to(torch.device('cpu'))
+                label = target[..., :args.output_dim].to(torch.device('cpu'))
                 output = model(data, target, teacher_forcing_ratio=0)
                 y_true.append(label)
                 y_pred.append(output)
         y_true = scaler.inverse_transform(torch.cat(y_true, dim=0))
-        y_pred=y_pred.to(args.device)
-        y_true=y_true.to(args.device)
+        # y_pred=y_pred
+        # y_true=y_true.to(args.device)
         if args.real_value:
             y_pred = torch.cat(y_pred, dim=0)
         else:

@@ -194,6 +194,10 @@ class Trainer(object):
             y_pred = scaler.inverse_transform(torch.cat(y_pred, dim=0))
         np.save('./{}_true.npy'.format(args.dataset), y_true.cpu().numpy())
         np.save('./{}_pred.npy'.format(args.dataset), y_pred.cpu().numpy())
+
+        print("device:::")
+        print(y_pred.device)
+        print(y_true.device)
         for t in range(y_true.shape[1]):
             # mae, rmse, mape, _, _ = All_Metrics(y_pred[:, t, ...], y_true[:, t, ...],
             #                                     args.mae_thresh, args.mape_thresh)

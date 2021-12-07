@@ -198,6 +198,7 @@ class Trainer(object):
         print("device:::")
         print(y_pred.device)
         print(y_true.device)
+        y_pred.to(device=torch.device('cpu'))
         for t in range(y_true.shape[1]):
             # mae, rmse, mape, _, _ = All_Metrics(y_pred[:, t, ...], y_true[:, t, ...],
             #                                     args.mae_thresh, args.mape_thresh)

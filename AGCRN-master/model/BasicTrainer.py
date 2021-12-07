@@ -176,7 +176,7 @@ class Trainer(object):
             model.to(args.device)
             print("123456789jjj")
         args.device = 'cpu'
-        model.to(args.device)
+        # model.to(args.device)
         model.eval()
         y_pred = []
         y_true = []

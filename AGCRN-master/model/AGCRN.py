@@ -167,7 +167,7 @@ class AVWDCRNN2(nn.Module):
         assert x.shape[2] == self.node_num and x.shape[3] == self.input_dim
         seq_length = x.shape[1]
         b, t, n, d=x.shape
-        x.to(device=device)
+        x=x.to(device=device)
         x=x.permute(0,2,3,1) # b n d t
         x=x.reshape(b*n,d,t) # b*n d t
         current_inputs = self.tcn(x).reshape(b,n,d,t).permute(0,3,1,2) # [b*n d t] --> [b n d t] -->[b t n d]
@@ -217,7 +217,7 @@ class AGCRN(nn.Module):
         #source: B, T_1, N, D
         #target: B, T_2, N, D
         #supports = F.softmax(F.relu(torch.mm(self.nodevec1, self.nodevec1.transpose(0,1))), dim=1)
-
+        # print("source:",source.shape)
         init_state = self.encoder.init_hidden(source.shape[0])
         output, _ = self.encoder(source, init_state, self.node_embeddings)      #B, T, N, hidden
         output = output[:, -1:, :, :]                                   #B, 1, N, hidden

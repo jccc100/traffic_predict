@@ -187,7 +187,7 @@ class spatialAttentionGCN(nn.Module):
         # print("st:",static_out.shape)
         # print("dy:",dy_out.shape)
         st_dy_out=self.alpha*static_out+self.beta*dy_out+self.gamma*x
-        st_dy_out=static_out
+        # st_dy_out=static_out
         # 公式7
         # return F.relu(self.Theta(torch.matmul(self.sym_norm_Adj_matrix.mul(spatial_attention), x))),score_his
         # gcn_out=torch.matmul(self.sym_norm_Adj_matrix.mul(spatial_attention), x) # n n,b n c_in->b n c_in

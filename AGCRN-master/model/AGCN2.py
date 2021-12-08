@@ -210,7 +210,7 @@ class AVWGCN2(nn.Module):
         # torch.nn.init.normal_(self.b, mean=0, std=1)
         self.adj=Adj
         self.sp_att_gcn=spatialAttentionGCN(self.adj,dim_in,dim_out)
-        self.linear=nn.Linear(dim_in,dim_out,bias=False)
+        self.linear=nn.Linear(dim_in,dim_out,bias=True)
 
         self.alpha = nn.Parameter(torch.FloatTensor([0.2]), requires_grad=True) # D
         self.beta = nn.Parameter(torch.FloatTensor([0.8]), requires_grad=True)  # S

@@ -140,13 +140,18 @@ class Trainer(object):
                     break
             # save the best state
             if best_state == True:
-                self.logger.info('*********************************Current best model saved!')
                 best_model = copy.deepcopy(self.model.state_dict())
+                torch.save(best_model,'./model_para/{}/epoch_{}.pth'.format(self.args.dataset,epoch))
+                self.logger.info('******Current best model saved:model_para/{}/epoch_{}.pth!'.format(self.args.dataset, epoch))
 
         training_time = time.time() - start_time
         self.logger.info("Total training time: {:.4f}min, best loss: {:.6f}".format((training_time / 60), best_loss))
 
+        #save parameters
+
+
         #save the best model to file
+
         if not self.args.debug:
             torch.save(best_model, self.best_path)
             self.logger.info("Saving current best model to " + self.best_path)

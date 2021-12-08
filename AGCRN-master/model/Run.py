@@ -20,7 +20,7 @@ from lib.TrainInits import print_model_parameters
 
 #*************************************************************************#
 Mode = 'train'
-DEBUG = 'False'
+DEBUG = False
 DATASET = 'PEMSD8'      #PEMSD4 or PEMSD8
 DEVICE = 'cuda'
 # DEVICE = 'cpu'
@@ -46,7 +46,7 @@ args = argparse.ArgumentParser(description='arguments')
 args.add_argument('--dataset', default=DATASET, type=str)
 args.add_argument('--mode', default=Mode, type=str)
 args.add_argument('--device', default=DEVICE, type=str, help='indices of GPUs')
-args.add_argument('--debug', default=DEBUG, type=eval)
+args.add_argument('--debug', default=False, type=eval)
 args.add_argument('--model', default=MODEL, type=str)
 args.add_argument('--cuda', default=False, type=bool)
 #data

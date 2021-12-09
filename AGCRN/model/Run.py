@@ -154,7 +154,7 @@ def get_adjacent_matrix(distance_file: str, num_nodes: int, id_file: str = None,
 adj=get_adjacent_matrix(distance_file,args.num_nodes)#.to(device=args.device)
 
 #init model
-model = Network(args)
+model = Network(args,adj)
 model = model.to(args.device)
 for p in model.parameters():
     if p.dim() > 1:

@@ -159,7 +159,7 @@ class AGCRN(nn.Module):
         self.horizon = args.horizon
         self.num_layers = args.num_layers
         self.adj=adj
-        self.default_graph = args.default_graph
+        # self.default_graph = args.default_graph
         self.node_embeddings = nn.Parameter(torch.randn(self.num_node, args.embed_dim), requires_grad=True)
 
         self.encoder = AVWDCRNN(args.num_nodes, args.input_dim, args.rnn_units, args.cheb_k,
@@ -183,3 +183,41 @@ class AGCRN(nn.Module):
         output = output.permute(0, 1, 3, 2)                             #B, T, N, C
 
         return output
+
+if __name__=='__main__':
+    import argparse
+    import configparser
+    config = configparser.ConfigParser()
+    config_file = './PEMSD8_AGCRN.conf'
+
+    config.read(config_file)
+
+    args = argparse.ArgumentParser(description='arguments')
+
+    args.add_argument('--num_nodes', default=config['data']['num_nodes'], type=int)
+    args.add_argument('--input_dim', default=config['model']['input_dim'], type=int)
+    args.add_argument('--output_dim', default=config['model']['output_dim'], type=int)
+    args.add_argument('--rnn_units', default=config['model']['rnn_units'], type=int)
+    args.add_argument('--horizon', default=config['data']['horizon'], type=int)
+    args.add_argument('--num_layers', default=config['model']['num_layers'], type=int)
+    args.add_argument('--embed_dim', default=config['model']['embed_dim'], type=int)
+    args.add_argument('--cheb_k', default=config['model']['cheb_order'], type=int)
+    # args.add_argument('--embed_dim', default=2, type=int)
+    args = args.parse_args()
+
+    num_node = args.num_nodes
+    input_dim = args.input_dim
+    hidden_dim = args.rnn_units
+    output_dim = args.output_dim
+    horizon = args.horizon
+    num_layers = args.num_layers
+    adj = torch.ones((num_node,num_node))
+    # print(adj.shape)
+    node_embeddings = nn.Parameter(torch.randn(num_node, 2), requires_grad=True)
+    agcrn=AGCRN(args,adj)
+    # source: B, T_1, N, D
+    # target: B, T_2, N, D
+    x=torch.randn(32,12,170,1)
+    tar=torch.randn(32,12,170,1)
+    out=agcrn(x,tar)
+    print(out.shape)

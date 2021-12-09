@@ -71,7 +71,9 @@ class AVWGCN(nn.Module):
         x_g = torch.einsum("knm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
         x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in
         x_gconv = torch.einsum('bnki,nkio->bno', x_g, weights) + bias     #b, N, dim_out
-
-        static_out=torch.einsum("nn,bnc->bnc",self.sym_norm_Adj_matrix,x)
-        gcn_out=self.alpha*static_out+self.beta*x_gconv
+        # print(x_gconv.shape)
+        # static_out=torch.einsum("nn,bnc->bnc",self.sym_norm_Adj_matrix,x)
+        # print(static_out.shape)
+        # gcn_out=self.alpha*static_out+self.beta*x_gconv
+        gcn_out=x_gconv
         return gcn_out

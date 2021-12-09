@@ -113,7 +113,7 @@ class AVWDCRNN(nn.Module):
         self.input_dim = dim_in
         self.num_layers = num_layers
         self.dcrnn_cells = nn.ModuleList()
-        self.dcrnn_cells.append(AGCRNCell(node_num, dim_in, dim_out, cheb_k, embed_dim))
+        self.dcrnn_cells.append(AGCRNCell(node_num, dim_in, dim_out, self.adj,cheb_k, embed_dim))
         self.tcn=TemporalConvNet(dim_in,[1,1,1],3,0.2)
         for _ in range(1, num_layers):
             self.dcrnn_cells.append(AGCRNCell(node_num, dim_out, dim_out,self.adj ,cheb_k, embed_dim))

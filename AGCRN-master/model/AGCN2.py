@@ -216,8 +216,9 @@ class AVWGCN2(nn.Module):
         # print(static_out.shape)
         # static_out=F.softmax(static_out,dim=2)
 
-        gcn_out,score_his=self.sp_att_gcn(x,self.att_his)
-        self.att_his=score_his
+        gcn_out,score_his=self.sp_att_gcn(x)
+        # gcn_out,score_his=self.sp_att_gcn(x,self.att_his)
+        # self.att_his=score_his
         # emb_out=self.emb_net(x,node_embeddings)
         # print("*********")
         # print(gcn_out.shape,emb_out.shape)

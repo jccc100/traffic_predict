@@ -106,7 +106,10 @@ class Trainer(object):
         train_loss_list = []
         val_loss_list = []
         start_time = time.time()
-        for epoch in range(1, self.args.epochs + 1):
+        if self.args.start_epoch > 1:
+            self.model.load_state_dict(torch.load('./model_para/{}/epoch_{}.pth'.format(self.args.dataset,self.args.start_epoch)))
+            print("load epoch_{}.pth success".format(self.args.start_epoch))
+        for epoch in range(self.args.start_epoch, self.args.epochs + 1):
             #epoch_time = time.time()
             train_epoch_loss = self.train_epoch(epoch)
             #print(time.time()-epoch_time)
@@ -147,8 +150,11 @@ class Trainer(object):
         training_time = time.time() - start_time
         self.logger.info("Total training time: {:.4f}min, best loss: {:.6f}".format((training_time / 60), best_loss))
 
-        #save parameters
-
+        #save loss
+        train_loss=np.numpy(train_loss_list)
+        val_loss=np.numpy(val_loss_list)
+        np.save("./loss_dir/{}/train_loss.npy".format(self.args.dataset),train_loss)
+        np.save("./loss_dir/{}/val_loss.npy".format(self.args.dataset),val_loss)
 
         #save the best model to file
 

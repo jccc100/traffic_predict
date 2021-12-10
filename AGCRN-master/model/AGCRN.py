@@ -164,6 +164,7 @@ class AVWDCRNN2(nn.Module):
         #shape of x: (B, T, N, D)
         #shape of init_state: (num_layers, B, N, hidden_dim)
         device=torch.device('cuda')
+        # device=torch.device('cpu')
         # print("x:::",x.shape)
         assert x.shape[2] == self.node_num and x.shape[3] == self.input_dim
         seq_length = x.shape[1]

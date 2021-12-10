@@ -204,7 +204,7 @@ class AVWGCN2(nn.Module):
         self.beta = nn.Parameter(torch.FloatTensor([0.8]), requires_grad=True)  # S
         self.emb_net = AVWGCN(dim_in,dim_out, 2, 2)
 
-        self.att_his=None
+        # self.att_his=None
     def forward(self, x, node_embeddings=0):
         # 静态
         # print(x.shape)
@@ -216,9 +216,9 @@ class AVWGCN2(nn.Module):
         # print(static_out.shape)
         # static_out=F.softmax(static_out,dim=2)
 
-        # gcn_out,score_his=self.sp_att_gcn(x)
-        gcn_out,score_his=self.sp_att_gcn(x,self.att_his)
-        self.att_his=score_his
+        gcn_out,score_his=self.sp_att_gcn(x)
+        # gcn_out,score_his=self.sp_att_gcn(x,self.att_his)
+        # self.att_his=score_his
         # emb_out=self.emb_net(x,node_embeddings)
         # print("*********")
         # print(gcn_out.shape,emb_out.shape)

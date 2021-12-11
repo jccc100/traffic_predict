@@ -119,6 +119,7 @@ class Spatial_Attention_layer(nn.Module):
         # score=torch.softmax(score,dim=1)
         # score=torch.einsum("nn,bnn->bnn",self.V_s,score)
         score=torch.matmul(self.V_s,score)
+        score=torch.softmax(score,dim=1)
         #normalization
         # score=score-torch.max(score,1,keepdim=True)[0]
         # exp=torch.exp(score)
@@ -211,16 +212,16 @@ class AVWGCN2(nn.Module):
         # 静态
         # print(x.shape)
         # print("&&&&&&&&&&&&&&&&&")
-        N=x.shape[1]
+        # N=x.shape[1]
         # h=self.W(x) #[b n c_in] --> [b n c_out]
         # static_out=torch.einsum('nn,bnc->bnc',self.adj,x)#+self.b
         # static_out=self.linear(static_out) # [b n c_in] ==> [b n c_out]
         # print(static_out.shape)
         # static_out=F.softmax(static_out,dim=2)
 
-        # gcn_out,score_his=self.sp_att_gcn(x)
-        global att_his
-        gcn_out,att_his=self.sp_att_gcn(x,self.att_his)
+        gcn_out,att_his=self.sp_att_gcn(x)
+        # global att_his
+        # gcn_out,att_his=self.sp_att_gcn(x,self.att_his)
         # self.att_his=score_his
         # emb_out=self.emb_net(x,node_embeddings)
         # print("*********")

@@ -6,6 +6,7 @@ import numpy as np
 
 device=torch.device('cuda')
 # device=torch.device('cpu')
+att_his=None
 
 class AVWGCN(nn.Module):
     def __init__(self, dim_in, dim_out, cheb_k, embed_dim):
@@ -61,6 +62,7 @@ def sym_norm_Adj(W):
                 D[i][j] = 1
     # print(D)
     D = np.diag(np.sum(D, axis=1))
+    # D = np.diag(np.sum(W, axis=1))
     # print("D:",D)
     sym_norm_Adj_matrix = np.dot(np.sqrt(D),W)
     # print("*****")
@@ -74,7 +76,7 @@ def sym_norm_Adj(W):
     # sym_norm_Adj_matrix = torch.dot(np.sqrt(D),W)
     # sym_norm_Adj_matrix = torch.dot(sym_norm_Adj_matrix,np.sqrt(D))
     # print(sym_norm_Adj_matrix)
-    return sym_norm_Adj_matrix
+    return sym_norm_Adj_matrix  # D^-0.5AD^-0.5
 
 ###test
 # [[1. ,2. ,0. ,0.], [0. ,1., 5. ,0.], [0., 0. 1., 1.], [2., 0. ,0. ,1.]])
@@ -216,8 +218,9 @@ class AVWGCN2(nn.Module):
         # print(static_out.shape)
         # static_out=F.softmax(static_out,dim=2)
 
-        gcn_out,score_his=self.sp_att_gcn(x)
-        # gcn_out,score_his=self.sp_att_gcn(x,self.att_his)
+        # gcn_out,score_his=self.sp_att_gcn(x)
+        global att_his
+        gcn_out,att_his=self.sp_att_gcn(x,self.att_his)
         # self.att_his=score_his
         # emb_out=self.emb_net(x,node_embeddings)
         # print("*********")

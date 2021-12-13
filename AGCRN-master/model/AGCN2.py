@@ -112,11 +112,11 @@ class Spatial_Attention_layer(nn.Module):
         '''
         # batch_size, num_of_vertices, in_channels = x.shape
         Q=self.Wq(x)
-        print("Q:",Q.shape)
+        # print("Q:",Q.shape)
         K=self.Wk(x)
-        print("K:", K.shape)
+        # print("K:", K.shape)
         V=self.Wv(x)
-        print("V:", V.shape)
+        # print("V:", V.shape)
         if score_his!=None:
             score = torch.matmul(Q, K.transpose(1, 2)) / math.sqrt(self.in_channels)+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
         else:

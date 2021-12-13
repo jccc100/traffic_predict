@@ -152,9 +152,9 @@ class Trainer(object):
 
         #save loss
         try:
-            train_loss = np.numpy(train_loss_list)
+            train_loss = np.array(train_loss_list)
 
-            val_loss = np.numpy(val_loss_list)
+            val_loss = np.array(val_loss_list)
             np.save("./loss_dir/{}/train_loss.npy".format(self.args.dataset),train_loss)
             np.save("./loss_dir/{}/val_loss.npy".format(self.args.dataset),val_loss)
         except:

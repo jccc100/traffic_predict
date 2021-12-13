@@ -167,12 +167,12 @@ class spatialAttentionGCN(nn.Module):
         self.static=nn.Linear(in_channels,out_channels,bias=True)
         self.alpha = nn.Parameter(torch.FloatTensor([0.4]), requires_grad=True)  # D
         self.beta = nn.Parameter(torch.FloatTensor([0.55]), requires_grad=True)  # S
-        self.gamma = nn.Parameter(torch.FloatTensor([0.05]), requires_grad=True)
+        # self.gamma = nn.Parameter(torch.FloatTensor([0.05]), requires_grad=True)
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.Theta = nn.Linear(in_channels, in_channels, bias=False)
         self.SAt = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
-        # self.norm=nn.LayerNorm()
+        self.norm=nn.LayerNorm((64,self.sym_norm_Adj_matrix.shape[0],out_channels))
 
     def forward(self, x,score_his=None):
         '''
@@ -202,7 +202,8 @@ class spatialAttentionGCN(nn.Module):
         # dy_out=torch.einsum("bnn,bnc->bnc",spatial_attention,x)
         # print("st:",static_out.shape)
         # print("dy:",dy_out.shape)
-        st_dy_out=self.alpha*static_out+self.beta*dy_out+self.gamma*x
+        st_dy_out=self.alpha*static_out+self.beta*dy_out
+        st_dy_out=self.norm(st_dy_out)+x
         # st_dy_out=static_out
         # 公式7
         # return F.relu(self.Theta(torch.matmul(self.sym_norm_Adj_matrix.mul(spatial_attention), x))),score_his

@@ -133,8 +133,8 @@ class Spatial_Attention_layer(nn.Module):
         else:
             score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)
         #
-        # score=torch.sigmoid(score+self.b_s) # b n n + 1 n n = b n n
-        score=torch.softmax(score+self.b_s,dim=-1) # b n n + 1 n n = b n n
+        score=torch.sigmoid(score+self.b_s) # b n n + 1 n n = b n n
+        # score=torch.softmax(score+self.b_s,dim=-1) # b n n + 1 n n = b n n
         # score=torch.softmax(score,dim=1)
         # score=torch.einsum("nn,bnn->bnn",self.V_s,score)
         score=torch.matmul(self.V_s,score)
@@ -166,8 +166,8 @@ class spatialAttentionGCN(nn.Module):
         # print(out_channels)
         self.static=nn.Linear(in_channels,out_channels,bias=True)
         self.alpha = nn.Parameter(torch.FloatTensor([0.4]), requires_grad=True)  # D
-        self.beta = nn.Parameter(torch.FloatTensor([0.55]), requires_grad=True)  # S
-        self.gamma = nn.Parameter(torch.FloatTensor([0.05]), requires_grad=True)
+        self.beta = nn.Parameter(torch.FloatTensor([0.6]), requires_grad=True)  # S
+        # self.gamma = nn.Parameter(torch.FloatTensor([0.05]), requires_grad=True)
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.Theta = nn.Linear(in_channels, in_channels, bias=False)
@@ -202,7 +202,7 @@ class spatialAttentionGCN(nn.Module):
         # dy_out=torch.einsum("bnn,bnc->bnc",spatial_attention,x)
         # print("st:",static_out.shape)
         # print("dy:",dy_out.shape)
-        st_dy_out=self.alpha*static_out+self.beta*dy_out+self.gamma*x
+        st_dy_out=self.alpha*static_out+self.beta*dy_out
         # st_dy_out=static_out
         # 公式7
         # return F.relu(self.Theta(torch.matmul(self.sym_norm_Adj_matrix.mul(spatial_attention), x))),score_his
@@ -225,8 +225,6 @@ class AVWGCN2(nn.Module):
         self.adj=Adj
         self.sp_att_gcn=spatialAttentionGCN(self.adj,dim_in,dim_out)
         self.linear=nn.Linear(dim_in,dim_out,bias=True)
-        self.alpha = nn.Parameter(torch.FloatTensor([0.2]), requires_grad=True) # D
-        self.beta = nn.Parameter(torch.FloatTensor([0.8]), requires_grad=True)  # S
         self.emb_net = AVWGCN(dim_in,dim_out, 2, 2)
 
         # self.att_his=None

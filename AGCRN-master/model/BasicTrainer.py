@@ -153,6 +153,7 @@ class Trainer(object):
         #save loss
         try:
             train_loss = np.numpy(train_loss_list)
+
             val_loss = np.numpy(val_loss_list)
             np.save("./loss_dir/{}/train_loss.npy".format(self.args.dataset),train_loss)
             np.save("./loss_dir/{}/val_loss.npy".format(self.args.dataset),val_loss)
@@ -189,7 +190,6 @@ class Trainer(object):
             model.load_state_dict(state_dict)
             args.device='cpu'
             model.to(args.device)
-            print("123456789jjj")
         args.device = 'cpu'
         # model.to(args.device)
         model.eval()

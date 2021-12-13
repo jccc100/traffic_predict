@@ -115,16 +115,19 @@ class TemporalConvNet(nn.Module):
         """
         return self.network(x)
 
-x=torch.randn((32,170,12,1))
-b,n,t,c=x.shape
-x=x.reshape(b*n,t,c)
+# x=torch.randn((32,170,12,1))
+# b,n,t,c=x.shape
+# x=x.reshape(b*n,t,c)
+#
+# x=x.permute(0,2,1)
+# tcn=TemporalConvNet(1,[1,1],3,0.2)
+# res=tcn(x).reshape(b,n,c,t).permute(0,1,3,2)
+#
+# print(res.shape)
 
-x=x.permute(0,2,1)
-tcn=TemporalConvNet(1,[1,1],3,0.2)
-res=tcn(x).reshape(b,n,c,t).permute(0,1,3,2)
-
-print(res.shape)
-
+aa=torch.randn((5,5,5))
+aa=torch.softmax(aa,dim=-1)
+print(aa)
 exit()
 
 aa=torch.randn(32,12,107,1)

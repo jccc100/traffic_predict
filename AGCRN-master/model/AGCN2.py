@@ -102,24 +102,37 @@ class Spatial_Attention_layer(nn.Module):
         # self.W_3 = torch.randn(num_of_features, requires_grad=True).to(device)
         self.b_s = torch.randn(1, num_node,num_node , requires_grad=True).to(device)
         self.V_s = torch.randn(num_node,num_node, requires_grad=True).to(device)
-
+        self.Wq=nn.Linear(c_in,c_in,bias=False)
+        self.Wk=nn.Linear(c_in,c_in,bias=False)
+        self.Wv=nn.Linear(c_in,num_node,bias=False)
     def forward(self, x,score_his=None):
         '''
         :param x: (batch_size, N, C)
         :return: (batch_size, N, C)
         '''
         # batch_size, num_of_vertices, in_channels = x.shape
-
+        Q=self.Wq(x)
+        print("Q:",Q.shape)
+        K=self.Wk(x)
+        print("K:", K.shape)
+        V=self.Wv(x)
+        print("V:", V.shape)
         if score_his!=None:
-            score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
+            score = torch.matmul(Q, K.transpose(1, 2)) / math.sqrt(self.in_channels)+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
         else:
-            score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)
+            score = torch.matmul(Q, K.transpose(1, 2)) / math.sqrt(self.in_channels)
+        score=torch.softmax(torch.matmul(score,V),dim=1)
 
-        score=torch.sigmoid(score+self.b_s) # b n n + 1 n n = b n n
+        # if score_his!=None:
+        #     score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
+        # else:
+        #     score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)
+        #
+        # score=torch.sigmoid(score+self.b_s) # b n n + 1 n n = b n n
         # score=torch.softmax(score,dim=1)
         # score=torch.einsum("nn,bnn->bnn",self.V_s,score)
-        score=torch.matmul(self.V_s,score)
-        score=torch.softmax(score,dim=1)
+        # score=torch.matmul(self.V_s,score)
+        score=torch.softmax(score,dim=-1)
         #normalization
         # score=score-torch.max(score,1,keepdim=True)[0]
         # exp=torch.exp(score)

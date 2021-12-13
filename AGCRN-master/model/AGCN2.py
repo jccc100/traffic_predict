@@ -172,7 +172,7 @@ class spatialAttentionGCN(nn.Module):
         self.out_channels = out_channels
         self.Theta = nn.Linear(in_channels, in_channels, bias=False)
         self.SAt = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
-        self.norm=nn.LayerNorm((64,self.sym_norm_Adj_matrix.shape[0],out_channels))
+        self.norm=nn.LayerNorm((64,self.sym_norm_Adj_matrix.shape[0],in_channels))
 
     def forward(self, x,score_his=None):
         '''

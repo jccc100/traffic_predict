@@ -112,29 +112,35 @@ class Spatial_Attention_layer(nn.Module):
         '''
         # batch_size, num_of_vertices, in_channels = x.shape
 
-        # Q K V
-        # Q=self.Wq(x)
-        # # print("Q:",Q.shape)
-        # K=self.Wk(x)
-        # # print("K:", K.shape)
-        # V=self.Wv(x)
-        # # print("V:", V.shape)
-        # if score_his!=None:
-        #     score = torch.matmul(Q, K.transpose(1, 2)) / math.sqrt(self.in_channels)+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
-        # else:
-        #     score = torch.matmul(Q, K.transpose(1, 2)) / math.sqrt(self.in_channels)
-        # score=torch.softmax(torch.matmul(score,V),dim=1)
-
+        # Q K V 改之后
+        Q=self.Wq(x)
+        # print("Q:",Q.shape)
+        K=self.Wk(x)
+        # print("K:", K.shape)
+        V=self.Wv(x)
+        # print("V:", V.shape)
         if score_his!=None:
-            score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
+            score = torch.matmul(Q, K.transpose(1, 2))+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
         else:
-            score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)
-        #
-        score=torch.sigmoid(score+self.b_s) # b n n + 1 n n = b n n
-        # score=torch.softmax(score,dim=1)
-        # score=torch.einsum("nn,bnn->bnn",self.V_s,score)
-        score=torch.matmul(self.V_s,score)
+            score = torch.matmul(Q, K.transpose(1, 2))
         score=torch.softmax(score,dim=-1)
+        score=torch.matmul(score,V)
+
+
+        # 改之前
+        # if score_his!=None:
+        #     score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
+        # else:
+        #     score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)
+        # #
+        # score=torch.sigmoid(score+self.b_s) # b n n + 1 n n = b n n
+        # # score=torch.softmax(score,dim=1)
+        # # score=torch.einsum("nn,bnn->bnn",self.V_s,score)
+        # score=torch.matmul(self.V_s,score)
+        # score=torch.softmax(score,dim=-1)
+
+
+
         #normalization
         # score=score-torch.max(score,1,keepdim=True)[0]
         # exp=torch.exp(score)

@@ -45,7 +45,7 @@ class AGCRNCell2(nn.Module):
         # self.gate_r=AVWGCN2(dim_in,dim_out,self.adj)
         self.gate = AVWGCN2(dim_in + self.hidden_dim, 2 * dim_out, self.adj)
         self.update=AVWGCN2(dim_in+self.hidden_dim,dim_out,self.adj)
-
+        
     def forward(self, x, state, node_embeddings):
         global device
         # print("cell:",x.shape)

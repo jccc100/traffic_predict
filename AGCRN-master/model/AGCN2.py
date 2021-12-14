@@ -97,14 +97,14 @@ class Spatial_Attention_layer(nn.Module):
         global device
         self.in_channels=c_in
         self.dropout = nn.Dropout(p=dropout)
-        self.W_1 = torch.randn(c_in, requires_grad=True).to(device)
-        self.W_2 = torch.randn(num_node,num_node, requires_grad=True).to(device)
+        # self.W_1 = torch.randn(c_in, requires_grad=True).to(device)
+        # self.W_2 = torch.randn(num_node,num_node, requires_grad=True).to(device)
         # self.W_3 = torch.randn(num_of_features, requires_grad=True).to(device)
         self.b_s = torch.randn(1, num_node,num_node , requires_grad=True).to(device)
         self.V_s = torch.randn(num_node,num_node, requires_grad=True).to(device)
-        self.Wq=nn.Linear(c_in,c_in,bias=False)
-        self.Wk=nn.Linear(c_in,c_in,bias=False)
-        self.Wv=nn.Linear(c_in,num_node,bias=False)
+        # self.Wq=nn.Linear(c_in,c_in,bias=False)
+        # self.Wk=nn.Linear(c_in,c_in,bias=False)
+        # self.Wv=nn.Linear(c_in,num_node,bias=False)
     def forward(self, x,score_his=None):
         '''
         :param x: (batch_size, N, C)
@@ -172,7 +172,7 @@ class spatialAttentionGCN(nn.Module):
         self.out_channels = out_channels
         self.Theta = nn.Linear(in_channels, in_channels, bias=False)
         self.SAt = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
-        self.norm=nn.LayerNorm((64,self.sym_norm_Adj_matrix.shape[0],in_channels))
+        # self.norm=nn.LayerNorm((64,self.sym_norm_Adj_matrix.shape[0],in_channels))
 
     def forward(self, x,score_his=None):
         '''

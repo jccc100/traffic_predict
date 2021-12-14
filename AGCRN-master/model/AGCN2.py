@@ -207,7 +207,7 @@ class spatialAttentionGCN(nn.Module):
         dy_adj=torch.matmul(sym_norm_Adj_matrix,spatial_attention)
         dy_out=torch.einsum("bnn,bnc->bnc",dy_adj,x)
 
-        dy_adj_T=torch.matmul((sym_norm_Adj_matrix_T,spatial_attention_T))
+        dy_adj_T=torch.matmul(sym_norm_Adj_matrix_T,spatial_attention_T)
         dy_out_T=torch.einsum("bnn,bnc->bnc",dy_adj_T,x)
         dy_out=self.alpha2*dy_out+self.beta2*dy_out_T
 

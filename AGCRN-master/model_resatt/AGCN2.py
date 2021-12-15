@@ -95,13 +95,14 @@ class Spatial_Attention_layer(nn.Module):
     def __init__(self, num_node,c_in,c_out,dropout=.0):
         super(Spatial_Attention_layer, self).__init__()
         global device
+        self.dp=nn.Dropout(dropout)
         self.in_channels=c_in
         self.dropout = nn.Dropout(p=dropout)
         # self.W_1 = torch.randn(c_in, requires_grad=True).to(device)
         # self.W_2 = torch.randn(num_node,num_node, requires_grad=True).to(device)
         # self.W_3 = torch.randn(num_of_features, requires_grad=True).to(device)
-        self.b_s = torch.randn(1, num_node,num_node , requires_grad=True).to(device)
-        self.V_s = torch.randn(num_node,num_node, requires_grad=True).to(device)
+        # self.b_s = torch.randn(1, num_node,num_node , requires_grad=True).to(device)
+        # self.V_s = torch.randn(num_node,num_node, requires_grad=True).to(device)
         # self.Wq=nn.Linear(c_in,c_in,bias=False)
         # self.Wk=nn.Linear(c_in,c_in,bias=False)
         # self.Wv=nn.Linear(c_in,num_node,bias=False)
@@ -132,24 +133,26 @@ class Spatial_Attention_layer(nn.Module):
             score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
         else:
             score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)
+
+        score_his = score
+        score=F.softmax(score,dim=-1)
         #
         # score=torch.sigmoid(score+self.b_s) # b n n + 1 n n = b n n
-        # score=torch.softmax(score+self.b_s,dim=-1) # b n n + 1 n n = b n n
-        # score=torch.softmax(score,dim=1)
-        # score=torch.einsum("nn,bnn->bnn",self.V_s,score)
-        score=torch.matmul(self.V_s,score)+self.b_s
-        score=torch.softmax(score,dim=-1)
+        # score = torch.matmul(self.V_s, score)
+
+
+
+        # score=torch.matmul(self.V_s,score)#+self.b_s
+        # score=torch.softmax(score,dim=-1)
 
         #normalization
         # score=score-torch.max(score,1,keepdim=True)[0]
         # exp=torch.exp(score)
         # score_norm=exp/torch.sum(exp,1,keepdim=True)
         # score = self.dropout(F.softmax(score, dim=-1))  # the sum of each row is 1; (b, N, N)
-        score_his = score
-        # print(score_his.shape)
-        # print(score_norm)
-        # 公式6  返回注意力和更新的score_his用于下一次传参
-        # return score.reshape((batch_size, num_of_timesteps, num_of_vertices, num_of_vertices)),score_his # (b t n n)
+
+
+        score=self.dp(score)
         return score,score_his # (b n n)
 
 

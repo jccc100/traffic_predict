@@ -1,0 +1,11 @@
+2021-12-02 13:45: Experiment log path in: /content/drive/My Drive/traffic2/traffic_predict-main/AGCRN-master/model/experiments/PEMSD8/20211202134522
+2021-12-02 13:45: Train Epoch 1: 0/167 Loss: 223.516769
+2021-12-02 13:45: Train Epoch 1: 20/167 Loss: 224.988480
+2021-12-02 13:45: Train Epoch 1: 40/167 Loss: 222.098160
+2021-12-02 13:46: Train Epoch 1: 60/167 Loss: 217.219574
+2021-12-02 13:46: Train Epoch 1: 80/167 Loss: 222.302368
+2021-12-02 13:46: Train Epoch 1: 100/167 Loss: 218.500137
+2021-12-02 13:46: Train Epoch 1: 120/167 Loss: 217.833344
+2021-12-02 13:46: Train Epoch 1: 140/167 Loss: 218.466736
+2021-12-02 13:47: Train Epoch 1: 160/167 Loss: 199.889969
+2021-12-02 13:47: **********Train Epoch 1: averaged Loss: 219.313349, tf_ratio: 1.000000

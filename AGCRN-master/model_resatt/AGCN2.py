@@ -103,9 +103,9 @@ class Spatial_Attention_layer(nn.Module):
         # self.W_3 = torch.randn(num_of_features, requires_grad=True).to(device)
         # self.b_s = torch.randn(1, num_node,num_node , requires_grad=True).to(device)
         # self.V_s = torch.randn(num_node,num_node, requires_grad=True).to(device)
-        # self.Wq=nn.Linear(c_in,c_in,bias=False)
-        # self.Wk=nn.Linear(c_in,c_in,bias=False)
-        # self.Wv=nn.Linear(c_in,num_node,bias=False)
+        self.Wq=nn.Linear(c_in,c_in,bias=False)
+        self.Wk=nn.Linear(c_in,c_in,bias=False)
+        self.Wv=nn.Linear(c_in,num_node,bias=False)
     def forward(self, x,score_his=None):
         '''
         :param x: (batch_size, N, C)
@@ -114,28 +114,29 @@ class Spatial_Attention_layer(nn.Module):
         # batch_size, num_of_vertices, in_channels = x.shape
 
         # Q K V 改之后
-        # Q=self.Wq(x)
-        # # print("Q:",Q.shape)
-        # K=self.Wk(x)
-        # # print("K:", K.shape)
-        # V=self.Wv(x)
-        # # print("V:", V.shape)
-        # if score_his!=None:
-        #     score = torch.matmul(Q, K.transpose(1, 2))+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
-        # else:
-        #     score = torch.matmul(Q, K.transpose(1, 2))
+        Q=self.Wq(x)
+        # print("Q:",Q.shape)
+        K=self.Wk(x)
+        # print("K:", K.shape)
+        V=self.Wv(x)
+        # print("V:", V.shape)
+        if score_his!=None:
+            score = torch.matmul(Q, K.transpose(1, 2))+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
+        else:
+            score = torch.matmul(Q, K.transpose(1, 2))
         # score=torch.softmax(score,dim=-1)
-        # score=torch.matmul(score,V)
+        score=torch.matmul(score,V)
 
         # print(score_his)
         # 改之前
-        if score_his!=None:
-            score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
-        else:
-            score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)
+        # if score_his!=None:
+        #     score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
+        # else:
+        #     score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)
+        #
+        # score_his = score
+        # score=F.softmax(score,dim=-1)
 
-        score_his = score
-        score=F.softmax(score,dim=-1)
         #
         # score=torch.sigmoid(score+self.b_s) # b n n + 1 n n = b n n
         # score = torch.matmul(self.V_s, score)

@@ -215,8 +215,9 @@ class AGCRN(nn.Module):
 
         #predictor
         # self.conv2D=nn.Conv2d(12, 12, kernel_size=(1, 3),padding=(1,0,0,1),bias=True)
-        self.conv1D=nn.Conv1d(12,12,kernel_size=(3,3),padding=(1,1),bias=True)
-        self.end_conv = nn.Conv2d(1, args.horizon * self.output_dim, kernel_size=(1, self.hidden_dim), bias=True)
+        # self.conv1D=nn.Conv1d(12,12,kernel_size=(3,3),padding=(1,1),bias=True)
+        self.dp=nn.Dropout(0.5)
+        self.end_conv = nn.Conv2d(12, args.horizon * self.output_dim, kernel_size=(1, self.hidden_dim), bias=True)
 
     def forward(self, source, targets, teacher_forcing_ratio=0.5):
         #source: B, T_1, N, D
@@ -225,11 +226,12 @@ class AGCRN(nn.Module):
         # print("source:",source.shape)
         init_state = self.encoder.init_hidden(source.shape[0])
         output, _ = self.encoder(source, init_state, self.node_embeddings)      #B, T, N, hidden
-        output = self.conv1D(output)
+        # output = self.conv1D(output)
+        # output=self.dp(output)
         # print(output.shape)
 
-        output = output[:, -1:, :, :]                                   #B, 1, N, hidden 将最后一个时间片的值映射成12个预测值
-        # output = output[:, :, :, :]                                   #B, 12, N, hidden 将最后一个时间片的值映射成12个预测值
+        # output = output[:, -1:, :, :]                                   #B, 1, N, hidden 将最后一个时间片的值映射成12个预测值
+        output = output[:, :, :, :]                                   #B, 12, N, hidden 将最后一个时间片的值映射成12个预测值
         # print(output.shape)
         # output = self.conv2D(output)
         # print(output.shape)

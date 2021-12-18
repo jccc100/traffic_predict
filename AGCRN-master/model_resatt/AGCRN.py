@@ -228,8 +228,8 @@ class AGCRN(nn.Module):
         output = self.conv1D(output)
         # print(output.shape)
 
-        # output = output[:, -1:, :, :]                                   #B, 1, N, hidden 将最后一个时间片的值映射成12个预测值
-        output = output[:, :, :, :]                                   #B, 12, N, hidden 将最后一个时间片的值映射成12个预测值
+        output = output[:, -1:, :, :]                                   #B, 1, N, hidden 将最后一个时间片的值映射成12个预测值
+        # output = output[:, :, :, :]                                   #B, 12, N, hidden 将最后一个时间片的值映射成12个预测值
         # print(output.shape)
         # output = self.conv2D(output)
         # print(output.shape)

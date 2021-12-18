@@ -226,7 +226,7 @@ class AGCRN(nn.Module):
         init_state = self.encoder.init_hidden(source.shape[0])
         output, _ = self.encoder(source, init_state, self.node_embeddings)      #B, T, N, hidden
         output = self.conv1D(output)
-        print(output.shape)
+        # print(output.shape)
 
         # output = output[:, -1:, :, :]                                   #B, 1, N, hidden 将最后一个时间片的值映射成12个预测值
         output = output[:, :, :, :]                                   #B, 12, N, hidden 将最后一个时间片的值映射成12个预测值

@@ -216,7 +216,7 @@ class AGCRN(nn.Module):
         #predictor
         # self.conv2D=nn.Conv2d(12, 12, kernel_size=(1, 3),padding=(1,0,0,1),bias=True)
         self.conv1D=nn.Conv1d(12,12,kernel_size=(3,3),padding=(1,1),bias=True)
-        self.end_conv = nn.Conv2d(12, args.horizon * self.output_dim, kernel_size=(1, self.hidden_dim), bias=True)
+        self.end_conv = nn.Conv2d(1, args.horizon * self.output_dim, kernel_size=(1, self.hidden_dim), bias=True)
 
     def forward(self, source, targets, teacher_forcing_ratio=0.5):
         #source: B, T_1, N, D

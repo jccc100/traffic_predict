@@ -240,7 +240,7 @@ class AGCRN(nn.Module):
         # print(output.shape)
 
         output = output[:, -1:, :, :]                                   #B, 1, N, hidden 将最后一个时间片的值映射成12个预测值
-        print(output.shape)
+        # print(output.shape)
 
         # output = output[:, :, :, :]                                   #B, 12, N, hidden 将最后一个时间片的值映射成12个预测值
         # print(output.shape)

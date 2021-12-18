@@ -92,7 +92,7 @@ class Spatial_Attention_layer(nn.Module):
     '''
     compute spatial attention scores
     '''
-    def __init__(self, num_node,c_in,c_out,dropout=.0):
+    def __init__(self, num_node,c_in,c_out,dropout=.3):
         super(Spatial_Attention_layer, self).__init__()
         global device
         self.dp=nn.Dropout(dropout)
@@ -101,11 +101,11 @@ class Spatial_Attention_layer(nn.Module):
         # self.W_1 = torch.randn(c_in, requires_grad=True).to(device)
         # self.W_2 = torch.randn(num_node,num_node, requires_grad=True).to(device)
         # self.W_3 = torch.randn(num_of_features, requires_grad=True).to(device)
-        # self.b_s = torch.randn(1, num_node,num_node , requires_grad=True).to(device)
-        # self.V_s = torch.randn(num_node,num_node, requires_grad=True).to(device)
-        self.Wq=nn.Linear(c_in,c_in,bias=False)
-        self.Wk=nn.Linear(c_in,c_in,bias=False)
-        self.Wv=nn.Linear(c_in,num_node,bias=False)
+        self.b_s = torch.randn(1, num_node,num_node , requires_grad=True).to(device)
+        self.V_s = torch.randn(num_node,num_node, requires_grad=True).to(device)
+        # self.Wq=nn.Linear(c_in,c_in,bias=False)
+        # self.Wk=nn.Linear(c_in,c_in,bias=False)
+        # self.Wv=nn.Linear(c_in,num_node,bias=False)
     def forward(self, x,score_his=None):
         '''
         :param x: (batch_size, N, C)
@@ -114,32 +114,32 @@ class Spatial_Attention_layer(nn.Module):
         # batch_size, num_of_vertices, in_channels = x.shape
 
         # Q K V 改之后
-        Q=self.Wq(x)
-        # print("Q:",Q.shape)
-        K=self.Wk(x)
-        # print("K:", K.shape)
-        V=self.Wv(x)
-        # print("V:", V.shape)
-        if score_his!=None:
-            score = torch.matmul(Q, K.transpose(1, 2))+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
-        else:
-            score = torch.matmul(Q, K.transpose(1, 2))
-        # score=torch.softmax(score,dim=-1)
-        score=torch.matmul(score,V)
+        # Q=self.Wq(x)
+        # # print("Q:",Q.shape)
+        # K=self.Wk(x)
+        # # print("K:", K.shape)
+        # V=self.Wv(x)
+        # # print("V:", V.shape)
+        # if score_his!=None:
+        #     score = torch.matmul(Q, K.transpose(1, 2))+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
+        # else:
+        #     score = torch.matmul(Q, K.transpose(1, 2))
+        # # score=torch.softmax(score,dim=-1)
+        # score=torch.matmul(score,V)
 
         # print(score_his)
         # 改之前
-        # if score_his!=None:
-        #     score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
-        # else:
-        #     score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)
-        #
-        # score_his = score
+        if score_his!=None:
+            score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
+        else:
+            score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)
+
+        score_his = score
         # score=F.softmax(score,dim=-1)
 
         #
-        # score=torch.sigmoid(score+self.b_s) # b n n + 1 n n = b n n
-        # score = torch.matmul(self.V_s, score)
+        score=torch.sigmoid(score+self.b_s) # b n n + 1 n n = b n n
+        score = torch.matmul(self.V_s, score)
 
 
 
@@ -181,6 +181,7 @@ class spatialAttentionGCN(nn.Module):
         self.SAt = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
         # self.SAt_T = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
         # self.norm=nn.LayerNorm((64,self.sym_norm_Adj_matrix.shape[0],in_channels))
+        self.ln_res=SublayerConnection(64,0.2,True,True)
 
     def forward(self, x,score_his=None):
         '''
@@ -218,7 +219,7 @@ class spatialAttentionGCN(nn.Module):
         # dy_out=torch.einsum("bnn,bnc->bnc",spatial_attention,x)
         # print("st:",static_out.shape)
         # print("dy:",dy_out.shape)
-        st_dy_out=self.alpha*static_out+self.beta*dy_out+self.gamma*x
+        st_dy_out=self.alpha*static_out+self.beta*dy_out #+self.gamma*x
         # st_dy_out=self.norm(st_dy_out)+x
         # st_dy_out=static_out
         # 公式7
@@ -227,6 +228,34 @@ class spatialAttentionGCN(nn.Module):
         # print("gcn_out:",gcn_out.shape)
         # gcn_out_linear=self.Theta(gcn_out) # (b, n, c_in)->(b, n, c_out)
         return F.relu(st_dy_out),score_his
+
+
+class SublayerConnection(nn.Module):
+    '''
+    A residual connection followed by a layer norm
+    '''
+    def __init__(self, size, dropout, residual_connection, use_LayerNorm, score_his=None):
+        super(SublayerConnection, self).__init__()
+        self.residual_connection = residual_connection
+        self.use_LayerNorm = use_LayerNorm
+        self.score_his=score_his
+        self.dropout = nn.Dropout(dropout)
+        if self.use_LayerNorm:
+            self.norm = nn.LayerNorm(size)
+
+    def forward(self, x, sublayer):
+        '''
+        :param x: (batch, N, T, d_model)
+        :param sublayer: nn.Module
+        :return: (batch, N, T, d_model)
+        '''
+        if self.residual_connection and self.use_LayerNorm:
+
+            return x + self.dropout(sublayer(self.norm(x),score_his=self.score_his))
+        if self.residual_connection and (not self.use_LayerNorm):
+            return x + self.dropout(sublayer(x,self.score_his))
+        if (not self.residual_connection) and self.use_LayerNorm:
+            return self.dropout(sublayer(self.norm(x,self.score_his)))
 
 
 class AVWGCN2(nn.Module):

@@ -172,9 +172,11 @@ def get_adjacent_matrix(distance_file: str, num_nodes: int, id_file: str = None,
             else:
                 raise ValueError("graph type is not correct (connect or distance)")
 
+    # print(A)
     return torch.from_numpy(A)
 
 adj=get_adjacent_matrix(distance_file,args.num_nodes).to(device=args.device)
+# exit()
 # adj=get_adjacent_matrix(distance_file,args.num_nodes)
 # print(adj)
 # exit()

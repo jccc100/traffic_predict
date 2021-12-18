@@ -46,7 +46,8 @@ class AGCRNCell2(nn.Module):
         self.gate = AVWGCN2(dim_in + self.hidden_dim, 2 * dim_out, self.adj)
         self.update=AVWGCN2(dim_in+self.hidden_dim,dim_out,self.adj)
         self.att_his = torch.zeros((64,170,170),requires_grad=False).to(device=device)
-        # self.att_his=
+        # self.norm = nn.LayerNorm((64, self.sym_norm_Adj_matrix.shape[0], in_channels))
+        # self.conv1D=nn.Conv1d(dim_in,dim_out,3)
     def forward(self, x, state, node_embeddings):
         global device
         # print("cell:",x.shape)

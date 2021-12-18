@@ -214,6 +214,8 @@ class AGCRN(nn.Module):
                                 args.embed_dim, self.adj, args.num_layers)
 
         #predictor
+        self.conv1D=nn.Conv1d(args.batch_size,args.batch_size,kernel_size=3,bias=True)
+        # self.conv2D=nn.Conv2d()
         self.end_conv = nn.Conv2d(1, args.horizon * self.output_dim, kernel_size=(1, self.hidden_dim), bias=True)
 
     def forward(self, source, targets, teacher_forcing_ratio=0.5):
@@ -223,6 +225,8 @@ class AGCRN(nn.Module):
         # print("source:",source.shape)
         init_state = self.encoder.init_hidden(source.shape[0])
         output, _ = self.encoder(source, init_state, self.node_embeddings)      #B, T, N, hidden
+
+        output=self.conv1D(output)
         output = output[:, -1:, :, :]                                   #B, 1, N, hidden
 
         #CNN based predictor

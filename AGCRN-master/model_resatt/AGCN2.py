@@ -202,7 +202,7 @@ class spatialAttentionGCN(nn.Module):
         # print("x:",x.shape)
         # static_out=self.static(x)
         # print("st",static_out.shape)
-        x=self.norm(x)
+        # x=self.norm(x)
         sym_norm_Adj_matrix=self.sym_norm_Adj_matrix.to(device)
         # sym_norm_Adj_matrix_T=sym_norm_Adj_matrix.permute(1,0)
         static_out=torch.einsum("nn,bnc->bnc",sym_norm_Adj_matrix,x)

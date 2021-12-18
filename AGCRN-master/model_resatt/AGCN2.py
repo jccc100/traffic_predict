@@ -158,7 +158,7 @@ class Spatial_Attention_layer(nn.Module):
 
 
 class spatialAttentionGCN(nn.Module):
-    def __init__(self, Adj_matrix, in_channels, out_channels, dropout=.0):
+    def __init__(self, Adj_matrix, in_channels, out_channels, dropout=.3):
         super(spatialAttentionGCN, self).__init__()
         global device
         self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(Adj_matrix)).to(torch.float32)  # (N, N)

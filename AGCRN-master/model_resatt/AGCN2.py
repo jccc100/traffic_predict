@@ -4,8 +4,8 @@ import torch.nn as nn
 import math
 import numpy as np
 
-device=torch.device('cuda')
-# device=torch.device('cpu')
+# device=torch.device('cuda')
+device=torch.device('cpu')
 # att_his=None
 
 class AVWGCN(nn.Module):
@@ -97,7 +97,7 @@ class Spatial_Attention_layer(nn.Module):
         global device
         self.dp=nn.Dropout(dropout)
         self.in_channels=c_in
-        self.dropout = nn.Dropout(p=dropout)
+        # self.dropout = nn.Dropout(p=dropout)
         # self.W_1 = torch.randn(c_in, requires_grad=True).to(device)
         # self.W_2 = torch.randn(num_node,num_node, requires_grad=True).to(device)
         # self.W_3 = torch.randn(num_of_features, requires_grad=True).to(device)

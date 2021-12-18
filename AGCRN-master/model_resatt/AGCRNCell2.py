@@ -2,8 +2,8 @@ import torch
 import torch.nn as nn
 from model_resatt.AGCN2 import AVWGCN,AVWGCN2
 
-device=torch.device('cuda')
-# device=torch.device('cpu')
+# device=torch.device('cuda')
+device=torch.device('cpu')
 
 class AGCRNCell(nn.Module):
     def __init__(self, node_num, dim_in, dim_out, Adj,cheb_k, embed_dim):
@@ -81,7 +81,7 @@ class AGCRNCell2(nn.Module):
         return torch.zeros(batch_size, self.node_num, self.hidden_dim)
 
 if __name__=='__main__':
-    x = torch.randn(32, 170, 1).to(torch.float32)
+    x = torch.randn(64, 170, 1).to(torch.float32)
     state=torch.ones(size=x.shape)
     graph = torch.ones(170, 170).to(torch.float32)
     # print(graph)

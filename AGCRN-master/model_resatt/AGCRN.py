@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 from torch.nn.utils import weight_norm
 from model_resatt.AGCRNCell2 import AGCRNCell,AGCRNCell2
+from model_resatt.AGCN2 import spatialAttentionGCN
 
 class Chomp1d(nn.Module):
     def __init__(self, chomp_size):
@@ -155,6 +156,9 @@ class AVWDCRNN2(nn.Module):
         self.tcn=TemporalConvNet(dim_in,[1,1,1],3,0.3)
         self.dcrnn_cells2 = nn.ModuleList()
         self.dcrnn_cells2.append(AGCRNCell2(node_num, dim_in, dim_out, self.adj))
+        self.sp_gcn1=spatialAttentionGCN(self.adj,64,64,.2)
+        self.sp_gcn2=spatialAttentionGCN(self.adj,64,64,.0)
+
         for _ in range(1, num_layers):
             # self.dcrnn_cells.append(AGCRNCell(node_num, dim_out, dim_out, cheb_k, embed_dim))
 
@@ -163,8 +167,8 @@ class AVWDCRNN2(nn.Module):
     def forward(self, x, init_state, node_embeddings):
         #shape of x: (B, T, N, D)
         #shape of init_state: (num_layers, B, N, hidden_dim)
-        device=torch.device('cuda')
-        # device=torch.device('cpu')
+        # device=torch.device('cuda')
+        device=torch.device('cpu')
         # print("x:::",x.shape)
         assert x.shape[2] == self.node_num and x.shape[3] == self.input_dim
         seq_length = x.shape[1]
@@ -178,15 +182,20 @@ class AVWDCRNN2(nn.Module):
         for i in range(self.num_layers):
             state = init_state[i]
             inner_states = []
-            for t in range(seq_length):
+            for t in range(seq_length): # 12
                 # state = self.dcrnn_cells[i](current_inputs[:, t, :, :], state, node_embeddings)
                 state = self.dcrnn_cells2[i](current_inputs[:, t, :, :], state, node_embeddings)
+                # print(state.shape)
+                state ,_ = self.sp_gcn1(state)
+                state ,_= self.sp_gcn2(state)
                 inner_states.append(state)
             output_hidden.append(state)
             current_inputs = torch.stack(inner_states, dim=1)
+
         #current_inputs: the outputs of last layer: (B, T, N, hidden_dim)
         #output_hidden: the last state for each layer: (num_layers, B, N, hidden_dim)
         #last_state: (B, N, hidden_dim)
+        # print(current_inputs.shape)
         return current_inputs, output_hidden
 
     def init_hidden(self, batch_size):
@@ -216,8 +225,8 @@ class AGCRN(nn.Module):
         #predictor
         # self.conv2D=nn.Conv2d(12, 12, kernel_size=(1, 3),padding=(1,0,0,1),bias=True)
         # self.conv1D=nn.Conv1d(12,12,kernel_size=(3,3),padding=(1,1),bias=True)
-        self.dp=nn.Dropout(0.5)
-        self.end_conv = nn.Conv2d(12, args.horizon * self.output_dim, kernel_size=(1, self.hidden_dim), bias=True)
+        # self.dp=nn.Dropout(0.5)
+        self.end_conv = nn.Conv2d(1, args.horizon * self.output_dim, kernel_size=(1, self.hidden_dim), bias=True)
 
     def forward(self, source, targets, teacher_forcing_ratio=0.5):
         #source: B, T_1, N, D
@@ -230,8 +239,10 @@ class AGCRN(nn.Module):
         # output=self.dp(output)
         # print(output.shape)
 
-        # output = output[:, -1:, :, :]                                   #B, 1, N, hidden 将最后一个时间片的值映射成12个预测值
-        output = output[:, :, :, :]                                   #B, 12, N, hidden 将最后一个时间片的值映射成12个预测值
+        output = output[:, -1:, :, :]                                   #B, 1, N, hidden 将最后一个时间片的值映射成12个预测值
+        print(output.shape)
+
+        # output = output[:, :, :, :]                                   #B, 12, N, hidden 将最后一个时间片的值映射成12个预测值
         # print(output.shape)
         # output = self.conv2D(output)
         # print(output.shape)

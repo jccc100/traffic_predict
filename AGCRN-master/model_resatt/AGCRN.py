@@ -163,8 +163,8 @@ class AVWDCRNN2(nn.Module):
     def forward(self, x, init_state, node_embeddings):
         #shape of x: (B, T, N, D)
         #shape of init_state: (num_layers, B, N, hidden_dim)
-        device=torch.device('cuda')
-        # device=torch.device('cpu')
+        # device=torch.device('cuda')
+        device=torch.device('cpu')
         # print("x:::",x.shape)
         assert x.shape[2] == self.node_num and x.shape[3] == self.input_dim
         seq_length = x.shape[1]
@@ -214,8 +214,7 @@ class AGCRN(nn.Module):
                                 args.embed_dim, self.adj, args.num_layers)
 
         #predictor
-        self.conv1D=nn.Conv1d(args.batch_size,args.batch_size,kernel_size=3,bias=True)
-        # self.conv2D=nn.Conv2d()
+        # self.conv2D=nn.Conv2d(1, 1, kernel_size=(1, 3), padding=1,bias=True)
         self.end_conv = nn.Conv2d(1, args.horizon * self.output_dim, kernel_size=(1, self.hidden_dim), bias=True)
 
     def forward(self, source, targets, teacher_forcing_ratio=0.5):
@@ -226,9 +225,11 @@ class AGCRN(nn.Module):
         init_state = self.encoder.init_hidden(source.shape[0])
         output, _ = self.encoder(source, init_state, self.node_embeddings)      #B, T, N, hidden
 
-        output=self.conv1D(output)
-        output = output[:, -1:, :, :]                                   #B, 1, N, hidden
 
+        output = output[:, -1:, :, :]                                   #B, 1, N, hidden
+        # print(output.shape)
+        # output = self.conv2D(output)
+        # print(output.shape)
         #CNN based predictor
         output = self.end_conv((output))                         #B, T*C, N, 1
         output = output.squeeze(-1).reshape(-1, self.horizon, self.output_dim, self.num_node)
@@ -270,7 +271,7 @@ if __name__=='__main__':
     agcrn=AGCRN(args,adj)
     # source: B, T_1, N, D
     # target: B, T_2, N, D
-    x=torch.randn(32,12,170,1)
-    tar=torch.randn(32,12,170,1)
+    x=torch.randn(64,12,170,1)
+    tar=torch.randn(64,12,170,1)
     out=agcrn(x,tar)
     print(out.shape)

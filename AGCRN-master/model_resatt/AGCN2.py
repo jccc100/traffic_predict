@@ -4,8 +4,8 @@ import torch.nn as nn
 import math
 import numpy as np
 
-device=torch.device('cuda')
-# device=torch.device('cpu')
+# device=torch.device('cuda')
+device=torch.device('cpu')
 # att_his=None
 
 class AVWGCN(nn.Module):
@@ -180,7 +180,7 @@ class spatialAttentionGCN(nn.Module):
         self.Theta = nn.Linear(in_channels, in_channels, bias=False)
         self.SAt = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
         # self.SAt_T = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
-        # self.norm=nn.LayerNorm((64,self.sym_norm_Adj_matrix.shape[0],in_channels))
+        self.norm=nn.LayerNorm((64,self.sym_norm_Adj_matrix.shape[0],in_channels))
         self.ln_res=SublayerConnection(64,0.2,True,True)
 
     def forward(self, x,score_his=None):
@@ -202,6 +202,7 @@ class spatialAttentionGCN(nn.Module):
         # print("x:",x.shape)
         # static_out=self.static(x)
         # print("st",static_out.shape)
+        x=self.norm(x)
         sym_norm_Adj_matrix=self.sym_norm_Adj_matrix.to(device)
         # sym_norm_Adj_matrix_T=sym_norm_Adj_matrix.permute(1,0)
         static_out=torch.einsum("nn,bnc->bnc",sym_norm_Adj_matrix,x)
@@ -219,7 +220,7 @@ class spatialAttentionGCN(nn.Module):
         # dy_out=torch.einsum("bnn,bnc->bnc",spatial_attention,x)
         # print("st:",static_out.shape)
         # print("dy:",dy_out.shape)
-        st_dy_out=self.alpha*static_out+self.beta*dy_out #+self.gamma*x
+        st_dy_out=self.alpha*static_out+self.beta*dy_out+x#+self.gamma*x
         # st_dy_out=self.norm(st_dy_out)+x
         # st_dy_out=static_out
         # 公式7

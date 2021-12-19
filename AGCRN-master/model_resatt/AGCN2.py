@@ -52,16 +52,18 @@ def sym_norm_Adj(W):
     W=W.cpu().detach().numpy()
 
     N = W.shape[0]
-    D = np.zeros([N, N], dtype=type(W[0][0]))
+    # D = np.zeros([N, N], dtype=type(W[0][0]))
 
 
     W = W + 0.4*np.identity(N) # 为邻居矩阵加上自连接
-    for i in range(W.shape[0]):
-        for j in range(W.shape[0]):
-            if W[i][j] != 0.:
-                D[i][j] = 1
+    # for i in range(W.shape[0]):
+    #     for j in range(W.shape[0]):
+    #         if W[i][j] != 0.:
+    #             D[i][j] = 1
+    # D = np.diag(np.sum(D, axis=1))
+    D=np.diag(np.sum(W,axis=1))
     # print(D)
-    D = np.diag(np.sum(D, axis=1))
+
     # D = np.diag(np.sum(W, axis=1))
     # print("D:",D)
     sym_norm_Adj_matrix = np.dot(np.sqrt(D),W)
@@ -231,32 +233,32 @@ class spatialAttentionGCN(nn.Module):
         return F.relu(st_dy_out),score_his
 
 
-class SublayerConnection(nn.Module):
-    '''
-    A residual connection followed by a layer norm
-    '''
-    def __init__(self, size, dropout, residual_connection, use_LayerNorm, score_his=None):
-        super(SublayerConnection, self).__init__()
-        self.residual_connection = residual_connection
-        self.use_LayerNorm = use_LayerNorm
-        self.score_his=score_his
-        self.dropout = nn.Dropout(dropout)
-        if self.use_LayerNorm:
-            self.norm = nn.LayerNorm(size)
-
-    def forward(self, x, sublayer):
-        '''
-        :param x: (batch, N, T, d_model)
-        :param sublayer: nn.Module
-        :return: (batch, N, T, d_model)
-        '''
-        if self.residual_connection and self.use_LayerNorm:
-
-            return x + self.dropout(sublayer(self.norm(x),score_his=self.score_his))
-        if self.residual_connection and (not self.use_LayerNorm):
-            return x + self.dropout(sublayer(x,self.score_his))
-        if (not self.residual_connection) and self.use_LayerNorm:
-            return self.dropout(sublayer(self.norm(x,self.score_his)))
+# class SublayerConnection(nn.Module):
+#     '''
+#     A residual connection followed by a layer norm
+#     '''
+#     def __init__(self, size, dropout, residual_connection, use_LayerNorm, score_his=None):
+#         super(SublayerConnection, self).__init__()
+#         self.residual_connection = residual_connection
+#         self.use_LayerNorm = use_LayerNorm
+#         self.score_his=score_his
+#         self.dropout = nn.Dropout(dropout)
+#         if self.use_LayerNorm:
+#             self.norm = nn.LayerNorm(size)
+#
+#     def forward(self, x, sublayer):
+#         '''
+#         :param x: (batch, N, T, d_model)
+#         :param sublayer: nn.Module
+#         :return: (batch, N, T, d_model)
+#         '''
+#         if self.residual_connection and self.use_LayerNorm:
+#
+#             return x + self.dropout(sublayer(self.norm(x),score_his=self.score_his))
+#         if self.residual_connection and (not self.use_LayerNorm):
+#             return x + self.dropout(sublayer(x,self.score_his))
+#         if (not self.residual_connection) and self.use_LayerNorm:
+#             return self.dropout(sublayer(self.norm(x,self.score_his)))
 
 
 class AVWGCN2(nn.Module):

@@ -156,8 +156,8 @@ class AVWDCRNN2(nn.Module):
         self.tcn=TemporalConvNet(dim_in,[1,1,1],3,0.3)
         self.dcrnn_cells2 = nn.ModuleList()
         self.dcrnn_cells2.append(AGCRNCell2(node_num, dim_in, dim_out, self.adj))
-        self.sp_gcn1=spatialAttentionGCN(self.adj,64,64,.2)
-        self.sp_gcn2=spatialAttentionGCN(self.adj,64,64,.0)
+        # self.sp_gcn1=spatialAttentionGCN(self.adj,64,64,.2)
+        # self.sp_gcn2=spatialAttentionGCN(self.adj,64,64,.0)
 
         for _ in range(1, num_layers):
             # self.dcrnn_cells.append(AGCRNCell(node_num, dim_out, dim_out, cheb_k, embed_dim))
@@ -186,8 +186,8 @@ class AVWDCRNN2(nn.Module):
                 # state = self.dcrnn_cells[i](current_inputs[:, t, :, :], state, node_embeddings)
                 state = self.dcrnn_cells2[i](current_inputs[:, t, :, :], state, node_embeddings)
                 # print(state.shape)
-                state ,_ = self.sp_gcn1(state)
-                state ,_= self.sp_gcn2(state)
+                # state ,_ = self.sp_gcn1(state)
+                # state ,_= self.sp_gcn2(state)
                 inner_states.append(state)
             output_hidden.append(state)
             current_inputs = torch.stack(inner_states, dim=1)

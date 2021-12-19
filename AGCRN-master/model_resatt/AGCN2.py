@@ -182,7 +182,7 @@ class spatialAttentionGCN(nn.Module):
         self.Theta = nn.Linear(in_channels, in_channels, bias=False)
         self.SAt = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
         # self.SAt_T = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
-        self.norm=nn.LayerNorm((64,self.sym_norm_Adj_matrix.shape[0],in_channels))
+        # self.norm=nn.LayerNorm((64,self.sym_norm_Adj_matrix.shape[0],in_channels))
         # self.ln_res=SublayerConnection(64,0.2,True,True)
 
     def forward(self, x,score_his=None):
@@ -274,7 +274,7 @@ class AVWGCN2(nn.Module):
         self.adj=Adj
         self.sp_att_gcn=spatialAttentionGCN(self.adj,dim_in,dim_out)
         self.linear=nn.Linear(dim_in,dim_out,bias=True)
-        self.emb_net = AVWGCN(dim_in,dim_out, 2, 2)
+        # self.emb_net = AVWGCN(dim_in,dim_out, 2, 2)
 
         # self.att_his=None
     def forward(self, x, att_his=None,node_embeddings=0):

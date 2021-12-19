@@ -183,7 +183,7 @@ class spatialAttentionGCN(nn.Module):
         self.SAt = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
         # self.SAt_T = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
         self.norm=nn.LayerNorm((64,self.sym_norm_Adj_matrix.shape[0],in_channels))
-        self.ln_res=SublayerConnection(64,0.2,True,True)
+        # self.ln_res=SublayerConnection(64,0.2,True,True)
 
     def forward(self, x,score_his=None):
         '''

@@ -104,7 +104,7 @@ class Spatial_Attention_layer(nn.Module):
         # self.W_2 = torch.randn(num_node,num_node, requires_grad=True).to(device)
         # self.W_3 = torch.randn(num_of_features, requires_grad=True).to(device)
         self.b_s = torch.randn(1, num_node,num_node , requires_grad=True).to(device)
-        self.V_s = torch.rand(num_node,num_node, requires_grad=True).to(device)
+        self.V_s = torch.randn(num_node,num_node, requires_grad=True).to(device)
         # self.Wq=nn.Linear(c_in,c_in,bias=False)
         # self.Wk=nn.Linear(c_in,c_in,bias=False)
         # self.Wv=nn.Linear(c_in,num_node,bias=False)
@@ -131,7 +131,7 @@ class Spatial_Attention_layer(nn.Module):
 
         # print(score_his)
 
-        # self.V_s=F.softmax(self.V_s,dim=1)
+        self.V_s=F.relu(self.V_s)
         # 改之前
         if score_his!=None:
             score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)

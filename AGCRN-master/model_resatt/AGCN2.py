@@ -52,16 +52,16 @@ def sym_norm_Adj(W):
     W=W.cpu().detach().numpy()
 
     N = W.shape[0]
-    # D = np.zeros([N, N], dtype=type(W[0][0]))
+    D = np.zeros([N, N], dtype=type(W[0][0]))
 
 
     W = W + 0.4*np.identity(N) # 为邻居矩阵加上自连接
-    # for i in range(W.shape[0]):
-    #     for j in range(W.shape[0]):
-    #         if W[i][j] != 0.:
-    #             D[i][j] = 1
-    # D = np.diag(np.sum(D, axis=1))
-    D=np.diag(np.sum(W,axis=1))
+    for i in range(W.shape[0]):
+        for j in range(W.shape[0]):
+            if W[i][j] != 0.:
+                D[i][j] = 1
+    D = np.diag(np.sum(D, axis=1))
+    # D=np.diag(np.sum(W,axis=1))
     # print(D)
 
     # D = np.diag(np.sum(W, axis=1))
@@ -104,7 +104,7 @@ class Spatial_Attention_layer(nn.Module):
         # self.W_2 = torch.randn(num_node,num_node, requires_grad=True).to(device)
         # self.W_3 = torch.randn(num_of_features, requires_grad=True).to(device)
         self.b_s = torch.randn(1, num_node,num_node , requires_grad=True).to(device)
-        self.V_s = torch.rand(num_node,num_node, requires_grad=True).to(device)
+        self.V_s = torch.randn(num_node,num_node, requires_grad=True).to(device)
         # self.Wq=nn.Linear(c_in,c_in,bias=False)
         # self.Wk=nn.Linear(c_in,c_in,bias=False)
         # self.Wv=nn.Linear(c_in,num_node,bias=False)
@@ -233,7 +233,75 @@ class spatialAttentionGCN(nn.Module):
         # gcn_out_linear=self.Theta(gcn_out) # (b, n, c_in)->(b, n, c_out)
         return F.relu(st_dy_out),score_his
 
+class emb_GCN(nn.Module):
+    def __init__(self, Adj_matrix, in_channels, out_channels, dropout=.0):
+        super(spatialAttentionGCN, self).__init__()
+        global device
+        self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(Adj_matrix)).to(torch.float32)  # (N, N)
+        self.sym_norm_Adj_matrix=F.softmax(self.sym_norm_Adj_matrix,dim=1)
+        self.static=nn.Linear(in_channels,out_channels,bias=True)
+        self.alpha = nn.Parameter(torch.FloatTensor([0.2]), requires_grad=True)  # D
+        self.beta = nn.Parameter(torch.FloatTensor([0.7]), requires_grad=True)  # S
+        self.gamma = nn.Parameter(torch.FloatTensor([0.1]), requires_grad=True)
 
+        # self.alpha2 = nn.Parameter(torch.FloatTensor([0.5]), requires_grad=True)  # 正向
+        # self.beta2 = nn.Parameter(torch.FloatTensor([0.5]), requires_grad=True)  # 转置
+
+        self.in_channels = in_channels
+        self.out_channels = out_channels
+        self.Theta = nn.Linear(in_channels, in_channels, bias=False)
+        self.SAt = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
+        # self.SAt_T = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
+        # self.norm=nn.LayerNorm((64,self.sym_norm_Adj_matrix.shape[0],in_channels))
+        # self.ln_res=SublayerConnection(64,0.2,True,True)
+        self.E1=
+    def forward(self, x,score_his=None):
+        '''
+        spatial graph convolution operation
+        :param x: (batch_size, N, C_in)
+        :return: (batch_size, N, C_out)
+        '''
+
+        # batch_size, num_of_vertices, in_channels = x.shape
+        global device
+        spatial_attention,score_his = self.SAt(x,score_his)  # (batch, N, N) 分数st
+        # spatial_attention_T,_ = self.SAt_T(x,score_his)  # (batch, N, N) 分数st
+        # spatial_attention_T=spatial_attention_T.permute(0,2,1)
+        #
+        # # x = x.permute(0, 2, 1, 3).reshape((-1, num_of_vertices, in_channels))  # (b*t,n,f_in)
+        # spatial_attention = spatial_attention.to(device)
+        x = x.to(device)
+        # print("x:",x.shape)
+        # static_out=self.static(x)
+        # print("st",static_out.shape)
+        # x=self.norm(x)
+        sym_norm_Adj_matrix=self.sym_norm_Adj_matrix.to(device)
+        # sym_norm_Adj_matrix_T=sym_norm_Adj_matrix.permute(1,0)
+        static_out=torch.einsum("nn,bnc->bnc",sym_norm_Adj_matrix,x)
+        # print(static_out.shape)
+
+        # dy_adj=torch.einsum("nn,bnn->bnn",sym_norm_Adj_matrix,spatial_attention)
+        dy_adj=torch.matmul(sym_norm_Adj_matrix,spatial_attention)
+        dy_out=torch.einsum("bnn,bnc->bnc",dy_adj,x)
+
+        # dy_adj_T=torch.matmul(sym_norm_Adj_matrix_T,spatial_attention_T)
+        # dy_out_T=torch.einsum("bnn,bnc->bnc",dy_adj_T,x)
+        # dy_out=self.alpha2*dy_out+self.beta2*dy_out_T
+
+        dy_out=self.Theta(dy_out)
+        # dy_out=torch.einsum("bnn,bnc->bnc",spatial_attention,x)
+        # print("st:",static_out.shape)
+        # print("dy:",dy_out.shape)
+        st_dy_out=self.alpha*static_out+self.beta*dy_out+self.gamma*x
+        # st_dy_out=dy_out+x#+self.gamma*x
+        # st_dy_out=self.norm(st_dy_out)+x
+        # st_dy_out=static_out
+        # 公式7
+        # return F.relu(self.Theta(torch.matmul(self.sym_norm_Adj_matrix.mul(spatial_attention), x))),score_his
+        # gcn_out=torch.matmul(self.sym_norm_Adj_matrix.mul(spatial_attention), x) # n n,b n c_in->b n c_in
+        # print("gcn_out:",gcn_out.shape)
+        # gcn_out_linear=self.Theta(gcn_out) # (b, n, c_in)->(b, n, c_out)
+        return F.relu(st_dy_out),score_his
 # class SublayerConnection(nn.Module):
 #     '''
 #     A residual connection followed by a layer norm

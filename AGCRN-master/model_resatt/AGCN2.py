@@ -242,8 +242,8 @@ class emb_GCN(nn.Module):
         self.sym_norm_Adj_matrix_D = torch.from_numpy(sym_norm_Adj(Adj_matrix)[0]).to(torch.float32)  # (N, N)
         self.sym_norm_Adj_matrix_D = F.softmax(self.sym_norm_Adj_matrix_D, dim=1).to(device)
         self.static=nn.Linear(in_channels,out_channels,bias=True)
-        self.alpha = nn.Parameter(torch.FloatTensor([0.2]), requires_grad=True)  # D
-        self.beta = nn.Parameter(torch.FloatTensor([0.7]), requires_grad=True)  # S
+        self.alpha = nn.Parameter(torch.FloatTensor([0.4]), requires_grad=True)  # D
+        self.beta = nn.Parameter(torch.FloatTensor([0.5]), requires_grad=True)  # S
         self.gamma = nn.Parameter(torch.FloatTensor([0.1]), requires_grad=True)
 
         # self.alpha2 = nn.Parameter(torch.FloatTensor([0.5]), requires_grad=True)  # 正向

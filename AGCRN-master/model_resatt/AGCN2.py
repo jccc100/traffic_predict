@@ -238,7 +238,7 @@ class emb_GCN(nn.Module):
         super(emb_GCN, self).__init__()
         global device
         self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(Adj_matrix)[1]).to(torch.float32)  # (N, N)
-        self.sym_norm_Adj_matrix=F.softmax(self.sym_norm_Adj_matrix,dim=1)
+        self.sym_norm_Adj_matrix=F.softmax(self.sym_norm_Adj_matrix,dim=1).to(device)
         self.sym_norm_Adj_matrix_D = torch.from_numpy(sym_norm_Adj(Adj_matrix)[0]).to(torch.float32)  # (N, N)
         self.sym_norm_Adj_matrix_D = F.softmax(self.sym_norm_Adj_matrix_D, dim=1).to(device)
         self.static=nn.Linear(in_channels,out_channels,bias=True)

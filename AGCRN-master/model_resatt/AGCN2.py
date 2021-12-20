@@ -350,9 +350,9 @@ class AVWGCN2(nn.Module):
         # static_out=F.softmax(static_out,dim=2)
 
         # sp_att gcn
-        gcn_out,att_his=self.sp_att_gcn(x,att_his)
+        # gcn_out,att_his=self.sp_att_gcn(x,att_his)
         # emb gcn
-        # gcn_out=self.emb_gcn(x)
+        gcn_out=self.emb_gcn(x)
         # global att_his
         # gcn_out,att_his=self.sp_att_gcn(x,self.att_his)
         # self.att_his=score_his

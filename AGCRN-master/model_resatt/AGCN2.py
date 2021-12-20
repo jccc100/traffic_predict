@@ -240,7 +240,7 @@ class emb_GCN(nn.Module):
         self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(Adj_matrix)[1]).to(torch.float32)  # (N, N)
         self.sym_norm_Adj_matrix=F.softmax(self.sym_norm_Adj_matrix,dim=1)
         self.sym_norm_Adj_matrix_D = torch.from_numpy(sym_norm_Adj(Adj_matrix)[0]).to(torch.float32)  # (N, N)
-        self.sym_norm_Adj_matrix_D = F.softmax(self.sym_norm_Adj_matrix_D, dim=1)
+        self.sym_norm_Adj_matrix_D = F.softmax(self.sym_norm_Adj_matrix_D, dim=1).to(device)
         self.static=nn.Linear(in_channels,out_channels,bias=True)
         self.alpha = nn.Parameter(torch.FloatTensor([0.2]), requires_grad=True)  # D
         self.beta = nn.Parameter(torch.FloatTensor([0.7]), requires_grad=True)  # S
@@ -269,7 +269,7 @@ class emb_GCN(nn.Module):
         # batch_size, num_of_vertices, in_channels = x.shape
         global device
         x = x.to(device)
-        N=self.sym_norm_Adj_matrix.shape[0]
+        # N=self.sym_norm_Adj_matrix.shape[0]
         adj = torch.matmul(self.E1, self.sym_norm_Adj_matrix)  # E1A
         adj = torch.matmul(adj, self.E2)  # E1AE2
         # D = torch.zeros([N, N], dtype=type(adj[0][0])).to(())

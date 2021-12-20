@@ -104,7 +104,7 @@ class Spatial_Attention_layer(nn.Module):
         # self.W_2 = torch.randn(num_node,num_node, requires_grad=True).to(device)
         # self.W_3 = torch.randn(num_of_features, requires_grad=True).to(device)
         self.b_s = torch.randn(1, num_node,num_node , requires_grad=True).to(device)
-        self.V_s = torch.randn(num_node,num_node, requires_grad=True).to(device)
+        self.V_s = torch.rand(num_node,num_node, requires_grad=True).to(device)
         # self.Wq=nn.Linear(c_in,c_in,bias=False)
         # self.Wk=nn.Linear(c_in,c_in,bias=False)
         # self.Wv=nn.Linear(c_in,num_node,bias=False)
@@ -144,7 +144,8 @@ class Spatial_Attention_layer(nn.Module):
         #
 
         score=torch.sigmoid(score+self.b_s) # b n n + 1 n n = b n n
-        score = torch.matmul(F.relu(self.V_s), score)
+        # score = torch.matmul(F.relu(self.V_s), score)
+        score = torch.matmul(self.V_s, score)
 
 
 
@@ -163,15 +164,11 @@ class Spatial_Attention_layer(nn.Module):
 
 
 class spatialAttentionGCN(nn.Module):
-    def __init__(self, Adj_matrix, in_channels, out_channels, dropout=.3):
+    def __init__(self, Adj_matrix, in_channels, out_channels, dropout=.0):
         super(spatialAttentionGCN, self).__init__()
         global device
         self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(Adj_matrix)).to(torch.float32)  # (N, N)
-        self.sym_norm_Adj_matrix=F.softmax(self.sym_norm_Adj_matrix,dim=1)
-        # self.W_s=torch.randn(1,requires_grad=True).to(device)
-        # self.b_s=torch.randn(170,)
-        # print(in_channels)
-        # print(out_channels)
+        # self.sym_norm_Adj_matrix=F.softmax(self.sym_norm_Adj_matrix,dim=1)
         self.static=nn.Linear(in_channels,out_channels,bias=True)
         self.alpha = nn.Parameter(torch.FloatTensor([0.4]), requires_grad=True)  # D
         self.beta = nn.Parameter(torch.FloatTensor([0.55]), requires_grad=True)  # S

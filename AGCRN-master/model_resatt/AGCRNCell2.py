@@ -69,7 +69,7 @@ class AGCRNCell2(nn.Module):
         z=z.to(device)
         r=r.to(device)
         candidate = torch.cat((x, z*state), dim=-1)
-        update_res, self.att_his = self.update(candidate, self.att_his, node_embeddings)
+        update_res, self.att_his = self.update(candidate, self.att_his)
         hc = torch.tanh(update_res)
         h = r*state + (1-r)*hc
         # print("cell_h:",h.shape)

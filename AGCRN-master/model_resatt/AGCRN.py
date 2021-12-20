@@ -216,7 +216,7 @@ class AGCRN(nn.Module):
         args.embed_dim=2
         self.adj=Adj
         # self.default_graph = args.default_graph
-        self.node_embeddings = nn.Parameter(torch.randn(self.num_node, args.embed_dim), requires_grad=True)
+        # self.node_embeddings = nn.Parameter(torch.randn(self.num_node, args.embed_dim), requires_grad=True)
 
         # self.encoder = AVWDCRNN(args.num_nodes, args.input_dim, args.rnn_units, args.cheb_k,args.embed_dim, args.num_layers)
         self.encoder = AVWDCRNN2(args.num_nodes, args.input_dim, args.rnn_units, args.cheb_k,

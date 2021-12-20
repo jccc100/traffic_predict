@@ -131,7 +131,7 @@ class Spatial_Attention_layer(nn.Module):
 
         # print(score_his)
 
-        self.V_s=F.softmax(self.V_s,dim=1)
+        # self.V_s=F.softmax(self.V_s,dim=1)
         # 改之前
         if score_his!=None:
             score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)

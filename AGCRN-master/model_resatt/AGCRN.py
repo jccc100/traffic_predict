@@ -1,8 +1,9 @@
 import torch
 import torch.nn as nn
 from torch.nn.utils import weight_norm
+from model.AGCRNCell2 import AGCRNCell,AGCRNCell2
 from model_resatt.AGCRNCell2 import AGCRNCell,AGCRNCell2
-from model_resatt.AGCN2 import spatialAttentionGCN
+# from model_resatt.AGCN2 import spatialAttentionGCN
 
 class Chomp1d(nn.Module):
     def __init__(self, chomp_size):
@@ -248,7 +249,7 @@ class AGCRN(nn.Module):
         # print(output.shape)
         #CNN based predictor
         output = self.end_conv((output))                         #B, T*C, N, 1
-        output = output.squeeze(-1).reshape(-1, self.horizon, self.output_dim, self.num_node)
+        output = output.squeeze(-1).reshape(-1, self.horizon, self.output_dim, self.num_node) # b t c n
         output = output.permute(0, 1, 3, 2)                      #B, T, N, C
 
         return output

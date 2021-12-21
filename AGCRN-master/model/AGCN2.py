@@ -138,7 +138,7 @@ class Spatial_Attention_layer(nn.Module):
         # score=torch.softmax(score,dim=1)
         # score=torch.einsum("nn,bnn->bnn",self.V_s,score)
         score=torch.matmul(self.V_s,score)
-        # score=torch.softmax(score,dim=-1)
+        score=torch.softmax(score,dim=1)
 
 
 
@@ -169,14 +169,14 @@ class spatialAttentionGCN(nn.Module):
         self.beta = nn.Parameter(torch.FloatTensor([0.55]), requires_grad=True)  # S
         self.gamma = nn.Parameter(torch.FloatTensor([0.05]), requires_grad=True)
 
-        self.alpha2 = nn.Parameter(torch.FloatTensor([0.5]), requires_grad=True)  # 正向
-        self.beta2 = nn.Parameter(torch.FloatTensor([0.5]), requires_grad=True)  # 转置
+        # self.alpha2 = nn.Parameter(torch.FloatTensor([0.5]), requires_grad=True)  # 正向
+        # self.beta2 = nn.Parameter(torch.FloatTensor([0.5]), requires_grad=True)  # 转置
 
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.Theta = nn.Linear(in_channels, in_channels, bias=False)
         self.SAt = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
-        self.SAt_T = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
+        # self.SAt_T = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
         # self.norm=nn.LayerNorm((64,self.sym_norm_Adj_matrix.shape[0],in_channels))
 
     def forward(self, x,score_his=None):
@@ -189,8 +189,8 @@ class spatialAttentionGCN(nn.Module):
         # batch_size, num_of_vertices, in_channels = x.shape
         global device
         spatial_attention,score_his = self.SAt(x,score_his)  # (batch, N, N) 分数st
-        spatial_attention_T,_ = self.SAt_T(x,score_his)  # (batch, N, N) 分数st
-        spatial_attention_T=spatial_attention_T.permute(0,2,1)
+        # spatial_attention_T,_ = self.SAt_T(x,score_his)  # (batch, N, N) 分数st
+        # spatial_attention_T=spatial_attention_T.permute(0,2,1)
         #
         # # x = x.permute(0, 2, 1, 3).reshape((-1, num_of_vertices, in_channels))  # (b*t,n,f_in)
         # spatial_attention = spatial_attention.to(device)
@@ -199,7 +199,7 @@ class spatialAttentionGCN(nn.Module):
         # static_out=self.static(x)
         # print("st",static_out.shape)
         sym_norm_Adj_matrix=self.sym_norm_Adj_matrix.to(device)
-        sym_norm_Adj_matrix_T=sym_norm_Adj_matrix.permute(1,0)
+        # sym_norm_Adj_matrix_T=sym_norm_Adj_matrix.permute(1,0)
         static_out=torch.einsum("nn,bnc->bnc",sym_norm_Adj_matrix,x)
         # print(static_out.shape)
 
@@ -207,9 +207,9 @@ class spatialAttentionGCN(nn.Module):
         dy_adj=torch.matmul(sym_norm_Adj_matrix,spatial_attention)
         dy_out=torch.einsum("bnn,bnc->bnc",dy_adj,x)
 
-        dy_adj_T=torch.matmul(sym_norm_Adj_matrix_T,spatial_attention_T)
-        dy_out_T=torch.einsum("bnn,bnc->bnc",dy_adj_T,x)
-        dy_out=self.alpha2*dy_out+self.beta2*dy_out_T
+        # dy_adj_T=torch.matmul(sym_norm_Adj_matrix_T,spatial_attention_T)
+        # dy_out_T=torch.einsum("bnn,bnc->bnc",dy_adj_T,x)
+        # dy_out=self.alpha2*dy_out+self.beta2*dy_out_T
 
         dy_out=self.Theta(dy_out)
         # dy_out=torch.einsum("bnn,bnc->bnc",spatial_attention,x)

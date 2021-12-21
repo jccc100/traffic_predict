@@ -252,7 +252,7 @@ class emb_GCN(nn.Module):
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.Theta = nn.Linear(in_channels, in_channels, bias=False)
-        self.SAt = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
+        # self.SAt = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
         # self.SAt_T = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
         # self.norm=nn.LayerNorm((64,self.sym_norm_Adj_matrix.shape[0],in_channels))
         # self.ln_res=SublayerConnection(64,0.2,True,True)
@@ -272,6 +272,7 @@ class emb_GCN(nn.Module):
         # N=self.sym_norm_Adj_matrix.shape[0]
         adj = torch.matmul(self.E1, self.sym_norm_Adj_matrix)  # E1A
         adj = torch.matmul(adj, self.E2)  # E1AE2
+        adj = F.softmax(adj,dim=1)
         # D = torch.zeros([N, N], dtype=type(adj[0][0])).to(())
         # for i in range(adj.shape[0]):
         #     for j in range(adj.shape[0]):

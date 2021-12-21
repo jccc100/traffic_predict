@@ -94,7 +94,7 @@ class Spatial_Attention_layer(nn.Module):
     '''
     compute spatial attention scores
     '''
-    def __init__(self, num_node,c_in,c_out,dropout=.3):
+    def __init__(self, num_node,c_in,c_out,dropout=.0):
         super(Spatial_Attention_layer, self).__init__()
         global device
         self.dp=nn.Dropout(dropout)
@@ -138,7 +138,7 @@ class Spatial_Attention_layer(nn.Module):
         else:
             score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)
 
-        score_his = score
+
 
 
         #
@@ -146,8 +146,8 @@ class Spatial_Attention_layer(nn.Module):
         score=torch.sigmoid(score+self.b_s) # b n n + 1 n n = b n n
         # score = torch.matmul(F.relu(self.V_s), score)
         score = torch.matmul(self.V_s, score)
-        score = F.softmax(score, dim=1)
-
+        # score = F.softmax(score, dim=1)
+        score_his = score
 
         # score=torch.matmul(self.V_s,score)#+self.b_s
         # score=torch.softmax(score,dim=-1)
@@ -333,10 +333,10 @@ class AVWGCN2(nn.Module):
         # torch.nn.init.normal_(self.b, mean=0, std=1)
         self.adj=Adj
         self.sp_att_gcn=spatialAttentionGCN(self.adj,dim_in,dim_out)
-        self.emb_gcn=emb_GCN(self.adj,dim_in,dim_out)
+        # self.emb_gcn=emb_GCN(self.adj,dim_in,dim_out)
         self.linear=nn.Linear(dim_in,dim_out,bias=True)
         # self.emb_net = AVWGCN(dim_in,dim_out, 2, 2)
-
+        self.dp=nn.Dropout(0.0)
         # self.att_his=None
     def forward(self, x, att_his=None,node_embeddings=0):
         # 静态
@@ -350,9 +350,9 @@ class AVWGCN2(nn.Module):
         # static_out=F.softmax(static_out,dim=2)
 
         # sp_att gcn
-        # gcn_out,att_his=self.sp_att_gcn(x,att_his)
+        gcn_out,att_his=self.sp_att_gcn(x,att_his)
         # emb gcn
-        gcn_out=self.emb_gcn(x)
+        # gcn_out=self.emb_gcn(x)
         # global att_his
         # gcn_out,att_his=self.sp_att_gcn(x,self.att_his)
         # self.att_his=score_his
@@ -365,7 +365,7 @@ class AVWGCN2(nn.Module):
         # print("dyout:",dy_out.dtype)
         # print("stout:",static_out.dtype)
         static_dy_out=self.linear(gcn_out)
-
+        static_dy_out=self.dp(static_dy_out)
         return static_dy_out,att_his
 
 

@@ -239,7 +239,6 @@ class AVWGCN2(nn.Module):
         self.adj=Adj
         self.sp_att_gcn=spatialAttentionGCN(self.adj,dim_in,dim_out)
         self.linear=nn.Linear(dim_in,dim_out,bias=True)
-        self.emb_net = AVWGCN(dim_in,dim_out, 2, 2)
 
         # self.att_his=None
     def forward(self, x, node_embeddings=0):

@@ -72,7 +72,7 @@ class TemporalBlock(nn.Module):
         :param x: size of (Batch, input_channel, seq_len)
         :return:
         """
-        out = self.net(x)+x # 残差
+        out = self.net(x) # 残差
         res = x if self.downsample is None else self.downsample(x)
         return self.relu(out + res)
 

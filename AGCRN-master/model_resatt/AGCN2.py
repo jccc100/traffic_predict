@@ -329,14 +329,13 @@ class AVWGCN2(nn.Module):
         # self.b = nn.Parameter(torch.Tensor(dim_out)).to(device=torch.device('cuda'))
         # self.W = nn.Linear(dim_in, dim_out,bias=True)  # y = W * x
         # self.b = nn.Parameter(torch.Tensor(dim_out))
-
+        # self.emb=nn.Embedding()
         # torch.nn.init.normal_(self.W.weight, mean=0, std=1)
         # torch.nn.init.normal_(self.b, mean=0, std=1)
         self.adj=Adj
         self.sp_att_gcn=spatialAttentionGCN(self.adj,dim_in,dim_out)
         # self.emb_gcn=emb_GCN(self.adj,dim_in,dim_out)
         self.linear=nn.Linear(dim_in,dim_out,bias=True)
-        # self.emb_net = AVWGCN(dim_in,dim_out, 2, 2)
         self.dp=nn.Dropout(0.0)
         # self.att_his=None
     def forward(self, x, att_his=None,node_embeddings=0):

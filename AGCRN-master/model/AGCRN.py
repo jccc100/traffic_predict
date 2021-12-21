@@ -14,6 +14,14 @@ class Chomp1d(nn.Module):
         """
         return x[:, :, :-self.chomp_size].contiguous()
 
+# class resconnection(nn.Module):
+#     def __init__(self,net):
+#         super(resconnection,self).__init__()
+#         self.net=net
+#     def forward(self,x):
+#         res = self.net(x)+x
+#         return res
+
 
 class TemporalBlock(nn.Module):
     def __init__(self, n_inputs, n_outputs, kernel_size, stride, dilation, padding, dropout=0.2):
@@ -64,7 +72,7 @@ class TemporalBlock(nn.Module):
         :param x: size of (Batch, input_channel, seq_len)
         :return:
         """
-        out = self.net(x)
+        out = self.net(x)+x # 残差
         res = x if self.downsample is None else self.downsample(x)
         return self.relu(out + res)
 
@@ -102,6 +110,7 @@ class TemporalConvNet(nn.Module):
         :param x: size of (Batch, input_channel, seq_len)
         :return: size of (Batch, output_channel, seq_len)
         """
+
         return self.network(x)
 class AVWDCRNN(nn.Module):
     def __init__(self, node_num, dim_in, dim_out, cheb_k, embed_dim, num_layers=1):

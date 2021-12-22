@@ -130,6 +130,7 @@ class Spatial_Attention_layer(nn.Module):
         # 改之前
         if score_his!=None:
             score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
+            score_his = score
         else:
             score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)
         #
@@ -147,7 +148,7 @@ class Spatial_Attention_layer(nn.Module):
         # exp=torch.exp(score)
         # score_norm=exp/torch.sum(exp,1,keepdim=True)
         # score = self.dropout(F.softmax(score, dim=-1))  # the sum of each row is 1; (b, N, N)
-        score_his = score
+
         # print(score_norm)
         # 公式6  返回注意力和更新的score_his用于下一次传参
         # return score.reshape((batch_size, num_of_timesteps, num_of_vertices, num_of_vertices)),score_his # (b t n n)

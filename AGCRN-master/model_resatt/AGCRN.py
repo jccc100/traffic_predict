@@ -154,7 +154,7 @@ class AVWDCRNN2(nn.Module):
         # self.dcrnn_cells = nn.ModuleList()
         # self.dcrnn_cells.append(AGCRNCell(node_num, dim_in, dim_out, cheb_k, embed_dim))
         # self.tcn=nn.Conv1d(dim_in,dim_out,)
-        self.tcn=TemporalConvNet(dim_in,[1,1,1],3,0.5)
+        self.tcn=TemporalConvNet(dim_in,[1,1,1],3,0.2)
         self.dcrnn_cells2 = nn.ModuleList()
         self.dcrnn_cells2.append(AGCRNCell2(node_num, dim_in, dim_out, self.adj))
         # self.sp_gcn1=spatialAttentionGCN(self.adj,64,64,.2)

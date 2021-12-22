@@ -134,20 +134,24 @@ class Spatial_Attention_layer(nn.Module):
         # self.V_s=F.relu(self.V_s)
         # 改之前
         if score_his!=None:
-            score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
+            score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)#+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
+            score = torch.sigmoid(score + self.b_s)
+            score = torch.matmul(self.V_s, score)+score_his
+            score_his = score
         else:
             score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)
-
+            score = torch.sigmoid(score + self.b_s)
+            score = torch.matmul(self.V_s, score)
 
 
 
         #
 
-        score=torch.sigmoid(score+self.b_s) # b n n + 1 n n = b n n
+         # b n n + 1 n n = b n n
         # score = torch.matmul(F.relu(self.V_s), score)
-        score = torch.matmul(self.V_s, score)
+        # score = torch.matmul(self.V_s, score)
         # score = F.softmax(score, dim=1)
-        score_his = score
+
 
         # score=torch.matmul(self.V_s,score)#+self.b_s
         # score=torch.softmax(score,dim=-1)

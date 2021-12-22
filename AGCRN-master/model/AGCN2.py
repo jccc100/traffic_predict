@@ -134,11 +134,11 @@ class Spatial_Attention_layer(nn.Module):
         else:
             score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)
         #
-        score=torch.sigmoid(score+self.b_s) # b n n + 1 n n = b n n
+        # score=torch.sigmoid(score+self.b_s) # b n n + 1 n n = b n n
         # score=torch.softmax(score+self.b_s,dim=-1) # b n n + 1 n n = b n n
         # score=torch.softmax(score,dim=1)
         # score=torch.einsum("nn,bnn->bnn",self.V_s,score)
-        score=torch.matmul(self.V_s,score)
+        # score=torch.matmul(self.V_s,score)
         # score=torch.softmax(score,dim=1)
 
 

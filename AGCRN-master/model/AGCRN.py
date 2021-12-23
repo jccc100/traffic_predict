@@ -14,13 +14,6 @@ class Chomp1d(nn.Module):
         """
         return x[:, :, :-self.chomp_size].contiguous()
 
-# class resconnection(nn.Module):
-#     def __init__(self,net):
-#         super(resconnection,self).__init__()
-#         self.net=net
-#     def forward(self,x):
-#         res = self.net(x)+x
-#         return res
 
 
 class TemporalBlock(nn.Module):

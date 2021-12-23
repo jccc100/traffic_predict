@@ -154,7 +154,7 @@ class AVWDCRNN2(nn.Module):
         # self.dcrnn_cells = nn.ModuleList()
         # self.dcrnn_cells.append(AGCRNCell(node_num, dim_in, dim_out, cheb_k, embed_dim))
         # self.tcn=nn.Conv1d(dim_in,dim_out,)
-        self.tcn=TemporalConvNet(dim_in,[1,1,1],3,0.2)
+        # self.tcn=TemporalConvNet(dim_in,[1,1,1],3,0.2)
         self.dcrnn_cells2 = nn.ModuleList()
         self.dcrnn_cells2.append(AGCRNCell2(node_num, dim_in, dim_out, self.adj))
         # self.sp_gcn1=spatialAttentionGCN(self.adj,64,64,.2)
@@ -173,12 +173,12 @@ class AVWDCRNN2(nn.Module):
         # print("x:::",x.shape)
         assert x.shape[2] == self.node_num and x.shape[3] == self.input_dim
         seq_length = x.shape[1]
-        b, t, n, d=x.shape
-        x=x.to(device=device)
-        x=x.permute(0,2,3,1) # b n d t
-        x=x.reshape(b*n,d,t) # b*n d t
-        current_inputs = self.tcn(x).reshape(b,n,d,t).permute(0,3,1,2) # [b*n d t] --> [b n d t] -->[b t n d]
-        # current_inputs=x
+        # b, t, n, d=x.shape
+        # x=x.to(device=device)
+        # x=x.permute(0,2,3,1) # b n d t
+        # x=x.reshape(b*n,d,t) # b*n d t
+        # current_inputs = self.tcn(x).reshape(b,n,d,t).permute(0,3,1,2) # [b*n d t] --> [b n d t] -->[b t n d]
+        current_inputs=x
         output_hidden = []
         for i in range(self.num_layers):
             state = init_state[i]

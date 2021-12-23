@@ -100,8 +100,8 @@ class Spatial_Attention_layer(nn.Module):
         # self.W_1 = torch.randn(c_in, requires_grad=True).to(device)
         # self.W_2 = torch.randn(num_node,num_node, requires_grad=True).to(device)
         # self.W_3 = torch.randn(num_of_features, requires_grad=True).to(device)
-        # self.b_s = torch.randn(1, num_node,num_node , requires_grad=True).to(device)
-        # self.V_s = torch.randn(num_node,num_node, requires_grad=True).to(device)
+        self.b_s = torch.randn(1, num_node,num_node , requires_grad=True).to(device)
+        self.V_s = torch.randn(num_node,num_node, requires_grad=True).to(device)
         # self.Wq=nn.Linear(c_in,c_in,bias=False)
         # self.Wk=nn.Linear(c_in,c_in,bias=False)
         # self.Wv=nn.Linear(c_in,num_node,bias=False)
@@ -134,11 +134,11 @@ class Spatial_Attention_layer(nn.Module):
         else:
             score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(in_channels)
         #
-        # score=torch.sigmoid(score+self.b_s) # b n n + 1 n n = b n n
+        score=torch.sigmoid(score+self.b_s) # b n n + 1 n n = b n n
         # score=torch.softmax(score+self.b_s,dim=-1) # b n n + 1 n n = b n n
         # score=torch.softmax(score,dim=1)
         # score=torch.einsum("nn,bnn->bnn",self.V_s,score)
-        # score=torch.matmul(self.V_s,score)
+        score=torch.matmul(self.V_s,score)
         # score=torch.softmax(score,dim=1)
 
 

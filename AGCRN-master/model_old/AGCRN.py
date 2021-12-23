@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from model.AGCRNCell2 import AGCRNCell,AGCRNCell2
+from model.AGCRNCell import AGCRNCell,AGCRNCell2
 from torch.nn.utils import weight_norm
 
 class Chomp1d(nn.Module):

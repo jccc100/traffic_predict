@@ -100,8 +100,8 @@ class Spatial_Attention_layer(nn.Module):
         # self.W_1 = torch.randn(c_in, requires_grad=True).to(device)
         # self.W_2 = torch.randn(num_node,num_node, requires_grad=True).to(device)
         # self.W_3 = torch.randn(num_of_features, requires_grad=True).to(device)
-        self.b_s = torch.randn(1, num_node,num_node , requires_grad=True).to(device)
-        self.V_s = torch.randn(num_node,num_node, requires_grad=True).to(device)
+        # self.b_s = torch.randn(1, num_node,num_node , requires_grad=True).to(device)
+        # self.V_s = torch.randn(num_node,num_node, requires_grad=True).to(device)
         # self.Wq=nn.Linear(c_in,c_in,bias=False)
         # self.Wk=nn.Linear(c_in,c_in,bias=False)
         # self.Wv=nn.Linear(c_in,num_node,bias=False)
@@ -110,7 +110,7 @@ class Spatial_Attention_layer(nn.Module):
         :param x: (batch_size, N, C)
         :return: (batch_size, N, C)
         '''
-        # batch_size, num_of_vertices, in_channels = x.shape
+        batch_size, num_of_vertices, in_channels = x.shape
 
         # Q K V 改之后
         # Q=self.Wq(x)
@@ -129,10 +129,10 @@ class Spatial_Attention_layer(nn.Module):
 
         # 改之前
         if score_his!=None:
-            score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
-            score_his = score
+            score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(in_channels)#+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
+            # score_his = score
         else:
-            score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(self.in_channels)
+            score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(in_channels)
         #
         # score=torch.sigmoid(score+self.b_s) # b n n + 1 n n = b n n
         # score=torch.softmax(score+self.b_s,dim=-1) # b n n + 1 n n = b n n
@@ -205,7 +205,8 @@ class spatialAttentionGCN(nn.Module):
         # print(static_out.shape)
 
         # dy_adj=torch.einsum("nn,bnn->bnn",sym_norm_Adj_matrix,spatial_attention)
-        dy_adj=torch.matmul(spatial_attention,sym_norm_Adj_matrix)
+        # dy_adj=torch.matmul(spatial_attention,sym_norm_Adj_matrix)
+        dy_adj=torch.matmul(sym_norm_Adj_matrix,spatial_attention)
         dy_out=torch.einsum("bnn,bnc->bnc",dy_adj,x)
 
         # dy_adj_T=torch.matmul(sym_norm_Adj_matrix_T,spatial_attention_T)

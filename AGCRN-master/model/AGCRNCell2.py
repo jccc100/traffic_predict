@@ -46,7 +46,7 @@ class AGCRNCell2(nn.Module):
         # self.gate_r=AVWGCN2(dim_in,dim_out,self.adj)
         self.gate = AVWGCN2(dim_in + self.hidden_dim, 2 * dim_out, self.adj)
         self.update=AVWGCN2(dim_in+self.hidden_dim,dim_out,self.adj)
-        self.GAT = spatialAttentionGCN(self.adj, dim_in, self.hidden_dim, dropout=.0)
+        # self.GAT = spatialAttentionGCN(self.adj, dim_in, self.hidden_dim, dropout=.0)
     def forward(self, x, state, node_embeddings):
         global device
         # print("cell:",x.shape)
@@ -57,7 +57,7 @@ class AGCRNCell2(nn.Module):
         # print("state:",state.shape)
         state=state.to(device)
         x=x.to(device)
-        GAT_input=x
+        # GAT_input=x
         input_and_state = torch.cat((x, state), dim=-1)
         z_r = torch.sigmoid(self.gate(input_and_state, node_embeddings))
         z, r = torch.split(z_r, self.hidden_dim, dim=-1)
@@ -69,10 +69,10 @@ class AGCRNCell2(nn.Module):
         candidate = torch.cat((x, z*state), dim=-1)
         hc = torch.tanh(self.update(candidate, node_embeddings))
         h = r*state + (1-r)*hc
-        GAT_out=self.GAT(GAT_input)
+        # GAT_out=self.GAT(GAT_input)[0]+GAT_input
         # print("aa:",h.shape)
         # print("bb:",GAT_out[0].shape)
-        h=h+GAT_out[0]
+        h=h+GAT_out
         # print("cell_h:",h.shape)
         return h
 

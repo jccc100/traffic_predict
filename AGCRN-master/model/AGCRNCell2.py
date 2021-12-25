@@ -71,7 +71,7 @@ class AGCRNCell2(nn.Module):
         h = r*state + (1-r)*hc
         GAT_out=self.GAT(GAT_input)
         print("aa:",h.shape)
-        print("bb:",GAT_out.shape)
+        print("bb:",GAT_out[0].shape)
         # print("cell_h:",h.shape)
         return h
 

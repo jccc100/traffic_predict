@@ -218,7 +218,7 @@ class AGCRN(nn.Module):
         #predictor
         # self.conv = nn.Conv2d(12, 12, kernel_size=(1, self.hidden_dim), bias=True)
         # self.linear=nn.Linear(self.hidden_dim,self.hidden_dim,bias=True)
-        self.end_conv = nn.Conv2d(12, args.horizon * self.output_dim, kernel_size=(1, self.hidden_dim), bias=True)
+        self.end_conv = nn.Conv2d(6, args.horizon * self.output_dim, kernel_size=(1, self.hidden_dim), bias=True)
 
     def forward(self, source, targets, teacher_forcing_ratio=0.5):
         #source: B, T_1, N, D
@@ -230,7 +230,7 @@ class AGCRN(nn.Module):
         # output = self.linear(output)
         # output=self.conv((output))
 
-        output = output[:, :, :, :]                                   #B, 1, N, hidden
+        output = output[:, -6:, :, :]                                   #B, 1, N, hidden
 
         #CNN based predictor
         output = self.end_conv((output))                         #B, T*C, N, 1

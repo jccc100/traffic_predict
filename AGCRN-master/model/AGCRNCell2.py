@@ -72,7 +72,7 @@ class AGCRNCell2(nn.Module):
         # GAT_out=self.GAT(GAT_input)[0]+GAT_input
         # print("aa:",h.shape)
         # print("bb:",GAT_out[0].shape)
-        h=h+GAT_out
+        # h=h+GAT_out
         # print("cell_h:",h.shape)
         return h
 

@@ -46,7 +46,7 @@ class AGCRNCell2(nn.Module):
         # self.gate_r=AVWGCN2(dim_in,dim_out,self.adj)
         self.gate = AVWGCN2(dim_in + self.hidden_dim, 2 * dim_out, self.adj)
         self.update=AVWGCN2(dim_in+self.hidden_dim,dim_out,self.adj)
-        self.GAT = spatialAttentionGCN(self.adj, dim_in, dim_out, dropout=.0)
+        self.GAT = spatialAttentionGCN(self.adj, dim_in, self.hidden_dim, dropout=.0)
     def forward(self, x, state, node_embeddings):
         global device
         # print("cell:",x.shape)
@@ -72,6 +72,7 @@ class AGCRNCell2(nn.Module):
         GAT_out=self.GAT(GAT_input)
         print("aa:",h.shape)
         print("bb:",GAT_out[0].shape)
+        h=h+GAT_out[0]
         # print("cell_h:",h.shape)
         return h
 

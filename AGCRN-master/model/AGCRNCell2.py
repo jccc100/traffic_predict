@@ -70,8 +70,8 @@ class AGCRNCell2(nn.Module):
         hc = torch.tanh(self.update(candidate, node_embeddings))
         h = r*state + (1-r)*hc
         GAT_out=self.GAT(GAT_input)
-        print("aa:",h.shape)
-        print("bb:",GAT_out[0].shape)
+        # print("aa:",h.shape)
+        # print("bb:",GAT_out[0].shape)
         h=h+GAT_out[0]
         # print("cell_h:",h.shape)
         return h

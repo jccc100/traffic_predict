@@ -229,7 +229,9 @@ class AGCRN(nn.Module):
         # self.conv = nn.Conv2d(12, 12, kernel_size=(1, self.hidden_dim), bias=True)
         # self.linear=nn.Linear(self.hidden_dim,self.hidden_dim,bias=True)
         self.end_conv = nn.Conv2d(6, args.horizon * self.output_dim, kernel_size=(1, self.hidden_dim), bias=True)
-
+        self.FC1=nn.Linear(self.input_dim,self.hidden_dim,bias=True)
+        # self.FC2=nn.Linear(self.input_dim,self.hidden_dim,bias=True)
+        self.dp=nn.Dropout(0.5)
     def forward(self, source, targets, teacher_forcing_ratio=0.5):
         #source: B, T_1, N, D
         #target: B, T_2, N, D
@@ -237,6 +239,8 @@ class AGCRN(nn.Module):
         # print("source:",source.shape)
         init_state = self.encoder.init_hidden(source.shape[0])
         output, _ = self.encoder(source, init_state, self.node_embeddings)      #B, T, N, hidden
+        output=self.FC1(output)
+        output=self.dp(output)
         # output = self.linear(output)
         # output=self.conv((output))
 

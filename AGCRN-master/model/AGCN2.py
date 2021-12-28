@@ -4,8 +4,8 @@ import torch.nn as nn
 import math
 import numpy as np
 
-device=torch.device('cuda')
-# device=torch.device('cpu')
+# device=torch.device('cuda')
+device=torch.device('cpu')
 att_his=None
 
 class AVWGCN(nn.Module):
@@ -204,6 +204,7 @@ class spatialAttentionGCN(nn.Module):
         sym_norm_Adj_matrix=self.sym_norm_Adj_matrix.to(device)
         # sym_norm_Adj_matrix_T=sym_norm_Adj_matrix.permute(1,0)
         static_out=torch.einsum("nn,bnc->bnc",sym_norm_Adj_matrix,x)
+        static_out=F.relu(static_out)
         # print(static_out.shape)
 
         # dy_adj=torch.einsum("nn,bnn->bnn",sym_norm_Adj_matrix,spatial_attention)
@@ -216,6 +217,7 @@ class spatialAttentionGCN(nn.Module):
         # dy_out=self.alpha2*dy_out+self.beta2*dy_out_T
 
         dy_out=self.Theta1(dy_out)
+        dy_out=F.relu(dy_out)
         # dy_out2=torch.sigmoid(self.Theta2(dy_out))
         # dy_out=dy_out1*dy_out2
         # dy_out=torch.einsum("bnn,bnc->bnc",spatial_attention,x)
@@ -229,7 +231,7 @@ class spatialAttentionGCN(nn.Module):
         # gcn_out=torch.matmul(self.sym_norm_Adj_matrix.mul(spatial_attention), x) # n n,b n c_in->b n c_in
         # print("gcn_out:",gcn_out.shape)
         # gcn_out_linear=self.Theta(gcn_out) # (b, n, c_in)->(b, n, c_out)
-        return F.relu(st_dy_out),score_his
+        return st_dy_out,score_his
 
 
 class AVWGCN2(nn.Module):

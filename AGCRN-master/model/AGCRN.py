@@ -157,10 +157,9 @@ class AVWDCRNN2(nn.Module):
         # self.dcrnn_cells.append(AGCRNCell(node_num, dim_in, dim_out, cheb_k, embed_dim))
         # self.tcn=nn.Conv1d(dim_in,dim_out,)
         # self.tcn=TemporalConvNet(dim_in,[1,1,1],3,0.2)
-        self.gate_cnn1 = nn.Conv1d(dim_in, dim_in, kernel_size=3, stride=1, padding=2, dilation=2, bias=True)
-        self.gate_cnn2 = nn.Conv1d(dim_in, dim_in, kernel_size=3, stride=1, padding=2, dilation=2, bias=True)
-        self.alpha = nn.Parameter(torch.FloatTensor([1.0]), requires_grad=True)  # D
-        self.beta = nn.Parameter(torch.FloatTensor([1.0]), requires_grad=True)  # S
+        # self.gate_cnn1 = nn.Conv1d(dim_in, dim_in, kernel_size=3, stride=1, padding=2, dilation=2, bias=True)
+        # self.gate_cnn2 = nn.Conv1d(dim_in, dim_in, kernel_size=3, stride=1, padding=2, dilation=2, bias=True)
+
 
         self.dcrnn_cells2 = nn.ModuleList()
         self.dcrnn_cells2.append(AGCRNCell2(node_num, dim_in, dim_out, self.adj))
@@ -179,9 +178,9 @@ class AVWDCRNN2(nn.Module):
         seq_length = x.shape[1]
         b, t, n, d=x.shape
         # x=x.to(device=device)
-        gate_input=x.permute(0,2,3,1).reshape(b*n,d,t).to(device) # b*n d t
-        gate_cnn_out=torch.tanh(self.gate_cnn1(gate_input))*torch.sigmoid(self.gate_cnn2(gate_input))
-        gate_cnn_out=gate_cnn_out.permute(0,2,1).reshape(b,t,n,d)
+        # gate_input=x.permute(0,2,3,1).reshape(b*n,d,t).to(device) # b*n d t
+        # gate_cnn_out=torch.tanh(self.gate_cnn1(gate_input))*torch.sigmoid(self.gate_cnn2(gate_input))
+        # gate_cnn_out=gate_cnn_out.permute(0,2,1).reshape(b,t,n,d)
         # print("gate:",gate_cnn_out.shape)
         # current_inputs = self.tcn(x).reshape(b,n,d,t).permute(0,3,1,2) # [b*n d t] --> [b n d t] -->[b t n d]
         current_inputs=x
@@ -200,7 +199,7 @@ class AVWDCRNN2(nn.Module):
         #last_state: (B, N, hidden_dim)
         # print("current:",current_inputs.shape)
         # current_inputs=self.alpha*current_inputs+self.beta*gate_cnn_out
-        return current_inputs, output_hidden,gate_cnn_out
+        return current_inputs, output_hidden
 
     def init_hidden(self, batch_size):
         init_states = []
@@ -241,7 +240,7 @@ class AGCRN(nn.Module):
         # output = self.linear(output)
         # output=self.conv((output))
 
-        output = output[:, -6:, :, :]+gate_cnn_out[:, -6:, :, :]                                  #B, 1, N, hidden
+        output = output[:, -6:, :, :]             #B, 1, N, hidden
 
         #CNN based predictor
         output = self.end_conv((output))                         #B, T*C, N, 1

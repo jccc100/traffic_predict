@@ -182,7 +182,7 @@ class AVWDCRNN2(nn.Module):
         gate_input=x.permute(0,2,3,1).reshape(b*n,d,t).to(device) # b*n d t
         gate_cnn_out=torch.tanh(self.gate_cnn1(gate_input))*torch.sigmoid(self.gate_cnn2(gate_input))
         gate_cnn_out=gate_cnn_out.permute(0,2,1).reshape(b,t,n,d)
-        print("gate:",gate_cnn_out.shape)
+        # print("gate:",gate_cnn_out.shape)
         # current_inputs = self.tcn(x).reshape(b,n,d,t).permute(0,3,1,2) # [b*n d t] --> [b n d t] -->[b t n d]
         current_inputs=x
         output_hidden = []
@@ -198,7 +198,7 @@ class AVWDCRNN2(nn.Module):
         #current_inputs: the outputs of last layer: (B, T, N, hidden_dim)
         #output_hidden: the last state for each layer: (num_layers, B, N, hidden_dim)
         #last_state: (B, N, hidden_dim)
-        print("current:",current_inputs.shape)
+        # print("current:",current_inputs.shape)
         # current_inputs=self.alpha*current_inputs+self.beta*gate_cnn_out
         return current_inputs, output_hidden,gate_cnn_out
 

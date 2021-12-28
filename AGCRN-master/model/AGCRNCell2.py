@@ -66,7 +66,7 @@ class AGCRNCell2(nn.Module):
         gate_cnn_input=x.permute(0,2,1)
         gate_cnn_out=torch.tanh(self.gate_cnn1(gate_cnn_input))*torch.sigmoid(self.gate_cnn2(gate_cnn_input))
         gate_cnn_out=gate_cnn_out.permute(0,2,1)
-        print("gate_out:",gate_cnn_out.shape)
+        # print("gate_out:",gate_cnn_out.shape)
         input_and_state = torch.cat((x, state), dim=-1)
         z_r = torch.sigmoid(self.gate(input_and_state, node_embeddings))
         z, r = torch.split(z_r, self.hidden_dim, dim=-1)

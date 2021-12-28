@@ -105,6 +105,8 @@ class TemporalConvNet(nn.Module):
         """
 
         return self.network(x)
+
+
 class AVWDCRNN(nn.Module):
     def __init__(self, node_num, dim_in, dim_out, cheb_k, embed_dim, num_layers=1):
         super(AVWDCRNN, self).__init__()

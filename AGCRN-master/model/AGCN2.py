@@ -4,8 +4,8 @@ import torch.nn as nn
 import math
 import numpy as np
 
-device=torch.device('cuda')
-# device=torch.device('cpu')
+# device=torch.device('cuda')
+device=torch.device('cpu')
 att_his=None
 
 class AVWGCN(nn.Module):

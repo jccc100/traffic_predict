@@ -46,6 +46,9 @@ class AGCRNCell2(nn.Module):
         # self.gate_r=AVWGCN2(dim_in,dim_out,self.adj)
         self.gate = AVWGCN2(dim_in + self.hidden_dim, 2 * dim_out, self.adj)
         self.update=AVWGCN2(dim_in+self.hidden_dim,dim_out,self.adj)
+        # self.gate_cnn1=nn.Conv1d(dim_in,self.hidden_dim,3,stride=1)
+        # self.gate_cnn2=nn.Conv1d(dim_in,self.hidden_dim,3,stride=1)
+
         # self.GAT = spatialAttentionGCN(self.adj, dim_in, self.hidden_dim, dropout=.0)
     def forward(self, x, state, node_embeddings):
         global device

@@ -176,7 +176,8 @@ class spatialAttentionGCN(nn.Module):
 
         self.in_channels = in_channels
         self.out_channels = out_channels
-        self.Theta = nn.Linear(in_channels, in_channels, bias=False)
+        self.Theta1 = nn.Linear(in_channels, in_channels, bias=True)
+        self.Theta2 = nn.Linear(in_channels, in_channels, bias=True)
         self.SAt = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
         # self.SAt_T = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
         # self.norm=nn.LayerNorm((64,self.sym_norm_Adj_matrix.shape[0],in_channels))
@@ -214,7 +215,9 @@ class spatialAttentionGCN(nn.Module):
         # dy_out_T=torch.einsum("bnn,bnc->bnc",dy_adj_T,x)
         # dy_out=self.alpha2*dy_out+self.beta2*dy_out_T
 
-        dy_out=self.Theta(dy_out)
+        dy_out1=self.Theta1(dy_out)
+        dy_out2=F.sigmoid(self.Theta2(dy_out))
+        dy_out=dy_out1*dy_out2
         # dy_out=torch.einsum("bnn,bnc->bnc",spatial_attention,x)
         # print("st:",static_out.shape)
         # print("dy:",dy_out.shape)

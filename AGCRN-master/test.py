@@ -14,6 +14,14 @@ import torch.nn as nn
 from torch.nn.utils import weight_norm
 
 
+a=torch.randn(2,2,2)
+b=torch.randn(2,2,2)
+print(a)
+print(b)
+print(a*b)
+exit()
+
+
 class Chomp1d(nn.Module):
     def __init__(self, chomp_size):
         super(Chomp1d, self).__init__()

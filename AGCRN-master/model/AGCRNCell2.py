@@ -46,9 +46,10 @@ class AGCRNCell2(nn.Module):
         # self.gate_r=AVWGCN2(dim_in,dim_out,self.adj)
         self.gate = AVWGCN2(dim_in + self.hidden_dim, 2 * dim_out, self.adj)
         self.update=AVWGCN2(dim_in+self.hidden_dim,dim_out,self.adj)
-        self.gate_cnn1=nn.Conv1d(dim_in,self.hidden_dim,kernel_size=3,stride=1,padding=1,bias=True)
-        self.gate_cnn2=nn.Conv1d(dim_in,self.hidden_dim,kernel_size=3,stride=1,padding=1,bias=True)
-
+        # self.gate_cnn1=nn.Conv1d(dim_in,self.hidden_dim,kernel_size=3,stride=1,padding=2,dilation=2,bias=True)
+        # self.gate_cnn2=nn.Conv1d(dim_in,self.hidden_dim,kernel_size=3,stride=1,padding=2,dilation=2,bias=True)
+        # self.alpha = nn.Parameter(torch.FloatTensor([1.0]), requires_grad=True)  # D
+        # self.beta = nn.Parameter(torch.FloatTensor([1.0]), requires_grad=True)  # S
         # self.GAT = spatialAttentionGCN(self.adj, dim_in, self.hidden_dim, dropout=.0)
     def forward(self, x, state, node_embeddings):
         global device
@@ -63,9 +64,9 @@ class AGCRNCell2(nn.Module):
         # GAT_input=x
         # B,N,C=x.shape
         # gate_cnn_input=x.reshape(B,C,N)
-        gate_cnn_input=x.permute(0,2,1)
-        gate_cnn_out=torch.tanh(self.gate_cnn1(gate_cnn_input))*torch.sigmoid(self.gate_cnn2(gate_cnn_input))
-        gate_cnn_out=gate_cnn_out.permute(0,2,1)
+        # gate_cnn_input=x.permute(0,2,1)
+        # gate_cnn_out=torch.tanh(self.gate_cnn1(gate_cnn_input))*torch.sigmoid(self.gate_cnn2(gate_cnn_input))
+        # gate_cnn_out=gate_cnn_out.permute(0,2,1)
         # print("gate_out:",gate_cnn_out.shape)
         input_and_state = torch.cat((x, state), dim=-1)
         z_r = torch.sigmoid(self.gate(input_and_state, node_embeddings))
@@ -83,7 +84,7 @@ class AGCRNCell2(nn.Module):
         # print("bb:",GAT_out[0].shape)
         # h=h+GAT_out
         # print("cell_h:",h.shape)
-        h=h+gate_cnn_out
+        # h=self.alpha*h+self.beta*gate_cnn_out
         return h
 
 

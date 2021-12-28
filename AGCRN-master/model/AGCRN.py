@@ -179,7 +179,7 @@ class AVWDCRNN2(nn.Module):
         seq_length = x.shape[1]
         b, t, n, d=x.shape
         # x=x.to(device=device)
-        gate_input=x.permute(0,2,3,1).reshape(b*n,d,t) # b*n d t
+        gate_input=x.permute(0,2,3,1).reshape(b*n,d,t).to(device) # b*n d t
         gate_cnn_out=torch.tanh(self.gate_cnn1(gate_input))*torch.sigmoid(self.gate_cnn2(gate_input))
         gate_cnn_out=gate_cnn_out.permute(0,2,1).reshape(b,t,n,d)
         print("gate:",gate_cnn_out.shape)

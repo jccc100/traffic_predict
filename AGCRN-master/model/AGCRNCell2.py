@@ -46,8 +46,8 @@ class AGCRNCell2(nn.Module):
         # self.gate_r=AVWGCN2(dim_in,dim_out,self.adj)
         self.gate = AVWGCN2(dim_in + self.hidden_dim, 2 * dim_out, self.adj)
         self.update=AVWGCN2(dim_in+self.hidden_dim,dim_out,self.adj)
-        # self.gate_cnn1=nn.Conv1d(dim_in,self.hidden_dim,3,stride=1)
-        # self.gate_cnn2=nn.Conv1d(dim_in,self.hidden_dim,3,stride=1)
+        self.gate_cnn1=nn.Conv1d(dim_in,self.hidden_dim,3,stride=1,bias=True)
+        self.gate_cnn2=nn.Conv1d(dim_in,self.hidden_dim,3,stride=1,bias=True)
 
         # self.GAT = spatialAttentionGCN(self.adj, dim_in, self.hidden_dim, dropout=.0)
     def forward(self, x, state, node_embeddings):
@@ -61,6 +61,8 @@ class AGCRNCell2(nn.Module):
         state=state.to(device)
         x=x.to(device)
         # GAT_input=x
+        # gate_cnn_input=x
+        gate_cnn_out=torch.tanh(self.gate_cnn1(x))*torch.sigmoid(self.gate_cnn2(x))
         input_and_state = torch.cat((x, state), dim=-1)
         z_r = torch.sigmoid(self.gate(input_and_state, node_embeddings))
         z, r = torch.split(z_r, self.hidden_dim, dim=-1)
@@ -77,6 +79,7 @@ class AGCRNCell2(nn.Module):
         # print("bb:",GAT_out[0].shape)
         # h=h+GAT_out
         # print("cell_h:",h.shape)
+        h=h+gate_cnn_out
         return h
 
 

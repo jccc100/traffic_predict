@@ -215,9 +215,9 @@ class spatialAttentionGCN(nn.Module):
         # dy_out_T=torch.einsum("bnn,bnc->bnc",dy_adj_T,x)
         # dy_out=self.alpha2*dy_out+self.beta2*dy_out_T
 
-        dy_out1=self.Theta1(dy_out)
-        dy_out2=F.sigmoid(self.Theta2(dy_out))
-        dy_out=dy_out1*dy_out2
+        dy_out=self.Theta1(dy_out)
+        # dy_out2=torch.sigmoid(self.Theta2(dy_out))
+        # dy_out=dy_out1*dy_out2
         # dy_out=torch.einsum("bnn,bnc->bnc",spatial_attention,x)
         # print("st:",static_out.shape)
         # print("dy:",dy_out.shape)

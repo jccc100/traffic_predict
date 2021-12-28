@@ -236,7 +236,7 @@ class AGCRN(nn.Module):
         #supports = F.softmax(F.relu(torch.mm(self.nodevec1, self.nodevec1.transpose(0,1))), dim=1)
         # print("source:",source.shape)
         init_state = self.encoder.init_hidden(source.shape[0])
-        output, _ ,gate_cnn_out= self.encoder(source, init_state, self.node_embeddings)      #B, T, N, hidden
+        output, _ = self.encoder(source, init_state, self.node_embeddings)      #B, T, N, hidden
         # output = self.linear(output)
         # output=self.conv((output))
 

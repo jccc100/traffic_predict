@@ -171,7 +171,7 @@ class spatialAttentionGCN(nn.Module):
         self.alpha = nn.Parameter(torch.FloatTensor([0.4]), requires_grad=True)  # D
         self.beta = nn.Parameter(torch.FloatTensor([0.55]), requires_grad=True)  # S
         self.gamma = nn.Parameter(torch.FloatTensor([0.05]), requires_grad=True)
-        self.self_link = nn.Parameter(torch.FloatTensor([0.4]), requires_grad=True)
+        # self.self_link = nn.Parameter(torch.FloatTensor([0.4]), requires_grad=True)
         # self.alpha2 = nn.Parameter(torch.FloatTensor([0.5]), requires_grad=True)  # 正向
         # self.beta2 = nn.Parameter(torch.FloatTensor([0.5]), requires_grad=True)  # 转置
 
@@ -254,7 +254,7 @@ class spatialAttentionGCN(nn.Module):
         N = W.shape[0]
         D = np.zeros([N, N], dtype=type(W[0][0]))
 
-        W = W +  self.self_link* np.identity(N)  # 为邻居矩阵加上自连接
+        W = W +  0.5* np.identity(N)  # 为邻居矩阵加上自连接
         for i in range(W.shape[0]):
             for j in range(W.shape[0]):
                 if W[i][j] != 0.:

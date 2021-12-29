@@ -55,7 +55,7 @@ def sym_norm_Adj(W):
     D = np.zeros([N, N], dtype=type(W[0][0]))
 
 
-    W = W + np.identity(N) # 为邻居矩阵加上自连接
+    W = W + 0.2*np.identity(N) # 为邻居矩阵加上自连接
     for i in range(W.shape[0]):
         for j in range(W.shape[0]):
             if W[i][j] != 0.:

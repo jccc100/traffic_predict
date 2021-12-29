@@ -325,8 +325,9 @@ class emb_GCN(nn.Module):
 
 
         dy_out=self.Theta(dy_out)
-        st_dy_out=self.alpha*static_out+self.beta*dy_out+self.gamma*x
-        return F.relu(st_dy_out)
+        # st_dy_out=self.alpha*static_out+self.beta*dy_out+self.gamma*x
+        # return F.relu(st_dy_out)
+        return F.relu(dy_out)
 
     def sym_norm_Adj(self,W):
         '''
@@ -397,8 +398,8 @@ class AVWGCN2(nn.Module):
         # print(static_out.shape)
         # static_out=F.softmax(static_out,dim=2)
 
-        # gcn_out,att_his=self.sp_att_gcn(x)
-        gcn_out=self.emb_gcn(x)
+        gcn_out,att_his=self.sp_att_gcn(x)
+        gcn_out2=self.emb_gcn(x)
         # global att_his
         # gcn_out,att_his=self.sp_att_gcn(x,self.att_his)
         # self.att_his=score_his
@@ -410,7 +411,7 @@ class AVWGCN2(nn.Module):
         # static_out=torch.as_tensor(static_out, dtype=torch.float32)
         # print("dyout:",dy_out.dtype)
         # print("stout:",static_out.dtype)
-        static_dy_out=self.linear(gcn_out)
+        static_dy_out=0.5*self.linear(gcn_out+gcn_out2)
 
         return static_dy_out
 

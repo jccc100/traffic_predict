@@ -281,10 +281,10 @@ class emb_GCN(nn.Module):
     def __init__(self, Adj_matrix, in_channels, out_channels, dropout=.0):
         super(emb_GCN, self).__init__()
         global device
-        self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(Adj_matrix)[1]).to(torch.float32)  # (N, N)
+        self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(Adj_matrix)).to(torch.float32)  # (N, N)
         self.sym_norm_Adj_matrix=F.softmax(self.sym_norm_Adj_matrix,dim=1).to(device)
-        self.sym_norm_Adj_matrix_D = torch.from_numpy(sym_norm_Adj(Adj_matrix)[0]).to(torch.float32)  # (N, N)
-        self.sym_norm_Adj_matrix_D = F.softmax(self.sym_norm_Adj_matrix_D, dim=1).to(device)
+        # self.sym_norm_Adj_matrix_D = torch.from_numpy(sym_norm_Adj(Adj_matrix)[0]).to(torch.float32)  # (N, N)
+        # self.sym_norm_Adj_matrix_D = F.softmax(self.sym_norm_Adj_matrix_D, dim=1).to(device)
         self.static=nn.Linear(in_channels,out_channels,bias=True)
         self.alpha = nn.Parameter(torch.FloatTensor([0.4]), requires_grad=True)  # D
         self.beta = nn.Parameter(torch.FloatTensor([0.5]), requires_grad=True)  # S
@@ -317,20 +317,9 @@ class emb_GCN(nn.Module):
         adj = torch.matmul(self.E1, self.sym_norm_Adj_matrix)  # E1A
         adj = torch.matmul(adj, self.E2)  # E1AE2
         adj = F.softmax(adj,dim=1)
-        # D = torch.zeros([N, N], dtype=type(adj[0][0])).to(())
-        # for i in range(adj.shape[0]):
-        #     for j in range(adj.shape[0]):
-        #         if adj[i][j] != 0.:
-        #             D[i][j] = 1
-        # D = torch.diag(np.sum(D, keepdims=1))
 
-        # adj = np.dot(np.sqrt(D), adj)
-        # print("*****")
-        # print(sym_norm_Adj_matrix.device)
-        # print(D.device)
-        # adj = np.dot(adj, np.sqrt(D)) # D^0.5AD^0.5
 
-        static_out=torch.einsum("nn,bnc->bnc",self.sym_norm_Adj_matrix_D,x)
+        static_out=torch.einsum("nn,bnc->bnc",self.sym_norm_Adj_matrix,x)
 
         dy_out=torch.einsum("nn,bnc->bnc",adj,x)
 
@@ -338,6 +327,48 @@ class emb_GCN(nn.Module):
         dy_out=self.Theta(dy_out)
         st_dy_out=self.alpha*static_out+self.beta*dy_out+self.gamma*x
         return F.relu(st_dy_out)
+
+    def sym_norm_Adj(self,W):
+        '''
+        compute Symmetric normalized Adj matrix
+
+        Parameters
+        ----------
+        W: np.ndarray, shape is (N, N), N is the num of vertices
+
+        Returns
+        ----------
+        Symmetric normalized Laplacian: (D^hat)^1/2 A^hat (D^hat)^1/2; np.ndarray, shape (N, N)
+        '''
+        W = W.to(device=torch.device('cpu'))
+        assert W.shape[0] == W.shape[1]
+        W = W.cpu().detach().numpy()
+
+        N = W.shape[0]
+        D = np.zeros([N, N], dtype=type(W[0][0]))
+
+        W = W +  0.4* np.identity(N)  # 为邻居矩阵加上自连接
+        for i in range(W.shape[0]):
+            for j in range(W.shape[0]):
+                if W[i][j] != 0.:
+                    D[i][j] = 1
+        # print(D)
+        D = np.diag(np.sum(D, axis=1))
+        # D = np.diag(np.sum(W, axis=1))
+        # print("D:",D)
+        sym_norm_Adj_matrix = np.dot(np.sqrt(D), W)
+        # print("*****")
+        # print(sym_norm_Adj_matrix.device)
+        # print(D.device)
+        sym_norm_Adj_matrix = np.dot(sym_norm_Adj_matrix, np.sqrt(D))
+        # N = W.shape[0]
+        # W = W + torch.from_numpy(np.identity(N)) # 为邻居矩阵加上自连接
+        # # D = np.diag(np.sum(W,axis=1))
+        # D = torch.diag(torch.sum(W,dim=1))
+        # sym_norm_Adj_matrix = torch.dot(np.sqrt(D),W)
+        # sym_norm_Adj_matrix = torch.dot(sym_norm_Adj_matrix,np.sqrt(D))
+        # print(sym_norm_Adj_matrix)
+        return sym_norm_Adj_matrix # D^-0.5AD^-0.5
 
 class AVWGCN2(nn.Module):
     def __init__(self, dim_in, dim_out, Adj):
@@ -351,6 +382,7 @@ class AVWGCN2(nn.Module):
         # torch.nn.init.normal_(self.b, mean=0, std=1)
         self.adj=Adj
         self.sp_att_gcn=spatialAttentionGCN(self.adj,dim_in,dim_out)
+        self.emb_gcn=emb_GCN(self.adj,dim_in,dim_out)
         self.linear=nn.Linear(dim_in,dim_out,bias=True)
 
         # self.att_his=None
@@ -365,7 +397,8 @@ class AVWGCN2(nn.Module):
         # print(static_out.shape)
         # static_out=F.softmax(static_out,dim=2)
 
-        gcn_out,att_his=self.sp_att_gcn(x)
+        # gcn_out,att_his=self.sp_att_gcn(x)
+        gcn_out=self.emb_gcn(x)
         # global att_his
         # gcn_out,att_his=self.sp_att_gcn(x,self.att_his)
         # self.att_his=score_his

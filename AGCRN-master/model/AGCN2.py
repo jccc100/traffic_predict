@@ -55,7 +55,7 @@ def sym_norm_Adj(W):
     D = np.zeros([N, N], dtype=type(W[0][0]))
 
 
-    W = W + 0.2*np.identity(N) # 为邻居矩阵加上自连接
+    W = W + 0.5*np.identity(N) # 为邻居矩阵加上自连接
     for i in range(W.shape[0]):
         for j in range(W.shape[0]):
             if W[i][j] != 0.:
@@ -171,7 +171,7 @@ class spatialAttentionGCN(nn.Module):
         self.alpha = nn.Parameter(torch.FloatTensor([0.4]), requires_grad=True)  # D
         self.beta = nn.Parameter(torch.FloatTensor([0.55]), requires_grad=True)  # S
         self.gamma = nn.Parameter(torch.FloatTensor([0.05]), requires_grad=True)
-
+        self.self_link = nn.Parameter(torch.FloatTensor([0.4]), requires_grad=True)
         # self.alpha2 = nn.Parameter(torch.FloatTensor([0.5]), requires_grad=True)  # 正向
         # self.beta2 = nn.Parameter(torch.FloatTensor([0.5]), requires_grad=True)  # 转置
 
@@ -234,6 +234,48 @@ class spatialAttentionGCN(nn.Module):
         # print("gcn_out:",gcn_out.shape)
         # gcn_out_linear=self.Theta(gcn_out) # (b, n, c_in)->(b, n, c_out)
         return F.relu(st_dy_out),score_his
+
+    def sym_norm_Adj(self,W):
+        '''
+        compute Symmetric normalized Adj matrix
+
+        Parameters
+        ----------
+        W: np.ndarray, shape is (N, N), N is the num of vertices
+
+        Returns
+        ----------
+        Symmetric normalized Laplacian: (D^hat)^1/2 A^hat (D^hat)^1/2; np.ndarray, shape (N, N)
+        '''
+        W = W.to(device=torch.device('cpu'))
+        assert W.shape[0] == W.shape[1]
+        W = W.cpu().detach().numpy()
+
+        N = W.shape[0]
+        D = np.zeros([N, N], dtype=type(W[0][0]))
+
+        W = W +  self.self_link* np.identity(N)  # 为邻居矩阵加上自连接
+        for i in range(W.shape[0]):
+            for j in range(W.shape[0]):
+                if W[i][j] != 0.:
+                    D[i][j] = 1
+        # print(D)
+        D = np.diag(np.sum(D, axis=1))
+        # D = np.diag(np.sum(W, axis=1))
+        # print("D:",D)
+        sym_norm_Adj_matrix = np.dot(np.sqrt(D), W)
+        # print("*****")
+        # print(sym_norm_Adj_matrix.device)
+        # print(D.device)
+        sym_norm_Adj_matrix = np.dot(sym_norm_Adj_matrix, np.sqrt(D))
+        # N = W.shape[0]
+        # W = W + torch.from_numpy(np.identity(N)) # 为邻居矩阵加上自连接
+        # # D = np.diag(np.sum(W,axis=1))
+        # D = torch.diag(torch.sum(W,dim=1))
+        # sym_norm_Adj_matrix = torch.dot(np.sqrt(D),W)
+        # sym_norm_Adj_matrix = torch.dot(sym_norm_Adj_matrix,np.sqrt(D))
+        # print(sym_norm_Adj_matrix)
+        return sym_norm_Adj_matrix  # D^-0.5AD^-0.5
 
 class emb_GCN(nn.Module):
     def __init__(self, Adj_matrix, in_channels, out_channels, dropout=.0):

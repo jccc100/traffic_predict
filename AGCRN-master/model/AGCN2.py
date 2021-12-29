@@ -55,7 +55,7 @@ def sym_norm_Adj(W):
     D = np.zeros([N, N], dtype=type(W[0][0]))
 
 
-    W = W + 0.4*np.identity(N) # 为邻居矩阵加上自连接
+    W = W + np.identity(N) # 为邻居矩阵加上自连接
     for i in range(W.shape[0]):
         for j in range(W.shape[0]):
             if W[i][j] != 0.:
@@ -76,7 +76,7 @@ def sym_norm_Adj(W):
     # sym_norm_Adj_matrix = torch.dot(np.sqrt(D),W)
     # sym_norm_Adj_matrix = torch.dot(sym_norm_Adj_matrix,np.sqrt(D))
     # print(sym_norm_Adj_matrix)
-    return sym_norm_Adj_matrix  # D^-0.5AD^-0.5
+    return sym_norm_Adj_matrix # D^-0.5AD^-0.5
 
 ###test
 # [[1. ,2. ,0. ,0.], [0. ,1., 5. ,0.], [0., 0. 1., 1.], [2., 0. ,0. ,1.]])
@@ -156,6 +156,7 @@ class Spatial_Attention_layer(nn.Module):
         return score,score_his # (b n n)
 
 
+
 class spatialAttentionGCN(nn.Module):
     def __init__(self, Adj_matrix, in_channels, out_channels, dropout=.0):
         super(spatialAttentionGCN, self).__init__()
@@ -224,7 +225,7 @@ class spatialAttentionGCN(nn.Module):
         # print("st:",static_out.shape)
         # print("dy:",dy_out.shape)
         st_dy_out=self.alpha*static_out+self.beta*dy_out+self.gamma*x
-        st_dy_out=self.Theta2(st_dy_out)
+        # st_dy_out=self.Theta2(st_dy_out)
         # st_dy_out=self.norm(st_dy_out)+x
         # st_dy_out=static_out
         # 公式7
@@ -234,6 +235,67 @@ class spatialAttentionGCN(nn.Module):
         # gcn_out_linear=self.Theta(gcn_out) # (b, n, c_in)->(b, n, c_out)
         return F.relu(st_dy_out),score_his
 
+class emb_GCN(nn.Module):
+    def __init__(self, Adj_matrix, in_channels, out_channels, dropout=.0):
+        super(emb_GCN, self).__init__()
+        global device
+        self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(Adj_matrix)[1]).to(torch.float32)  # (N, N)
+        self.sym_norm_Adj_matrix=F.softmax(self.sym_norm_Adj_matrix,dim=1).to(device)
+        self.sym_norm_Adj_matrix_D = torch.from_numpy(sym_norm_Adj(Adj_matrix)[0]).to(torch.float32)  # (N, N)
+        self.sym_norm_Adj_matrix_D = F.softmax(self.sym_norm_Adj_matrix_D, dim=1).to(device)
+        self.static=nn.Linear(in_channels,out_channels,bias=True)
+        self.alpha = nn.Parameter(torch.FloatTensor([0.4]), requires_grad=True)  # D
+        self.beta = nn.Parameter(torch.FloatTensor([0.5]), requires_grad=True)  # S
+        self.gamma = nn.Parameter(torch.FloatTensor([0.1]), requires_grad=True)
+
+        # self.alpha2 = nn.Parameter(torch.FloatTensor([0.5]), requires_grad=True)  # 正向
+        # self.beta2 = nn.Parameter(torch.FloatTensor([0.5]), requires_grad=True)  # 转置
+
+        self.in_channels = in_channels
+        self.out_channels = out_channels
+        self.Theta = nn.Linear(in_channels, in_channels, bias=False)
+        # self.SAt = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
+        # self.SAt_T = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
+        # self.norm=nn.LayerNorm((64,self.sym_norm_Adj_matrix.shape[0],in_channels))
+        # self.ln_res=SublayerConnection(64,0.2,True,True)
+        self.E1=torch.randn(Adj_matrix.shape[0],Adj_matrix.shape[0],requires_grad=True).to(device)
+        self.E2=torch.randn(Adj_matrix.shape[0],Adj_matrix.shape[0],requires_grad=True).to(device)
+    def forward(self, x):
+        '''
+        spatial graph convolution operation
+        :param x: (batch_size, N, C_in)
+        :return: (batch_size, N, C_out)
+        '''
+
+
+        # batch_size, num_of_vertices, in_channels = x.shape
+        global device
+        x = x.to(device)
+        # N=self.sym_norm_Adj_matrix.shape[0]
+        adj = torch.matmul(self.E1, self.sym_norm_Adj_matrix)  # E1A
+        adj = torch.matmul(adj, self.E2)  # E1AE2
+        adj = F.softmax(adj,dim=1)
+        # D = torch.zeros([N, N], dtype=type(adj[0][0])).to(())
+        # for i in range(adj.shape[0]):
+        #     for j in range(adj.shape[0]):
+        #         if adj[i][j] != 0.:
+        #             D[i][j] = 1
+        # D = torch.diag(np.sum(D, keepdims=1))
+
+        # adj = np.dot(np.sqrt(D), adj)
+        # print("*****")
+        # print(sym_norm_Adj_matrix.device)
+        # print(D.device)
+        # adj = np.dot(adj, np.sqrt(D)) # D^0.5AD^0.5
+
+        static_out=torch.einsum("nn,bnc->bnc",self.sym_norm_Adj_matrix_D,x)
+
+        dy_out=torch.einsum("nn,bnc->bnc",adj,x)
+
+
+        dy_out=self.Theta(dy_out)
+        st_dy_out=self.alpha*static_out+self.beta*dy_out+self.gamma*x
+        return F.relu(st_dy_out)
 
 class AVWGCN2(nn.Module):
     def __init__(self, dim_in, dim_out, Adj):

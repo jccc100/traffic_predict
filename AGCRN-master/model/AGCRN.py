@@ -241,7 +241,7 @@ class AGCRN(nn.Module):
         # print("source:",source.shape)
         init_state = self.encoder.init_hidden(source.shape[0])
         output, _ = self.encoder(source, init_state, self.node_embeddings)      #B, T, N, hidden
-        print(output.shape)
+        # print(output.shape)
         output=self.trans_layer(output)
         # output=self.FC1(output)
         # output=self.dp(output)

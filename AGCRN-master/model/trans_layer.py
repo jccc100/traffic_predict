@@ -37,9 +37,9 @@ class Transform(nn.Module):
         value = self.vff(x)
 
         query = torch.cat(torch.split(query, self.d, -1), 0).permute(0, 2, 1, 3)
-        print(query.shape)
+        # print(query.shape)
         key = torch.cat(torch.split(key, self.d, -1), 0).permute(0, 2, 3, 1)
-        print(key.shape)
+        # print(key.shape)
         value = torch.cat(torch.split(value, self.d, -1), 0).permute(0, 2, 1, 3)
 
         A = torch.matmul(query, key)

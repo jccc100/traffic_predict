@@ -160,7 +160,7 @@ class AVWDCRNN2(nn.Module):
         # self.gate_cnn1 = nn.Conv1d(dim_in, dim_in, kernel_size=3, stride=1, padding=2, dilation=2, bias=True)
         # self.gate_cnn2 = nn.Conv1d(dim_in, dim_in, kernel_size=3, stride=1, padding=2, dilation=2, bias=True)
 
-
+        self.trans_layer = transformer_layer(dim_out, dim_out, 2, 64)
         self.dcrnn_cells2 = nn.ModuleList()
         self.dcrnn_cells2.append(AGCRNCell2(node_num, dim_in, dim_out, self.adj))
         for _ in range(1, num_layers):
@@ -176,8 +176,9 @@ class AVWDCRNN2(nn.Module):
         # print("x:::",x.shape)
         assert x.shape[2] == self.node_num and x.shape[3] == self.input_dim
         seq_length = x.shape[1] # 12
-        b, t, n, d=x.shape
-        # x=x.to(device=device)
+        # b, t, n, d=x.shape
+        x=x.to(device=device)
+        trans_out=self.trans_layer(x)
         # gate_input=x.permute(0,2,3,1).reshape(b*n,d,t).to(device) # b*n d t
         # gate_cnn_out=torch.tanh(self.gate_cnn1(gate_input))*torch.sigmoid(self.gate_cnn2(gate_input))
         # gate_cnn_out=gate_cnn_out.permute(0,2,1).reshape(b,t,n,d)
@@ -199,7 +200,7 @@ class AVWDCRNN2(nn.Module):
         #last_state: (B, N, hidden_dim)
         # print("current:",current_inputs.shape)
         # current_inputs=self.alpha*current_inputs+self.beta*gate_cnn_out
-        return current_inputs, output_hidden
+        return current_inputs+trans_out, output_hidden
 
     def init_hidden(self, batch_size):
         init_states = []
@@ -242,7 +243,7 @@ class AGCRN(nn.Module):
         init_state = self.encoder.init_hidden(source.shape[0])
         output, _ = self.encoder(source, init_state, self.node_embeddings)      #B, T, N, hidden
         # print(output.shape)
-        output=self.trans_layer(output)
+        # output=self.trans_layer(output)
         # output=self.FC1(output)
         # output=self.dp(output)
         # output = self.linear(output)

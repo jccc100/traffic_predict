@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from torch.nn.utils import weight_norm
 from model.AGCRNCell2 import AGCRNCell,AGCRNCell2
-
+from model.trans_layer import transformer_layer
 class Chomp1d(nn.Module):
     def __init__(self, chomp_size):
         super(Chomp1d, self).__init__()
@@ -175,7 +175,7 @@ class AVWDCRNN2(nn.Module):
         # device=torch.device('cpu')
         # print("x:::",x.shape)
         assert x.shape[2] == self.node_num and x.shape[3] == self.input_dim
-        seq_length = x.shape[1]
+        seq_length = x.shape[1] # 12
         b, t, n, d=x.shape
         # x=x.to(device=device)
         # gate_input=x.permute(0,2,3,1).reshape(b*n,d,t).to(device) # b*n d t
@@ -231,6 +231,7 @@ class AGCRN(nn.Module):
         self.end_conv = nn.Conv2d(6, args.horizon * self.output_dim, kernel_size=(1, self.hidden_dim), bias=True)
         # self.FC1=nn.Linear(self.hidden_dim,self.hidden_dim,bias=True)
         # self.FC2=nn.Linear(self.hidden_dim,self.hidden_dim,bias=True)
+        self.trans_layer=transformer_layer(self.hidden_dim,self.hidden_dim,2,64)
         self.dp=nn.Dropout(0.5)
     def forward(self, source, targets, teacher_forcing_ratio=0.5):
         #source: B, T_1, N, D
@@ -239,6 +240,8 @@ class AGCRN(nn.Module):
         # print("source:",source.shape)
         init_state = self.encoder.init_hidden(source.shape[0])
         output, _ = self.encoder(source, init_state, self.node_embeddings)      #B, T, N, hidden
+        print(output.shape)
+        output=self.trans_layer(output)
         # output=self.FC1(output)
         # output=self.dp(output)
         # output = self.linear(output)

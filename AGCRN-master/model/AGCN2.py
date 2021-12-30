@@ -383,7 +383,7 @@ class AVWGCN2(nn.Module):
         # torch.nn.init.normal_(self.b, mean=0, std=1)
         self.adj=Adj
         self.sp_att_gcn=spatialAttentionGCN(self.adj,dim_in,dim_out)
-        self.emb_gcn=emb_GCN(self.adj,dim_in,dim_out)
+        # self.emb_gcn=emb_GCN(self.adj,dim_in,dim_out)
         self.linear=nn.Linear(dim_in,dim_out,bias=True)
 
         # self.att_his=None
@@ -399,7 +399,7 @@ class AVWGCN2(nn.Module):
         # static_out=F.softmax(static_out,dim=2)
 
         gcn_out,att_his=self.sp_att_gcn(x)
-        gcn_out2=self.emb_gcn(x)
+        # gcn_out2=self.emb_gcn(x)
         # global att_his
         # gcn_out,att_his=self.sp_att_gcn(x,self.att_his)
         # self.att_his=score_his
@@ -411,7 +411,7 @@ class AVWGCN2(nn.Module):
         # static_out=torch.as_tensor(static_out, dtype=torch.float32)
         # print("dyout:",dy_out.dtype)
         # print("stout:",static_out.dtype)
-        static_dy_out=0.5*self.linear(gcn_out+gcn_out2)
+        static_dy_out=0.5*self.linear(gcn_out)
 
         return static_dy_out
 

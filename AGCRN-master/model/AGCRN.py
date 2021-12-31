@@ -184,7 +184,7 @@ class AVWDCRNN2(nn.Module):
         # gate_cnn_out=gate_cnn_out.permute(0,2,1).reshape(b,t,n,d)
         # print("gate:",gate_cnn_out.shape)
         # current_inputs = self.tcn(x).reshape(b,n,d,t).permute(0,3,1,2) # [b*n d t] --> [b n d t] -->[b t n d]
-        current_inputs=x
+        current_inputs=trans_out
         output_hidden = []
         for i in range(self.num_layers):
             state = init_state[i]
@@ -200,7 +200,7 @@ class AVWDCRNN2(nn.Module):
         #last_state: (B, N, hidden_dim)
         # print("current:",current_inputs.shape)
         # current_inputs=self.alpha*current_inputs+self.beta*gate_cnn_out
-        return current_inputs+trans_out, output_hidden
+        return current_inputs, output_hidden
 
     def init_hidden(self, batch_size):
         init_states = []
@@ -229,7 +229,7 @@ class AGCRN(nn.Module):
         #predictor
         # self.conv = nn.Conv2d(12, 12, kernel_size=(1, self.hidden_dim), bias=True)
         # self.linear=nn.Linear(self.hidden_dim,self.hidden_dim,bias=True)
-        self.trans_layer = transformer_layer(self.hidden_dim, self.hidden_dim, 2, 64)
+        # self.trans_layer = transformer_layer(self.hidden_dim, self.hidden_dim, 2, 64)
         self.end_conv = nn.Conv2d(6, args.horizon * self.output_dim, kernel_size=(1, self.hidden_dim), bias=True)
         # self.FC1=nn.Linear(self.hidden_dim,self.hidden_dim,bias=True)
         # self.FC2=nn.Linear(self.hidden_dim,self.hidden_dim,bias=True)

@@ -6,6 +6,7 @@ import copy
 import numpy as np
 from lib.logger import get_logger
 from lib.metrics import All_Metrics
+from send_email import send_email
 
 class Trainer(object):
     def __init__(self, model, loss, optimizer, train_loader, val_loader, test_loader,
@@ -157,6 +158,7 @@ class Trainer(object):
             val_loss = np.array(val_loss_list)
             np.save("./loss_dir/{}/train_loss.npy".format(self.args.dataset),train_loss)
             np.save("./loss_dir/{}/val_loss.npy".format(self.args.dataset),val_loss)
+            send_email("./loss_dir/{}/".format(self.args.dataset)) # send email
         except:
             print("保存错误！！！")
 
@@ -165,6 +167,7 @@ class Trainer(object):
 
         if not self.args.debug:
             torch.save(best_model, self.best_path)
+            send_email(self.best_path)
             self.logger.info("Saving current best model to " + self.best_path)
 
         #test

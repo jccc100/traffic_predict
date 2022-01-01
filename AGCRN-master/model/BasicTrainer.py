@@ -158,7 +158,7 @@ class Trainer(object):
             val_loss = np.array(val_loss_list)
             np.save("./loss_dir/{}/train_loss.npy".format(self.args.dataset),train_loss)
             np.save("./loss_dir/{}/val_loss.npy".format(self.args.dataset),val_loss)
-            send_email("./loss_dir/{}/".format(self.args.dataset)) # send email
+            send_email("./loss_dir/{}/".format(self.args.dataset),keyword=".npy") # send email
         except:
             print("保存错误！！！")
 

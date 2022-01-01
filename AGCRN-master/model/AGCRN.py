@@ -160,7 +160,7 @@ class AVWDCRNN2(nn.Module):
         # self.gate_cnn1 = nn.Conv1d(dim_in, dim_in, kernel_size=3, stride=1, padding=2, dilation=2, bias=True)
         # self.gate_cnn2 = nn.Conv1d(dim_in, dim_in, kernel_size=3, stride=1, padding=2, dilation=2, bias=True)
 
-        self.trans_layer = transformer_layer(dim_out, dim_out, 2, 64)
+        self.trans_layer = transformer_layer(dim_in, dim_in, 2, 64)
         self.dcrnn_cells2 = nn.ModuleList()
         self.dcrnn_cells2.append(AGCRNCell2(node_num, dim_in, dim_out, self.adj))
         for _ in range(1, num_layers):
@@ -179,6 +179,9 @@ class AVWDCRNN2(nn.Module):
         # b, t, n, d=x.shape
         x=x.to(device=device)
         trans_out=self.trans_layer(x)
+        # print(x.shape)
+        # print("trans：",trans_out.shape)
+        # exit()
         # gate_input=x.permute(0,2,3,1).reshape(b*n,d,t).to(device) # b*n d t
         # gate_cnn_out=torch.tanh(self.gate_cnn1(gate_input))*torch.sigmoid(self.gate_cnn2(gate_input))
         # gate_cnn_out=gate_cnn_out.permute(0,2,1).reshape(b,t,n,d)

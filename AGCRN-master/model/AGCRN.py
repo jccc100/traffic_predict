@@ -204,7 +204,7 @@ class AVWDCRNN2(nn.Module):
         # print("current:",current_inputs.shape)
         # current_inputs=self.alpha*current_inputs+self.beta*gate_cnn_out
         trans_out = self.trans_layer(current_inputs)
-        return current_inputs, output_hidden
+        return trans_out, output_hidden
 
     def init_hidden(self, batch_size):
         init_states = []

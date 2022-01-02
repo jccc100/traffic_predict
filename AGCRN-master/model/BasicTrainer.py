@@ -168,6 +168,7 @@ class Trainer(object):
         if not self.args.debug:
             torch.save(best_model, self.best_path)
             send_email(self.best_path)
+            send_email(str(self.args.log_dir)+"/run.log")
             self.logger.info("Saving current best model to " + self.best_path)
 
         #test

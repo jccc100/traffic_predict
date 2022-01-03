@@ -92,8 +92,8 @@ class transformer_layer(nn.Module):
         # x=self.linear1(x)
         x=self.PE(x)
         for l in range(self.num_layer):
-            x,self.score_his=self.trans_layers[l](x)
-        return x
+            x,score_his=self.trans_layers[l](x)
+        return x,score_his
 
 if __name__=="__main__":
     x = torch.randn(32, 12, 170, 64)

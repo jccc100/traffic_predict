@@ -10,8 +10,8 @@ import pandas as pd
 from torch.autograd import Variable
 import math
 
-device=torch.device('cuda')
-# device=torch.device('cpu')
+# device=torch.device('cuda')
+device=torch.device('cpu')
 
 class Transform(nn.Module):
     def __init__(self, outfea, d):
@@ -48,6 +48,8 @@ class Transform(nn.Module):
         if score_his is not None:
             A=A+score_his
         score_his=A
+        # print(score_his.shape)
+
         A = torch.softmax(A, -1)
 
         value = torch.matmul(A, value)
@@ -100,7 +102,7 @@ if __name__=="__main__":
     dim_in=64
     dim_out=64
     num_layer=2
-    d=2
+    d=64
     transformer=transformer_layer(dim_in,dim_out,num_layer,d)
     res=transformer(x)
-    print(res.shape)
+    print(res[0].shape)

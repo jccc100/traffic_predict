@@ -96,7 +96,7 @@ class transformer_layer(nn.Module):
         self.trans_layers=nn.ModuleList(Transform(dim_out,d) for l in range(num_layer))
         self.PE=PositionalEncoding(dim_out)
         self.num_layer=num_layer
-        self.score_his = torch.zeros((64, self.adj.shape[0], 12, 12), requires_grad=False).to(device)
+        self.score_his = torch.zeros((64, 170, 12, 12), requires_grad=False).to(device)
     def forward(self, x):
         # x=self.linear1(x)
         x=self.PE(x)

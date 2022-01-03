@@ -164,7 +164,6 @@ class AVWDCRNN2(nn.Module):
         self.trans_layer = transformer_layer(dim_out, dim_out, 2, 64)
         self.dcrnn_cells2 = nn.ModuleList()
         self.dcrnn_cells2.append(AGCRNCell2(node_num, dim_in, dim_out, self.adj))
-        self.score_his=torch.zeros((64,self.adj.shape[0],12,12),requires_grad=False).to(device)
         for _ in range(1, num_layers):
             # self.dcrnn_cells.append(AGCRNCell(node_num, dim_out, dim_out, cheb_k, embed_dim))
 
@@ -173,7 +172,6 @@ class AVWDCRNN2(nn.Module):
     def forward(self, x, init_state, node_embeddings):
         #shape of x: (B, T, N, D)
         #shape of init_state: (num_layers, B, N, hidden_dim)
-
         # print("x:::",x.shape)
         assert x.shape[2] == self.node_num and x.shape[3] == self.input_dim
         seq_length = x.shape[1] # 12
@@ -204,7 +202,7 @@ class AVWDCRNN2(nn.Module):
         #last_state: (B, N, hidden_dim)
         # print("current:",current_inputs.shape)
         # current_inputs=self.alpha*current_inputs+self.beta*gate_cnn_out
-        trans_out ,self.score_his= self.trans_layer(current_inputs,self.score_his)
+        trans_out = self.trans_layer(current_inputs)
         return trans_out, output_hidden
 
     def init_hidden(self, batch_size):

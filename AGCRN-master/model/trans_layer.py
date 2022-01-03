@@ -36,21 +36,28 @@ class Transform(nn.Module):
         key = self.kff(x)
         value = self.vff(x)
 
-        query = torch.cat(torch.split(query, self.d, -1), 0).permute(0, 2, 1, 3)
+        # query = torch.cat(torch.split(query, self.d, -1), 0).permute(0, 2, 1, 3)
+        # # print(query.shape)
+        # key = torch.cat(torch.split(key, self.d, -1), 0).permute(0, 2, 3, 1)
+        # # print(key.shape)
+        # value = torch.cat(torch.split(value, self.d, -1), 0).permute(0, 2, 1, 3)
+        query = query.permute(0, 2, 1, 3)
         # print(query.shape)
-        key = torch.cat(torch.split(key, self.d, -1), 0).permute(0, 2, 3, 1)
+        key = key.permute(0, 2, 3, 1)
         # print(key.shape)
-        value = torch.cat(torch.split(value, self.d, -1), 0).permute(0, 2, 1, 3)
+        value = value.permute(0, 2, 1, 3)
 
         A = torch.matmul(query, key)
         # print("A:",A.shape)
         A /= (self.d ** 0.5)
-        if score_his is not None:
-            A=A+score_his
-        score_his=A
+
         # print(score_his.shape)
 
         A = torch.softmax(A, -1)
+
+        if score_his is not None:
+            A=A+score_his
+        score_his=A.clone().detach()
 
         value = torch.matmul(A, value)
         value = torch.cat(torch.split(value, x.shape[0], 0), -1).permute(0, 2, 1, 3)
@@ -89,13 +96,13 @@ class transformer_layer(nn.Module):
         self.trans_layers=nn.ModuleList(Transform(dim_out,d) for l in range(num_layer))
         self.PE=PositionalEncoding(dim_out)
         self.num_layer=num_layer
-
-    def forward(self, x,score_his=None):
+        self.score_his = torch.zeros((64, self.adj.shape[0], 12, 12), requires_grad=False).to(device)
+    def forward(self, x):
         # x=self.linear1(x)
         x=self.PE(x)
         for l in range(self.num_layer):
-            x,score_his=self.trans_layers[l](x,score_his)
-        return x,score_his
+            x,self.score_his=self.trans_layers[l](x,self.score_his)
+        return x
 
 if __name__=="__main__":
     x = torch.randn(32, 12, 170, 64)

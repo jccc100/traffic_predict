@@ -88,11 +88,11 @@ class transformer_layer(nn.Module):
         self.PE=PositionalEncoding(dim_out)
         self.num_layer=num_layer
 
-    def forward(self, x):
+    def forward(self, x,score_his=None):
         # x=self.linear1(x)
         x=self.PE(x)
         for l in range(self.num_layer):
-            x,score_his=self.trans_layers[l](x)
+            x,score_his=self.trans_layers[l](x,score_his)
         return x,score_his
 
 if __name__=="__main__":

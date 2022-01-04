@@ -2,7 +2,7 @@ import smtplib
 import email.mime.text
 import email.mime.multipart
 import datetime
-from model.Run import args
+
 
 import os
 from email.mime.multipart import MIMEMultipart
@@ -42,6 +42,7 @@ def send_email(path, keyword='.pth', content=""):
     current_time=datetime.datetime.now()
     content = str(current_time)
     try:
+        from model.Run import args
         content +='\n'+args.dateset
     except:
         pass

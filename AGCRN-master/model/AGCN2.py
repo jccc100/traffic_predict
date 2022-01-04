@@ -103,7 +103,7 @@ class Spatial_Attention_layer(nn.Module):
         # self.V_s = torch.randn(num_node,num_node, requires_grad=True).to(device)
         self.Wq=nn.Linear(c_in,c_in,bias=False)
         self.Wk=nn.Linear(c_in,c_in,bias=False)
-        # self.Wv=nn.Linear(c_in,num_node,bias=False)
+        self.Wv=nn.Linear(c_in,num_node,bias=False)
     def forward(self, x,score_his=None):
         '''
         :param x: (batch_size, N, C)
@@ -116,10 +116,10 @@ class Spatial_Attention_layer(nn.Module):
         # print("Q:",Q.shape)
         K=self.Wk(x)
         # print("K:", K.shape)
-        # V=self.Wv(x)
+        V=self.Wv(x)
         score = torch.matmul(Q, K.transpose(1, 2))
         score=F.softmax(score,dim=1)
-        # score=torch.matmul(score,V)
+        score=torch.matmul(score,V)
         # # print("V:", V.shape)
         # if score_his!=None:
         #     score = torch.matmul(Q, K.transpose(1, 2))+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)

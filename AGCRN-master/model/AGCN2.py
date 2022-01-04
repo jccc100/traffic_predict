@@ -414,7 +414,7 @@ class AVWGCN2(nn.Module):
         # print("dyout:",dy_out.dtype)
         # print("stout:",static_out.dtype)
         static_dy_out=self.linear(gcn_out)
-        static_dy_out=self.dropout(static_dy_out)
+        # static_dy_out=self.dropout(static_dy_out)
 
         return static_dy_out
 

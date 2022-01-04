@@ -161,7 +161,7 @@ class AVWDCRNN2(nn.Module):
         # self.gate_cnn1 = nn.Conv1d(dim_in, dim_in, kernel_size=3, stride=1, padding=2, dilation=2, bias=True)
         # self.gate_cnn2 = nn.Conv1d(dim_in, dim_in, kernel_size=3, stride=1, padding=2, dilation=2, bias=True)
 
-        self.trans_layer = transformer_layer(dim_out, dim_out, 2, 64)
+        self.trans_layer = transformer_layer(dim_out, dim_out, 1, 64)
         self.dcrnn_cells2 = nn.ModuleList()
         self.dcrnn_cells2.append(AGCRNCell2(node_num, dim_in, dim_out, self.adj))
         for _ in range(1, num_layers):

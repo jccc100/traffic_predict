@@ -35,7 +35,7 @@ class Transform(nn.Module):
         query = self.qff(x)
         key = self.kff(x)
         value = self.vff(x)
-
+        b ,t, n, c=x.shape
         # query = torch.cat(torch.split(query, self.d, -1), 0).permute(0, 2, 1, 3)
         # # print(query.shape)
         # key = torch.cat(torch.split(key, self.d, -1), 0).permute(0, 2, 3, 1)
@@ -49,7 +49,7 @@ class Transform(nn.Module):
 
         A = torch.matmul(query, key)
         # print("A:",A.shape)
-        A /= (self.d ** 0.5)
+        A /= (c ** 0.5)
 
         # print(score_his.shape)
 

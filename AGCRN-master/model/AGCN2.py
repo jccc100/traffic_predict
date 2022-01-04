@@ -101,9 +101,9 @@ class Spatial_Attention_layer(nn.Module):
         # self.W_3 = torch.randn(num_of_features, requires_grad=True).to(device)
         self.b_s = torch.randn(1, num_node,num_node , requires_grad=True).to(device)
         self.V_s = torch.randn(num_node,num_node, requires_grad=True).to(device)
-        # self.Wq=nn.Linear(c_in,c_in,bias=False)
-        # self.Wk=nn.Linear(c_in,c_in,bias=False)
-        # self.Wv=nn.Linear(c_in,num_node,bias=False)
+        self.Wq=nn.Linear(c_in,c_in,bias=False)
+        self.Wk=nn.Linear(c_in,c_in,bias=False)
+        self.Wv=nn.Linear(c_in,num_node,bias=False)
     def forward(self, x,score_his=None):
         '''
         :param x: (batch_size, N, C)
@@ -112,11 +112,14 @@ class Spatial_Attention_layer(nn.Module):
         batch_size, num_of_vertices, in_channels = x.shape
 
         # Q K V 改之后
-        # Q=self.Wq(x)
-        # # print("Q:",Q.shape)
-        # K=self.Wk(x)
-        # # print("K:", K.shape)
-        # V=self.Wv(x)
+        Q=self.Wq(x)
+        # print("Q:",Q.shape)
+        K=self.Wk(x)
+        # print("K:", K.shape)
+        V=self.Wv(x)
+        score = torch.matmul(Q, K.transpose(1, 2))
+        score=F.softmax(score,dim=1)
+        score=torch.matmul(score,V)
         # # print("V:", V.shape)
         # if score_his!=None:
         #     score = torch.matmul(Q, K.transpose(1, 2))+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
@@ -127,18 +130,18 @@ class Spatial_Attention_layer(nn.Module):
 
 
         # 改之前
-        if score_his!=None:
-            score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(in_channels)#+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
-            # score_his = score
-        else:
-            score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(in_channels)
-        #
-        # score=F.softmax(score,dim=-1)
-        score=torch.sigmoid(score+self.b_s) # b n n + 1 n n = b n n
-        # # score=torch.softmax(score+self.b_s,dim=-1) # b n n + 1 n n = b n n
-        # # score=torch.softmax(score,dim=1)
-        # # score=torch.einsum("nn,bnn->bnn",self.V_s,score)
-        score=torch.matmul(self.V_s,score)
+        # if score_his!=None:
+        #     score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(in_channels)#+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
+        #     # score_his = score
+        # else:
+        #     score = torch.matmul(x, x.transpose(1, 2)) / math.sqrt(in_channels)
+        # #
+        # # score=F.softmax(score,dim=-1)
+        # score=torch.sigmoid(score+self.b_s) # b n n + 1 n n = b n n
+        # # # score=torch.softmax(score+self.b_s,dim=-1) # b n n + 1 n n = b n n
+        # # # score=torch.softmax(score,dim=1)
+        # # # score=torch.einsum("nn,bnn->bnn",self.V_s,score)
+        # score=torch.matmul(self.V_s,score)
         # score=torch.softmax(score,dim=1)
 
 
@@ -167,9 +170,9 @@ class spatialAttentionGCN(nn.Module):
         # print(in_channels)
         # print(out_channels)
         self.static=nn.Linear(in_channels,out_channels,bias=True)
-        self.alpha = nn.Parameter(torch.FloatTensor([0.4]), requires_grad=True)  # D
-        self.beta = nn.Parameter(torch.FloatTensor([0.55]), requires_grad=True)  # S
-        self.gamma = nn.Parameter(torch.FloatTensor([0.05]), requires_grad=True)
+        self.alpha = nn.Parameter(torch.FloatTensor([0.95]), requires_grad=True)  # D
+        self.beta = nn.Parameter(torch.FloatTensor([0.95]), requires_grad=True)  # S
+        # self.gamma = nn.Parameter(torch.FloatTensor([0.05]), requires_grad=True)
         # self.self_link = nn.Parameter(torch.FloatTensor([0.4]), requires_grad=True)
         # self.alpha2 = nn.Parameter(torch.FloatTensor([0.5]), requires_grad=True)  # 正向
         # self.beta2 = nn.Parameter(torch.FloatTensor([0.5]), requires_grad=True)  # 转置
@@ -177,7 +180,7 @@ class spatialAttentionGCN(nn.Module):
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.Theta1 = nn.Linear(in_channels, in_channels, bias=True)
-        self.Theta2 = nn.Linear(in_channels, in_channels, bias=True)
+        # self.Theta2 = nn.Linear(in_channels, in_channels, bias=True)
         self.SAt = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
         # self.SAt_T = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
         # self.norm=nn.LayerNorm((64,self.sym_norm_Adj_matrix.shape[0],in_channels))
@@ -223,7 +226,7 @@ class spatialAttentionGCN(nn.Module):
         # dy_out=torch.einsum("bnn,bnc->bnc",spatial_attention,x)
         # print("st:",static_out.shape)
         # print("dy:",dy_out.shape)
-        st_dy_out=self.alpha*static_out+self.beta*dy_out+self.gamma*x
+        st_dy_out=self.alpha*static_out+self.beta*dy_out#+self.gamma*x
         # st_dy_out=self.Theta2(st_dy_out)
         # st_dy_out=self.norm(st_dy_out)+x
         # st_dy_out=static_out
@@ -410,7 +413,7 @@ class AVWGCN2(nn.Module):
         # static_out=torch.as_tensor(static_out, dtype=torch.float32)
         # print("dyout:",dy_out.dtype)
         # print("stout:",static_out.dtype)
-        static_dy_out=0.5*self.linear(gcn_out)
+        static_dy_out=self.linear(gcn_out)
 
         return static_dy_out
 

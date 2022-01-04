@@ -1,6 +1,8 @@
 import smtplib
 import email.mime.text
 import email.mime.multipart
+import datetime
+from model.Run import args
 
 import os
 from email.mime.multipart import MIMEMultipart
@@ -21,7 +23,7 @@ def get_type_file(path="./test/aa.npy", keyword='.npy'):  # 这里可以更改�
 
     i = 0
     for file in files:
-        print("aaa")
+        # print("aaa")
         if keyword in file:
             i = i + 1
             print(i, file)
@@ -35,8 +37,14 @@ def send_email(path, keyword='.pth', content=""):
     sendAddr = '1323114884@qq.com'
     password = 'bxbzlopushpbfjjh'  # 163邮箱,则为授权码
     receiver = '2428791113@qq.com'
-    subject = "test"
-    content = 'aaaaa'
+    subject = "训练文件"
+
+    current_time=datetime.datetime.now()
+    content = str(current_time)
+    try:
+        content +='\n'+args.dateset
+    except:
+        pass
 
     msg = MIMEMultipart()
     msg['from'] = sendAddr

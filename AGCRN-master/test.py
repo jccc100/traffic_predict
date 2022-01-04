@@ -12,6 +12,10 @@ import torch.nn.functional as F
 import torch
 import torch.nn as nn
 from torch.nn.utils import weight_norm
+import datetime
+current_time=datetime.datetime.now()
+print(str(current_time))
+exit()
 
 
 a=torch.randn(2,2,2)

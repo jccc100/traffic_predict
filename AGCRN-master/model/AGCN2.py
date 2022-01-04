@@ -99,11 +99,11 @@ class Spatial_Attention_layer(nn.Module):
         # self.W_1 = torch.randn(c_in, requires_grad=True).to(device)
         # self.W_2 = torch.randn(num_node,num_node, requires_grad=True).to(device)
         # self.W_3 = torch.randn(num_of_features, requires_grad=True).to(device)
-        self.b_s = torch.randn(1, num_node,num_node , requires_grad=True).to(device)
-        self.V_s = torch.randn(num_node,num_node, requires_grad=True).to(device)
+        # self.b_s = torch.randn(1, num_node,num_node , requires_grad=True).to(device)
+        # self.V_s = torch.randn(num_node,num_node, requires_grad=True).to(device)
         self.Wq=nn.Linear(c_in,c_in,bias=False)
         self.Wk=nn.Linear(c_in,c_in,bias=False)
-        self.Wv=nn.Linear(c_in,num_node,bias=False)
+        # self.Wv=nn.Linear(c_in,num_node,bias=False)
     def forward(self, x,score_his=None):
         '''
         :param x: (batch_size, N, C)
@@ -116,10 +116,10 @@ class Spatial_Attention_layer(nn.Module):
         # print("Q:",Q.shape)
         K=self.Wk(x)
         # print("K:", K.shape)
-        V=self.Wv(x)
+        # V=self.Wv(x)
         score = torch.matmul(Q, K.transpose(1, 2))
         score=F.softmax(score,dim=1)
-        score=torch.matmul(score,V)
+        # score=torch.matmul(score,V)
         # # print("V:", V.shape)
         # if score_his!=None:
         #     score = torch.matmul(Q, K.transpose(1, 2))+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
@@ -387,7 +387,7 @@ class AVWGCN2(nn.Module):
         self.sp_att_gcn=spatialAttentionGCN(self.adj,dim_in,dim_out)
         # self.emb_gcn=emb_GCN(self.adj,dim_in,dim_out)
         self.linear=nn.Linear(dim_in,dim_out,bias=True)
-
+        self.dropout=nn.Dropout(0.1)
         # self.att_his=None
     def forward(self, x, node_embeddings=0):
         # 静态
@@ -414,6 +414,7 @@ class AVWGCN2(nn.Module):
         # print("dyout:",dy_out.dtype)
         # print("stout:",static_out.dtype)
         static_dy_out=self.linear(gcn_out)
+        static_dy_out=self.dropout(static_dy_out)
 
         return static_dy_out
 

@@ -102,11 +102,11 @@ class Spatial_Attention_layer(nn.Module):
         # self.b_s = torch.randn(1, num_node,num_node , requires_grad=True).to(device)
         # self.V_s = torch.randn(num_node,num_node, requires_grad=True).to(device)
         self.Wq=nn.Linear(c_in,c_in,bias=False)
-        nn.init.kaiming_normal_(self.Wq,nonlinearity="relu")
+        nn.init.kaiming_normal_(self.Wq.weight,nonlinearity="relu")
         self.Wk=nn.Linear(c_in,c_in,bias=False)
-        nn.init.kaiming_normal_(self.Wk, nonlinearity="relu")
+        nn.init.kaiming_normal_(self.Wk.weight, nonlinearity="relu")
         self.Wv=nn.Linear(c_in,num_node,bias=False)
-        nn.init.kaiming_normal_(self.Wv, nonlinearity="relu")
+        nn.init.kaiming_normal_(self.Wv.weight, nonlinearity="relu")
     def forward(self, x,score_his=None):
         '''
         :param x: (batch_size, N, C)

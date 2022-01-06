@@ -223,7 +223,7 @@ if args.lr_decay:
     lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer=optimizer,
                                                         milestones=lr_decay_steps,
                                                         gamma=args.lr_decay_rate)
-    #lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer=optimizer, T_max=64)
+    # lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer=optimizer, T_max=400,eta_min=0.0001)
 
 #config log path
 current_time = datetime.now().strftime('%Y%m%d%H%M%S')

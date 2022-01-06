@@ -123,7 +123,7 @@ class Spatial_Attention_layer(nn.Module):
         score = torch.matmul(Q, K.transpose(1, 2))
         score=F.softmax(score,dim=1)
         score=torch.matmul(score,V)
-        score=F.relu(score)
+        # score=F.relu(score)
         # # print("V:", V.shape)
         # if score_his!=None:
         #     score = torch.matmul(Q, K.transpose(1, 2))+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)

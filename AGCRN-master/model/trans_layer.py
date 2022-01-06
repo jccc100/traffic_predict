@@ -17,8 +17,11 @@ class Transform(nn.Module):
     def __init__(self, outfea, d):
         super(Transform, self).__init__()
         self.qff = nn.Linear(outfea, outfea)
+        nn.init.kaiming_normal_(self.qff,nonlinearity="relu")
         self.kff = nn.Linear(outfea, outfea)
+        nn.init.kaiming_normal_(self.kff, nonlinearity="relu")
         self.vff = nn.Linear(outfea, outfea)
+        nn.init.kaiming_normal_(self.vff, nonlinearity="relu")
 
         self.ln = nn.LayerNorm(outfea)
         self.lnff = nn.LayerNorm(outfea)

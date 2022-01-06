@@ -102,8 +102,11 @@ class Spatial_Attention_layer(nn.Module):
         # self.b_s = torch.randn(1, num_node,num_node , requires_grad=True).to(device)
         # self.V_s = torch.randn(num_node,num_node, requires_grad=True).to(device)
         self.Wq=nn.Linear(c_in,c_in,bias=False)
+        nn.init.kaiming_normal_(self.Wq,nonlinearity="relu")
         self.Wk=nn.Linear(c_in,c_in,bias=False)
+        nn.init.kaiming_normal_(self.Wk, nonlinearity="relu")
         self.Wv=nn.Linear(c_in,num_node,bias=False)
+        nn.init.kaiming_normal_(self.Wv, nonlinearity="relu")
     def forward(self, x,score_his=None):
         '''
         :param x: (batch_size, N, C)
@@ -120,6 +123,7 @@ class Spatial_Attention_layer(nn.Module):
         score = torch.matmul(Q, K.transpose(1, 2))
         score=F.softmax(score,dim=1)
         score=torch.matmul(score,V)
+        score=F.relu(score)
         # # print("V:", V.shape)
         # if score_his!=None:
         #     score = torch.matmul(Q, K.transpose(1, 2))+score_his  # (b*t, N, F_in)(b*t, F_in, N)=(b*t, N, N)
@@ -170,6 +174,7 @@ class spatialAttentionGCN(nn.Module):
         # print(in_channels)
         # print(out_channels)
         self.static=nn.Linear(in_channels,out_channels,bias=True)
+        nn.init.kaiming_normal_(self.static.weight, nonlinearity="relu")
         self.alpha = nn.Parameter(torch.FloatTensor([0.95]), requires_grad=True)  # D
         self.beta = nn.Parameter(torch.FloatTensor([0.95]), requires_grad=True)  # S
         # self.gamma = nn.Parameter(torch.FloatTensor([0.05]), requires_grad=True)
@@ -180,6 +185,7 @@ class spatialAttentionGCN(nn.Module):
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.Theta1 = nn.Linear(in_channels, in_channels, bias=True)
+        nn.init.kaiming_normal_(self.Theta1.weight, nonlinearity="relu")
         # self.Theta2 = nn.Linear(in_channels, in_channels, bias=True)
         self.SAt = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
         # self.SAt_T = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
@@ -288,6 +294,7 @@ class emb_GCN(nn.Module):
         # self.sym_norm_Adj_matrix_D = torch.from_numpy(sym_norm_Adj(Adj_matrix)[0]).to(torch.float32)  # (N, N)
         # self.sym_norm_Adj_matrix_D = F.softmax(self.sym_norm_Adj_matrix_D, dim=1).to(device)
         self.static=nn.Linear(in_channels,out_channels,bias=True)
+        nn.init.kaiming_normal_(self.static.weight,nonlinearity="relu")
         self.alpha = nn.Parameter(torch.FloatTensor([0.4]), requires_grad=True)  # D
         self.beta = nn.Parameter(torch.FloatTensor([0.5]), requires_grad=True)  # S
         self.gamma = nn.Parameter(torch.FloatTensor([0.1]), requires_grad=True)
@@ -298,6 +305,7 @@ class emb_GCN(nn.Module):
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.Theta = nn.Linear(in_channels, in_channels, bias=False)
+        nn.init.kaiming_normal_(self.Theta.weight, nonlinearity="relu")
         # self.SAt = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
         # self.SAt_T = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
         # self.norm=nn.LayerNorm((64,self.sym_norm_Adj_matrix.shape[0],in_channels))
@@ -387,6 +395,7 @@ class AVWGCN2(nn.Module):
         self.sp_att_gcn=spatialAttentionGCN(self.adj,dim_in,dim_out)
         # self.emb_gcn=emb_GCN(self.adj,dim_in,dim_out)
         self.linear=nn.Linear(dim_in,dim_out,bias=True)
+        nn.init.kaiming_normal_(self.linear.weight,nonlinearity='relu')
         self.dropout=nn.Dropout(0.1)
         # self.att_his=None
     def forward(self, x, node_embeddings=0):
@@ -416,7 +425,7 @@ class AVWGCN2(nn.Module):
         static_dy_out=self.linear(gcn_out)
         # static_dy_out=self.dropout(static_dy_out)
 
-        return static_dy_out
+        return F.relu(static_dy_out)
 
 
 if __name__=='__main__':

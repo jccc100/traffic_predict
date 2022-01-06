@@ -41,11 +41,11 @@ def send_email(path, keyword='.pth', content=""):
 
     current_time=datetime.datetime.now()
     content = str(current_time)
-    try:
-        from model.Run import args
-        content +='\n'+args.dateset
-    except:
-        pass
+    # try:
+    #     from model.Run import args
+    #     content +='\n'+args.dateset
+    # except:
+    #     pass
 
     msg = MIMEMultipart()
     msg['from'] = sendAddr

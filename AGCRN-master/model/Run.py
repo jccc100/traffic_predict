@@ -220,10 +220,10 @@ lr_scheduler = None
 if args.lr_decay:
     print('Applying learning rate decay.')
     lr_decay_steps = [int(i) for i in list(args.lr_decay_step.split(','))]
-    # lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer=optimizer,
-    #                                                     milestones=lr_decay_steps,
-    #                                                     gamma=args.lr_decay_rate)
-    lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer=optimizer, T_max=400,eta_min=0.0001)
+    lr_scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer=optimizer,
+                                                        milestones=lr_decay_steps,
+                                                        gamma=args.lr_decay_rate)
+    # lr_scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer=optimizer, T_max=400,eta_min=0.0001)
 
 #config log path
 current_time = datetime.now().strftime('%Y%m%d%H%M%S')

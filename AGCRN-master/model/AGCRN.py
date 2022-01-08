@@ -146,8 +146,8 @@ class AVWDCRNN(nn.Module):
         return torch.stack(init_states, dim=0)      #(num_layers, B, N, hidden_dim)
 
 
-# device=torch.device('cuda')
-device=torch.device('cpu')
+device=torch.device('cuda')
+# device=torch.device('cpu')
 
 
 class AVWDCRNN2(nn.Module):

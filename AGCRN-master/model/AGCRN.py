@@ -144,8 +144,12 @@ class AVWDCRNN(nn.Module):
         for i in range(self.num_layers):
             init_states.append(self.dcrnn_cells[i].init_hidden_state(batch_size))
         return torch.stack(init_states, dim=0)      #(num_layers, B, N, hidden_dim)
-device=torch.device('cuda')
-# device=torch.device('cpu')
+
+
+# device=torch.device('cuda')
+device=torch.device('cpu')
+
+
 class AVWDCRNN2(nn.Module):
     def __init__(self, node_num, dim_in, dim_out, cheb_k, embed_dim, Adj,num_layers=1):
         super(AVWDCRNN2, self).__init__()
@@ -295,7 +299,7 @@ if __name__=='__main__':
     agcrn=AGCRN(args,adj)
     # source: B, T_1, N, D
     # target: B, T_2, N, D
-    x=torch.randn(32,12,170,1)
-    tar=torch.randn(32,12,170,1)
+    x=torch.randn(64,12,170,1)
+    tar=torch.randn(64,12,170,1)
     out=agcrn(x,tar)
     print(out.shape)

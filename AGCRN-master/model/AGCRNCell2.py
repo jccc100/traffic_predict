@@ -3,8 +3,8 @@ import torch.nn as nn
 from model.AGCN2 import AVWGCN,AVWGCN2
 from model.AGCN2 import spatialAttentionGCN
 
-device=torch.device('cuda')
-# device=torch.device('cpu')
+# device=torch.device('cuda')
+device=torch.device('cpu')
 
 class AGCRNCell(nn.Module):
     def __init__(self, node_num, dim_in, dim_out, Adj,cheb_k, embed_dim):

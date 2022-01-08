@@ -10,18 +10,18 @@ import pandas as pd
 from torch.autograd import Variable
 import math
 
-device=torch.device('cuda')
-# device=torch.device('cpu')
+# device=torch.device('cuda')
+device=torch.device('cpu')
 
 class Transform(nn.Module):
     def __init__(self, outfea, d):
         super(Transform, self).__init__()
         self.qff = nn.Linear(outfea, outfea)
-        nn.init.kaiming_uniform_(self.qff.weight,nonlinearity="relu")
+        # nn.init.kaiming_uniform_(self.qff.weight,nonlinearity="relu")
         self.kff = nn.Linear(outfea, outfea)
-        nn.init.kaiming_uniform_(self.kff.weight, nonlinearity="relu")
+        # nn.init.kaiming_uniform_(self.kff.weight, nonlinearity="relu")
         self.vff = nn.Linear(outfea, outfea)
-        nn.init.kaiming_uniform_(self.vff.weight, nonlinearity="relu")
+        # nn.init.kaiming_uniform_(self.vff.weight, nonlinearity="relu")
 
         self.ln = nn.LayerNorm(outfea)
         self.lnff = nn.LayerNorm(outfea)
@@ -59,7 +59,10 @@ class Transform(nn.Module):
         A = torch.softmax(A, -1)
 
         if score_his is not None:
-            A=A+score_his
+            try:
+                A=A+score_his
+            except:
+                pass
         score_his=A.clone().detach()
 
         value = torch.matmul(A, value)

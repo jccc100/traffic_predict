@@ -4,8 +4,8 @@ import torch.nn as nn
 import math
 import numpy as np
 
-device=torch.device('cuda')
-# device=torch.device('cpu')
+# device=torch.device('cuda')
+device=torch.device('cpu')
 
 class AVWGCN(nn.Module):
     def __init__(self, dim_in, dim_out, cheb_k, embed_dim):
@@ -102,11 +102,11 @@ class Spatial_Attention_layer(nn.Module):
         # self.b_s = torch.randn(1, num_node,num_node , requires_grad=True).to(device)
         # self.V_s = torch.randn(num_node,num_node, requires_grad=True).to(device)
         self.Wq=nn.Linear(c_in,c_in,bias=False)
-        nn.init.kaiming_uniform_(self.Wq.weight, nonlinearity="relu")
+        # nn.init.kaiming_uniform_(self.Wq.weight, nonlinearity="relu")
         self.Wk=nn.Linear(c_in,c_in,bias=False)
-        nn.init.kaiming_uniform_(self.Wk.weight, nonlinearity="relu")
+        # nn.init.kaiming_uniform_(self.Wk.weight, nonlinearity="relu")
         self.Wv=nn.Linear(c_in,num_node,bias=False)
-        nn.init.kaiming_uniform_(self.Wv.weight, nonlinearity="relu")
+        # nn.init.kaiming_uniform_(self.Wv.weight, nonlinearity="relu")
     def forward(self, x,score_his=None):
         '''
         :param x: (batch_size, N, C)
@@ -174,7 +174,7 @@ class spatialAttentionGCN(nn.Module):
         # print(in_channels)
         # print(out_channels)
         self.static=nn.Linear(in_channels,out_channels,bias=True)
-        nn.init.kaiming_uniform_(self.static.weight, nonlinearity="relu")
+        # nn.init.kaiming_uniform_(self.static.weight, nonlinearity="relu")
         self.alpha = nn.Parameter(torch.FloatTensor([0.95]), requires_grad=True)  # D
         self.beta = nn.Parameter(torch.FloatTensor([0.95]), requires_grad=True)  # S
         # self.gamma = nn.Parameter(torch.FloatTensor([0.05]), requires_grad=True)
@@ -185,7 +185,7 @@ class spatialAttentionGCN(nn.Module):
         self.in_channels = in_channels
         self.out_channels = out_channels
         self.Theta1 = nn.Linear(in_channels, in_channels, bias=True)
-        nn.init.kaiming_uniform_(self.Theta1.weight, nonlinearity="relu")
+        # nn.init.kaiming_uniform_(self.Theta1.weight, nonlinearity="relu")
         # self.Theta2 = nn.Linear(in_channels, in_channels, bias=True)
         self.SAt = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
         # self.SAt_T = Spatial_Attention_layer(num_node=self.sym_norm_Adj_matrix.shape[0],c_in=in_channels,c_out=out_channels,dropout=dropout)
@@ -396,7 +396,7 @@ class AVWGCN2(nn.Module):
         self.sp_att_gcn=spatialAttentionGCN(self.adj,dim_in,dim_out)
         # self.emb_gcn=emb_GCN(self.adj,dim_in,dim_out)
         self.linear=nn.Linear(dim_in,dim_out,bias=True)
-        nn.init.kaiming_uniform_(self.linear.weight,nonlinearity='relu')
+        # nn.init.kaiming_uniform_(self.linear.weight,nonlinearity='relu')
         self.dropout=nn.Dropout(0.1)
         # self.att_his=None
     def forward(self, x, node_embeddings=0):

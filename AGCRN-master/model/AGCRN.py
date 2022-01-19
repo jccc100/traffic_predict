@@ -206,8 +206,8 @@ class AVWDCRNN2(nn.Module):
         #last_state: (B, N, hidden_dim)
         # print("current:",current_inputs.shape)
         # current_inputs=self.alpha*current_inputs+self.beta*gate_cnn_out
-        # trans_out = self.trans_layer(current_inputs)
-        trans_out = self.trans_layer(x)+current_inputs
+        trans_out = self.trans_layer(current_inputs)
+        # trans_out = self.trans_layer(x)+current_inputs
         return trans_out, output_hidden
 
     def init_hidden(self, batch_size):
@@ -238,7 +238,7 @@ class AGCRN(nn.Module):
         # self.conv = nn.Conv2d(12, 12, kernel_size=(1, self.hidden_dim), bias=True)
         # self.linear=nn.Linear(self.hidden_dim,self.hidden_dim,bias=True)
         # self.trans_layer = transformer_layer(self.hidden_dim, self.hidden_dim, 2, 64)
-        self.end_conv = nn.Conv2d(6, args.horizon * self.output_dim, kernel_size=(1, self.hidden_dim), bias=True)
+        self.end_conv = nn.Conv2d(1, args.horizon * self.output_dim, kernel_size=(1, self.hidden_dim), bias=True)
         # self.FC1=nn.Linear(self.hidden_dim,self.hidden_dim,bias=True)
         # self.FC2=nn.Linear(self.hidden_dim,self.hidden_dim,bias=True)
 
@@ -257,7 +257,7 @@ class AGCRN(nn.Module):
         # output = self.linear(output)
         # output=self.conv((output))
 
-        output = output[:, -6:, :, :]             #B, 1, N, hidden
+        output = output[:, -1:, :, :]             #B, 1, N, hidden
 
         #CNN based predictor
         output = self.end_conv((output))                         #B, T*C, N, 1

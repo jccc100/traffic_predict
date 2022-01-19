@@ -158,7 +158,7 @@ class AVWDCRNN2(nn.Module):
         self.input_dim = dim_in
         self.num_layers = num_layers
         self.adj=Adj
-        # self.dcrnn_cells = nn.ModuleList()
+        # self.dcrnn_cells = nn.ModuleList()=
         # self.dcrnn_cells.append(AGCRNCell(node_num, dim_in, dim_out, cheb_k, embed_dim))
         # self.tcn=nn.Conv1d(dim_in,dim_out,)
         # self.tcn=TemporalConvNet(dim_in,[1,1,1],3,0.2)
@@ -206,7 +206,8 @@ class AVWDCRNN2(nn.Module):
         #last_state: (B, N, hidden_dim)
         # print("current:",current_inputs.shape)
         # current_inputs=self.alpha*current_inputs+self.beta*gate_cnn_out
-        trans_out = self.trans_layer(current_inputs)
+        # trans_out = self.trans_layer(current_inputs)
+        trans_out = self.trans_layer(x)+current_inputs
         return trans_out, output_hidden
 
     def init_hidden(self, batch_size):

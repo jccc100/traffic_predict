@@ -238,7 +238,7 @@ class AGCRN(nn.Module):
         # self.conv = nn.Conv2d(12, 12, kernel_size=(1, self.hidden_dim), bias=True)
         # self.linear=nn.Linear(self.hidden_dim,self.hidden_dim,bias=True)
         # self.trans_layer = transformer_layer(self.hidden_dim, self.hidden_dim, 2, 64)
-        self.end_conv = nn.Conv2d(12, args.horizon * self.output_dim, kernel_size=(1, self.hidden_dim), bias=True)
+        self.end_conv = nn.Conv2d(8, args.horizon * self.output_dim, kernel_size=(1, self.hidden_dim), bias=True)
         # self.FC1=nn.Linear(self.hidden_dim,self.hidden_dim,bias=True)
         # self.FC2=nn.Linear(self.hidden_dim,self.hidden_dim,bias=True)
 
@@ -257,7 +257,7 @@ class AGCRN(nn.Module):
         # output = self.linear(output)
         # output=self.conv((output))
 
-        output = output[:, -12:, :, :]             #B, 1, N, hidden
+        output = output[:, -8:, :, :]             #B, 1, N, hidden
 
         #CNN based predictor
         output = self.end_conv((output))                         #B, T*C, N, 1

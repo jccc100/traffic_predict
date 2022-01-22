@@ -120,7 +120,7 @@ class transformer_layer_S(nn.Module):
         super(transformer_layer,self).__init__()
         # self.linear1=nn.Linear(dim_in,dim_out)
         self.trans_layers=nn.ModuleList(Transform(dim_out,d) for l in range(num_layer))
-        self.PE=PositionalEncoding(dim_out)
+        self.PE=PositionalEncoding_s(dim_out)
         self.num_layer=num_layer
         self.att_his=att_his
         self.score_his = torch.zeros((64, 170, 12, 12), requires_grad=False).to(device)

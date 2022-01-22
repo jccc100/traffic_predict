@@ -34,7 +34,7 @@ class Transform(nn.Module):
 
         self.d = d
 
-    def forward(self, x,score_his=None):
+    def forward(self, x,score_his=None):# x : b t n hidden
         query = self.qff(x)
         key = self.kff(x)
         value = self.vff(x)
@@ -96,18 +96,22 @@ class PositionalEncoding(nn.Module):
         return x
 
 class transformer_layer(nn.Module):
-    def __init__(self,dim_in,dim_out,num_layer,d):
+    def __init__(self,dim_in,dim_out,num_layer,d,att_his=True):
         super(transformer_layer,self).__init__()
         # self.linear1=nn.Linear(dim_in,dim_out)
         self.trans_layers=nn.ModuleList(Transform(dim_out,d) for l in range(num_layer))
         self.PE=PositionalEncoding(dim_out)
         self.num_layer=num_layer
+        self.att_his=att_his
         self.score_his = torch.zeros((64, 170, 12, 12), requires_grad=False).to(device)
     def forward(self, x):
         # x=self.linear1(x)
         x=self.PE(x)
         for l in range(self.num_layer):
-            x,self.score_his=self.trans_layers[l](x,self.score_his)
+            if  self.att_his:
+                x,self.score_his=self.trans_layers[l](x,self.score_his)
+            else:
+                x,_=self.trans_layers[l](x)
         return x
 
 if __name__=="__main__":

@@ -95,6 +95,45 @@ class PositionalEncoding(nn.Module):
                          requires_grad=False)
         return x
 
+class PositionalEncoding_s(nn.Module):
+    "Implement the PE function."
+
+    def __init__(self, outfea, max_len=170):
+        super(PositionalEncoding, self).__init__()
+
+        # Compute the positional encodings once in log space.
+        pe = torch.zeros(max_len, outfea).to(device)
+        position = torch.arange(0, max_len).unsqueeze(1)
+        div_term = torch.exp(torch.arange(0, outfea, 2) *
+                             -(math.log(10000.0) / outfea))
+        pe[:, 0::2] = torch.sin(position * div_term)
+        pe[:, 1::2] = torch.cos(position * div_term)
+        pe = pe.unsqueeze(0).unsqueeze(2)  # [1,T,1,F]
+        self.register_buffer('pe', pe)
+
+    def forward(self, x):
+        x = x + Variable(self.pe,
+                         requires_grad=False)
+        return x
+class transformer_layer_S(nn.Module):
+    def __init__(self,dim_in,dim_out,num_layer,d,att_his=True):
+        super(transformer_layer,self).__init__()
+        # self.linear1=nn.Linear(dim_in,dim_out)
+        self.trans_layers=nn.ModuleList(Transform(dim_out,d) for l in range(num_layer))
+        self.PE=PositionalEncoding(dim_out)
+        self.num_layer=num_layer
+        self.att_his=att_his
+        self.score_his = torch.zeros((64, 170, 12, 12), requires_grad=False).to(device)
+    def forward(self, x):
+        # x=self.linear1(x)
+        x=self.PE(x)
+        for l in range(self.num_layer):
+            if  self.att_his:
+                x,self.score_his=self.trans_layers[l](x,self.score_his)
+            else:
+                x,_=self.trans_layers[l](x)
+        return x
+
 class transformer_layer(nn.Module):
     def __init__(self,dim_in,dim_out,num_layer,d,att_his=True):
         super(transformer_layer,self).__init__()

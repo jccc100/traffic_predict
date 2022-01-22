@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from torch.nn.utils import weight_norm
 from model.AGCRNCell2 import AGCRNCell,AGCRNCell2
-from model.trans_layer import transformer_layer
+from model.trans_layer import transformer_layer,transformer_layer_S
 class Chomp1d(nn.Module):
     def __init__(self, chomp_size):
         super(Chomp1d, self).__init__()
@@ -166,7 +166,7 @@ class AVWDCRNN2(nn.Module):
         # self.gate_cnn2 = nn.Conv1d(dim_in, dim_in, kernel_size=3, stride=1, padding=2, dilation=2, bias=True)
 
         self.trans_layer_T = transformer_layer(dim_out, dim_out, 2, 64)
-        self.trans_layer_S = transformer_layer(dim_out, dim_out, 2, 64)
+        self.trans_layer_S = transformer_layer_S(dim_out, dim_out, 2, 64)
         self.dcrnn_cells2 = nn.ModuleList()
         self.dcrnn_cells2.append(AGCRNCell2(node_num, dim_in, dim_out, self.adj))
         for _ in range(1, num_layers):

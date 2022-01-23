@@ -207,11 +207,11 @@ class AVWDCRNN2(nn.Module):
         #last_state: (B, N, hidden_dim)
         # print("current:",current_inputs.shape)
         # current_inputs=self.alpha*current_inputs+self.beta*gate_cnn_out
-        trans_T_out = self.trans_layer_T(current_inputs)
-        trans_S_out = self.trans_layer_S(trans_T_out.permute(0,2,1,3)) # b n t hi
-        trans_out=trans_S_out.permute(0,2,1,3)
+        trans_T_out = self.trans_layer_T(current_inputs)+current_inputs
+        # trans_S_out = self.trans_layer_S(trans_T_out.permute(0,2,1,3)) # b n t hi
+        # trans_out=trans_S_out.permute(0,2,1,3)
         # trans_out = self.trans_layer(x)+current_inputs
-        return trans_out, output_hidden
+        return trans_T_out, output_hidden
 
     def init_hidden(self, batch_size):
         init_states = []

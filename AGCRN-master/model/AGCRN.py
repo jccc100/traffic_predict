@@ -193,10 +193,10 @@ class AVWDCRNN2(nn.Module):
         # current_inputs = self.tcn(x).reshape(b,n,d,t).permute(0,3,1,2) # [b*n d t] --> [b n d t] -->[b t n d]
         current_inputs=x
         # print(" SDSDSWDSD")
-        print(current_inputs.shape)
+        # print(current_inputs.shape)
         current_inputs = self.trans_layer_T(current_inputs)
         # print(" SDSDSWDSD2")
-        print(current_inputs.shape)
+        # print(current_inputs.shape)
         output_hidden = []
         for i in range(self.num_layers):
             state = init_state[i]

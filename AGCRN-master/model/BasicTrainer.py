@@ -168,13 +168,14 @@ class Trainer(object):
         if not self.args.debug:
             torch.save(best_model, self.best_path)
             send_email(self.best_path)
-            send_email(str(self.args.log_dir)+"/run.log")
+            # send_email(str(self.args.log_dir)+"/run.log")
             self.logger.info("Saving current best model to " + self.best_path)
 
         #test
         self.model.load_state_dict(best_model)
         #self.val_epoch(self.args.epochs, self.test_loader)
         self.test(self.model, self.args, self.test_loader, self.scaler, self.logger)
+        send_email(str(self.args.log_dir) + "/run.log")
 
     def save_checkpoint(self):
         state = {

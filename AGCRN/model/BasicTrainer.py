@@ -101,7 +101,10 @@ class Trainer(object):
         train_loss_list = []
         val_loss_list = []
         start_time = time.time()
-        for epoch in range(1, self.args.epochs + 1):
+        if self.args.start_epoch > 1:
+            self.model.load_state_dict(torch.load('./model_para/{}/epoch_{}.pth'.format(self.args.dataset,self.args.start_epoch)))
+            print("load epoch_{}.pth success".format(self.args.start_epoch))
+        for epoch in range(self.args.start_epoch, self.args.epochs + 1):
             #epoch_time = time.time()
             train_epoch_loss = self.train_epoch(epoch)
             #print(time.time()-epoch_time)

@@ -60,6 +60,7 @@ args.add_argument('--normalizer', default=config['data']['normalizer'], type=str
 args.add_argument('--column_wise', default=config['data']['column_wise'], type=eval)
 args.add_argument('--default_graph', default=config['data']['default_graph'], type=eval)
 #model
+args.add_argument('--start_epoch', default=config['train']['start_epoch'], type=int)
 args.add_argument('--input_dim', default=config['model']['input_dim'], type=int)
 args.add_argument('--output_dim', default=config['model']['output_dim'], type=int)
 args.add_argument('--embed_dim', default=config['model']['embed_dim'], type=int)

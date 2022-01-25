@@ -156,11 +156,11 @@ class transformer_layer_S(nn.Module):
 
 
 if __name__=="__main__":
-    x = torch.randn(32, 12, 170, 64)
-    dim_in=64
-    dim_out=64
+    x = torch.randn(32, 12, 170, 1)
+    dim_in=1
+    dim_out=1
     num_layer=2
-    d=64
+    d=1
     transformer=transformer_layer(dim_in,dim_out,num_layer,d)
     res=transformer(x)
-    print(res[0].shape)
+    print(res.shape)

@@ -165,7 +165,7 @@ class AVWDCRNN2(nn.Module):
         # self.gate_cnn1 = nn.Conv1d(dim_in, dim_in, kernel_size=3, stride=1, padding=2, dilation=2, bias=True)
         # self.gate_cnn2 = nn.Conv1d(dim_in, dim_in, kernel_size=3, stride=1, padding=2, dilation=2, bias=True)
 
-        self.trans_layer_T = transformer_layer(dim_out, dim_out, 2, 64)
+        self.trans_layer_T = transformer_layer(dim_in, dim_in, 2, 64)
         # self.trans_layer_S = transformer_layer_S(dim_out, dim_out, 2, 64)
         self.dcrnn_cells2 = nn.ModuleList()
         self.dcrnn_cells2.append(AGCRNCell2(node_num, dim_in, dim_out, self.adj))
@@ -192,7 +192,11 @@ class AVWDCRNN2(nn.Module):
         # print("gate:",gate_cnn_out.shape)
         # current_inputs = self.tcn(x).reshape(b,n,d,t).permute(0,3,1,2) # [b*n d t] --> [b n d t] -->[b t n d]
         current_inputs=x
+        # print(" SDSDSWDSD")
+        print(current_inputs.shape)
         current_inputs = self.trans_layer_T(current_inputs)
+        # print(" SDSDSWDSD2")
+        print(current_inputs.shape)
         output_hidden = []
         for i in range(self.num_layers):
             state = init_state[i]

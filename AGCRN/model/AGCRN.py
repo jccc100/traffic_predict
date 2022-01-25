@@ -130,7 +130,7 @@ class AVWDCRNN(nn.Module):
         # x = x.permute(0, 2, 3, 1)  # b n d t
         # x = x.reshape(b * n, d, t)  # b*n d t
         # current_inputs = self.tcn(x).reshape(b, n, d, t).permute(0, 3, 1, 2)  # [b*n d t] --> [b n d t] -->[b t n d]
-        # current_inputs = x
+        current_inputs = x
 
         output_hidden = []
         for i in range(self.num_layers):

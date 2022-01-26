@@ -6,6 +6,7 @@ import copy
 import numpy as np
 from lib.logger import get_logger
 from lib.metrics import All_Metrics
+from send_email import send_email
 
 class Trainer(object):
     def __init__(self, model, loss, optimizer, train_loader, val_loader, test_loader,
@@ -145,15 +146,33 @@ class Trainer(object):
         training_time = time.time() - start_time
         self.logger.info("Total training time: {:.4f}min, best loss: {:.6f}".format((training_time / 60), best_loss))
 
+        # save loss 并发送
+        try:
+            train_loss = np.array(train_loss_list)
+
+            val_loss = np.array(val_loss_list)
+            np.save("./loss_dir/{}/train_loss.npy".format(self.args.dataset), train_loss)
+            np.save("./loss_dir/{}/val_loss.npy".format(self.args.dataset), val_loss)
+            send_email("./loss_dir/{}/".format(self.args.dataset), keyword=".npy")  # send email
+        except:
+            print("保存错误！！！")
+
         #save the best model to file
         if not self.args.debug:
             torch.save(best_model, self.best_path)
+            # 发送最好模型参数
+            send_email(self.best_path)
             self.logger.info("Saving current best model to " + self.best_path)
 
         #test
         self.model.load_state_dict(best_model)
         #self.val_epoch(self.args.epochs, self.test_loader)
         self.test(self.model, self.args, self.test_loader, self.scaler, self.logger)
+        try:
+            # 发送运行日志
+            send_email(str(self.args.log_dir) + "/run.log")
+        except:
+            print("save error!!!")
 
     def save_checkpoint(self):
         state = {

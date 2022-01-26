@@ -138,14 +138,14 @@ class AVWGCN(nn.Module):
         weights = torch.einsum('nd,dkio->nkio', node_embeddings, self.weights_pool)  #N, cheb_k, dim_in, dim_out
         bias = torch.matmul(node_embeddings, self.bias_pool)                       #N, dim_out
 
-        score,_=self.att_score(x) # b n n
-        # print(score.shape)
-        # print(supports.shape)
-        # print(supports[0])
-        supports=torch.einsum("bnn,knm->bknm",score,supports)
-        # print(supports.shape)
-        x_g = torch.einsum("bknm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
-        # x_g = torch.einsum("knm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
+        # score,_=self.att_score(x) # b n n
+        # # print(score.shape)
+        # # print(supports.shape)
+        # # print(supports[0])
+        # supports=torch.einsum("bnn,knm->bknm",score,supports)
+        # # print(supports.shape)
+        # x_g = torch.einsum("bknm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
+        x_g = torch.einsum("knm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
         x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in
         x_gconv = torch.einsum('bnki,nkio->bno', x_g, weights) + bias     #b, N, dim_out
         # print(x_gconv.shape)

@@ -35,6 +35,7 @@ class Transform(nn.Module):
         self.d = d
 
     def forward(self, x,score_his=None):# x : b t n hidden
+        b, t, n, c = x.shape
         query = self.qff(x)
         key = self.kff(x)
         value = self.vff(x)
@@ -43,7 +44,7 @@ class Transform(nn.Module):
         key = key.permute(0, 2, 3, 1)
         # print(key.shape)
         value = value.permute(0, 2, 1, 3)
-        b ,t, n, c=x.shape
+
         # query = torch.cat(torch.split(query, self.d, -1), 0).permute(0, 2, 1, 3)
         # # print(query.shape)
         # key = torch.cat(torch.split(key, self.d, -1), 0).permute(0, 2, 3, 1)

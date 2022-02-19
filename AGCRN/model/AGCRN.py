@@ -130,8 +130,8 @@ class AVWDCRNN(nn.Module):
         # x = x.permute(0, 2, 3, 1)  # b n d t
         # x = x.reshape(b * n, d, t)  # b*n d t
         # current_inputs = self.tcn(x).reshape(b, n, d, t).permute(0, 3, 1, 2)  # [b*n d t] --> [b n d t] -->[b t n d]
-        # current_inputs = x
-        current_inputs = self.trans_layer_T(x)
+        current_inputs = x
+        # current_inputs = self.trans_layer_T(x)
         output_hidden = []
         for i in range(self.num_layers):
             state = init_state[i]
@@ -144,7 +144,7 @@ class AVWDCRNN(nn.Module):
         #current_inputs: the outputs of last layer: (B, T, N, hidden_dim)
         #output_hidden: the last state for each layer: (num_layers, B, N, hidden_dim)
         #last_state: (B, N, hidden_dim)
-        # current_inputs=self.trans_layer_T(current_inputs)
+        current_inputs=self.trans_layer_T(current_inputs)
         return current_inputs, output_hidden
 
     def init_hidden(self, batch_size):

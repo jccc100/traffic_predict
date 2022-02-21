@@ -36,9 +36,12 @@ class Transform(nn.Module):
 
     def forward(self, x,score_his=None):# x : b t n hidden
         b, t, n, c = x.shape
-        query = self.qff(x)
-        key = self.kff(x)
-        value = self.vff(x)
+        # query = self.qff(x)
+        # key = self.kff(x)
+        # value = self.vff(x)
+        query=x
+        key=x
+        value=x
         # query = query.permute(0, 2, 1, 3)
         # # print(query.shape)
         # key = key.permute(0, 2, 3, 1)
@@ -69,7 +72,9 @@ class Transform(nn.Module):
         # score_his=A.clone().detach()
 
         value = torch.matmul(A, value)
+        # value = torch.softmax(value,-2)
         value = torch.cat(torch.split(value, x.shape[0], 0), -1).permute(0, 2, 1, 3)
+        # value = value.permute(0,2,1,3)
         value += x
 
         value = self.ln(value)

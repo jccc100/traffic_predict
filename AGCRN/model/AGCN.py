@@ -54,12 +54,12 @@ class Spatial_Attention_layer(nn.Module):
         self.in_channels=c_in
         self.dropout = nn.Dropout(p=dropout)
 
-        self.Wq=nn.Linear(c_in,c_in,bias=False)
-        # nn.init.kaiming_uniform_(self.Wq.weight, nonlinearity="relu")
-        self.Wk=nn.Linear(c_in,c_in,bias=False)
-        # nn.init.kaiming_uniform_(self.Wk.weight, nonlinearity="relu")
-        self.Wv=nn.Linear(c_in,num_node,bias=False)
-        # nn.init.kaiming_uniform_(self.Wv.weight, nonlinearity="relu")
+        # self.Wq=nn.Linear(c_in,c_in,bias=False)
+        # # nn.init.kaiming_uniform_(self.Wq.weight, nonlinearity="relu")
+        # self.Wk=nn.Linear(c_in,c_in,bias=False)
+        # # nn.init.kaiming_uniform_(self.Wk.weight, nonlinearity="relu")
+        # self.Wv=nn.Linear(c_in,num_node,bias=False)
+        # # nn.init.kaiming_uniform_(self.Wv.weight, nonlinearity="relu")
     def forward(self, x,score_his=None):
         '''
         :param x: (batch_size, N, C)
@@ -68,14 +68,17 @@ class Spatial_Attention_layer(nn.Module):
         batch_size, num_of_vertices, in_channels = x.shape
 
         # Q K V 改之后
-        Q=self.Wq(x)
-        # print("Q:",Q.shape)
-        K=self.Wk(x)
-        # print("K:", K.shape)
-        V=self.Wv(x)
+        # Q=self.Wq(x)
+        # # print("Q:",Q.shape)
+        # K=self.Wk(x)
+        # # print("K:", K.shape)
+        # V=self.Wv(x)
+        Q=x
+        K=x
+        V=x
         score = torch.matmul(Q, K.transpose(1, 2))
         score=F.softmax(score,dim=1)
-        score=torch.matmul(score,V)
+        # score=torch.matmul(score,V)
         # score=F.relu(score)
         # # print("V:", V.shape)
         # if score_his!=None:
@@ -145,6 +148,7 @@ class AVWGCN(nn.Module):
         # supports=torch.einsum("bnn,knm->bknm",score,supports)
         # # print(supports.shape)
         # x_g = torch.einsum("bknm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
+        supports=torch.einsum("bnn,bnn->bnn",self.att_score(x),supports)# 加上空间注意力
         x_g = torch.einsum("knm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
         x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in
         x_gconv = torch.einsum('bnki,nkio->bno', x_g, weights) + bias     #b, N, dim_out

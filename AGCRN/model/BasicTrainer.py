@@ -151,11 +151,15 @@ class Trainer(object):
             train_loss = np.array(train_loss_list)
 
             val_loss = np.array(val_loss_list)
+            print(1)
             np.save("./loss_dir/{}/train_loss.npy".format(self.args.dataset), train_loss)
+            print(2)
             np.save("./loss_dir/{}/val_loss.npy".format(self.args.dataset), val_loss)
+            print(3)
             send_email("./loss_dir/{}/".format(self.args.dataset), keyword=".npy")  # send email
-        except:
-            print("保存错误！！！")
+            print(4)
+        except Exception as e:
+            print(e,"\n错误！！！")
 
         #save the best model to file
         if not self.args.debug:

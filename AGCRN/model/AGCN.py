@@ -120,7 +120,7 @@ class AVWGCN(nn.Module):
     def __init__(self, dim_in, dim_out, adj,cheb_k, embed_dim):
         super(AVWGCN, self).__init__()
         self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(adj)).to(torch.float32)
-        self.sym_norm_Adj_matrix = F.softmax(self.sym_norm_Adj_matrix, dim=1)
+        self.sym_norm_Adj_matrix = F.softmax(self.sym_norm_Adj_matrix, dim=1).to(device=torch.device("cuda"))
         # self.alpha = nn.Parameter(torch.FloatTensor([0.4]), requires_grad=True)  # D
         # self.beta = nn.Parameter(torch.FloatTensor([0.6]), requires_grad=True)  # S
 

@@ -142,6 +142,7 @@ class AVWGCN(nn.Module):
         bias = torch.matmul(node_embeddings, self.bias_pool)                       #N, dim_out
 
         score,_=self.att_score(x) # b n n
+        print(self.sym_norm_Adj_matrix.shape,"aaaa")
         score=torch.einsum("nn,bnn->bnn",self.sym_norm_Adj_matrix,score)
         # # print(score.shape)
         # # print(supports.shape)

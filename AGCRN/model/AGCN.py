@@ -143,7 +143,8 @@ class AVWGCN(nn.Module):
 
         score,_=self.att_score(x) # b n n
         # print(self.sym_norm_Adj_matrix.shape,"aaaa")
-        score=torch.einsum("bnn,nn->bnn",score,self.sym_norm_Adj_matrix)
+        # score=torch.einsum("bnn,nn->bnn",score,self.sym_norm_Adj_matrix)
+        score=torch.matmul(score,self.sym_norm_Adj_matrix)
         # # print(score.shape)
         # # print(supports.shape)
         # # print(supports[0])

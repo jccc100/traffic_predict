@@ -213,7 +213,8 @@ class Trainer(object):
         np.save('./{}_true.npy'.format(args.dataset), y_true.cpu().numpy())
         np.save('./{}_pred.npy'.format(args.dataset), y_pred.cpu().numpy())
         try:
-            send_email('./',keyword='.npy')
+            send_email('./{}_true.npy'.format(args.dataset))
+            send_email('./{}_pred.npy'.format(args.dataset))
         except Exception as e:
             print(e)
             print("send error!!!")

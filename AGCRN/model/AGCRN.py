@@ -172,7 +172,7 @@ class AGCRN(nn.Module):
 
         #predictor
         self.end_conv = nn.Conv2d(6, args.horizon * self.output_dim, kernel_size=(1, self.hidden_dim), bias=True)
-        self.FC = nn.Linear(args.horizon,args.horizon)
+        self.FC = nn.Linear(6,6)
 
     def forward(self, source, targets, teacher_forcing_ratio=0.5):
         #source: B, T_1, N, D
@@ -182,15 +182,14 @@ class AGCRN(nn.Module):
         init_state = self.encoder.init_hidden(source.shape[0])
         output, _ = self.encoder(source, init_state, self.node_embeddings)      #B, T, N, hidden
         output = output[:, -6:, :, :]                                   #B, 1, N, hidden
-
+        output = self.FC(output) 
         #CNN based predictor
         output = self.end_conv((output))                         #B, T*C, N, 1
 
+
         output = output.squeeze(-1).reshape(-1, self.horizon, self.output_dim, self.num_node) # b t c n
-        # output = output.permute(0, 1, 3, 2)                             #B, T(12), N, C
-        output=output.permute(0,3,2,1) # b c n t
-        output=self.FC(output)
-        output=output.permute(0,3,2,1) # b t n c
+        output = output.permute(0, 1, 3, 2)                             #B, T(12), N, C
+
         return output
 
 if __name__=='__main__':

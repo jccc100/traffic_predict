@@ -141,14 +141,14 @@ class AVWGCN(nn.Module):
         weights = torch.einsum('nd,dkio->nkio', node_embeddings, self.weights_pool)  #N, cheb_k, dim_in, dim_out
         bias = torch.matmul(node_embeddings, self.bias_pool)                       #N, dim_out
 
-        score,_=self.att_score(x) # b n n
+        # score,_=self.att_score(x) # b n n
         # print(self.sym_norm_Adj_matrix.shape,"aaaa")
         # score=torch.einsum("bnn,nn->bnn",score,self.sym_norm_Adj_matrix)
-        score=torch.matmul(score,self.sym_norm_Adj_matrix)
+        # score=torch.matmul(score,self.sym_norm_Adj_matrix)
         # # print(score.shape)
         # # print(supports.shape)
         # # print(supports[0])
-        supports=torch.einsum("bnn,knm->bknm",score,supports)
+        # supports=torch.einsum("bnn,knm->bknm",score,supports)
         # # print(supports.shape)
         x_g = torch.einsum("bknm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
         # supports=torch.einsum("bnn,knm->bknm",self.att_score(x)[0],supports)# 加上空间注意力

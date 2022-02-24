@@ -182,7 +182,7 @@ class AGCRN(nn.Module):
         init_state = self.encoder.init_hidden(source.shape[0])
         output, _ = self.encoder(source, init_state, self.node_embeddings)      #B, T, N, hidden
         output = output[:, -6:, :, :]                                   #B, 1, N, hidden
-        output = self.FC(output) 
+        output = self.FC(output.permute(0,3,2,1)) .permute(0,3,2,1)
         #CNN based predictor
         output = self.end_conv((output))                         #B, T*C, N, 1
 

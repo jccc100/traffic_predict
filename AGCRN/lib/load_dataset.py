@@ -9,6 +9,9 @@ def load_st_dataset(dataset):
     elif dataset == 'PEMSD8':
         data_path = os.path.join('../data/PEMSD8/pems08.npz')
         data = np.load(data_path)['data'][:, :, 0]  #onley the first dimension, traffic flow data
+    elif dataset == 'PEMS03':
+        data_path = os.path.join('../data/PEMS03/pems03.npz')
+        data = np.load(data_path)['data'][:, :, 0]  #onley the first dimension, traffic flow data
     else:
         raise ValueError
     if len(data.shape) == 2:

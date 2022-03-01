@@ -16,9 +16,9 @@ device=torch.device('cuda')
 class Transform(nn.Module):
     def __init__(self, outfea, d):
         super(Transform, self).__init__()
-        self.qff = nn.Linear(outfea, outfea)
-        # nn.init.kaiming_uniform_(self.qff.weight,nonlinearity="relu")
-        self.kff = nn.Linear(outfea, outfea)
+        # self.qff = nn.Linear(outfea, outfea)
+        # # nn.init.kaiming_uniform_(self.qff.weight,nonlinearity="relu")
+        # self.kff = nn.Linear(outfea, outfea)
         # nn.init.kaiming_uniform_(self.kff.weight, nonlinearity="relu")
         self.vff = nn.Linear(outfea, outfea)
         # nn.init.kaiming_uniform_(self.vff.weight, nonlinearity="relu")
@@ -43,7 +43,7 @@ class Transform(nn.Module):
         # value = self.vff(x)
         query=self.conv1(x)
         key=self.conv2(x)
-        value=x
+        value=self.vff(x)
         # query = query.permute(0, 2, 1, 3)
         # # print(query.shape)
         # key = key.permute(0, 2, 3, 1)

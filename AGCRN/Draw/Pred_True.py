@@ -8,7 +8,13 @@ import numpy as np
 import matplotlib.dates as mdates
 from datetime import datetime
 
-file_path=[r"C:\Users\jc\Desktop\毕业相关\实验数据\2022-02-24\PEMS04\PEMSD4_pred.npy",
+file_path_D4=[r"C:\Users\jc\Desktop\毕业相关\实验数据\2022-02-24\PEMS04\PEMSD4_pred.npy",
+           r"C:\Users\jc\Desktop\毕业相关\实验数据\2022-02-24\PEMS04\PEMSD4_true.npy"]
+
+file_path_D8=[r"C:\Users\jc\Desktop\毕业相关\实验数据\2022-02-24\PEMS04\PEMSD4_pred.npy",
+           r"C:\Users\jc\Desktop\毕业相关\实验数据\2022-02-24\PEMS04\PEMSD4_true.npy"]
+
+file_path_D3=[r"C:\Users\jc\Desktop\毕业相关\实验数据\2022-02-24\PEMS04\PEMSD4_pred.npy",
            r"C:\Users\jc\Desktop\毕业相关\实验数据\2022-02-24\PEMS04\PEMSD4_true.npy"]
 # 12代表0-60分钟的预测
 pred_flow=np.load(file_path[0])
@@ -39,6 +45,7 @@ plt.plot(drow_true_flow_15,label="true_flow")
 plt.title("PEMSD4 15min")
 plt.xlabel("Time")
 plt.ylabel("Traffic Flow")
+plt.legend() # 显示图例
 
 # 30 min
 ax2=plt.subplot(3,1,2)
@@ -47,6 +54,7 @@ plt.plot(drow_true_flow_30,label="true_flow")
 plt.title("PEMSD4 30min")
 plt.xlabel("Time")
 plt.ylabel("Traffic Flow")
+plt.legend() # 显示图例
 
 # 60 min
 ax3=plt.subplot(3,1,3)
@@ -57,5 +65,6 @@ plt.xlabel("Time")
 plt.ylabel("Traffic Flow")
 
 plt.legend() # 显示图例
+
+plt.savefig(r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD4\train_val_loss.png")
 plt.show()
-# plt.savefig(r"C:\Users\jc\Desktop\毕业相关\实验数据\2022-02-24\PEMS04\图\train_val_loss.png")

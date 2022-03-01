@@ -22,8 +22,8 @@ class Transform(nn.Module):
         # nn.init.kaiming_uniform_(self.kff.weight, nonlinearity="relu")
         self.vff = nn.Linear(outfea, outfea)
         # nn.init.kaiming_uniform_(self.vff.weight, nonlinearity="relu")
-        self.conv1=nn.Conv2d(outfea,outfea,(1,3),bias=True)
-        self.conv2=nn.Conv2d(outfea,outfea,(1,3),bias=True)
+        self.conv1=nn.Conv2d(12,12,(1,3),bias=True)
+        self.conv2=nn.Conv2d(12,12,(1,3),bias=True)
 
         self.ln = nn.LayerNorm(outfea)
         self.lnff = nn.LayerNorm(outfea)

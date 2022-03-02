@@ -66,12 +66,13 @@ class Transform(nn.Module):
 
         A = torch.softmax(A, -1)
 
-        # if score_his is not None:
-        #     try:
-        #         A=A+score_his
-        #     except:
-        #         pass
-        # score_his=A.clone().detach()
+        # 残差注意力
+        if score_his is not None:
+            try:
+                A=A+score_his
+            except:
+                pass
+        score_his=A.clone().detach()
 
         value = torch.matmul(A, value)
         # value = torch.softmax(value,-2)

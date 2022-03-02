@@ -8,11 +8,11 @@ import numpy as np
 import matplotlib.dates as mdates
 from datetime import datetime
 
-file_path_D4=[r"C:\Users\jc\Desktop\毕业相关\实验数据\2022-02-24\PEMS04\PEMSD4_pred.npy",
-           r"C:\Users\jc\Desktop\毕业相关\实验数据\2022-02-24\PEMS04\PEMSD4_true.npy"]
+file_path_D4=[r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD4\3.1\PEMSD4_pred.npy",
+           r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD4\3.1\PEMSD4_true.npy"]
 
-file_path_D8=[r"C:\Users\jc\Desktop\毕业相关\实验数据\2022-02-24\PEMS04\PEMSD4_pred.npy",
-           r"C:\Users\jc\Desktop\毕业相关\实验数据\2022-02-24\PEMS04\PEMSD4_true.npy"]
+file_path_D8=[r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\3.1\PEMSD4_pred.npy",
+           r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\3.1\PEMSD4_true.npy"]
 
 file_path_D3=[r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD3\3.1\PEMS03_pred.npy",
            r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD3\3.1\PEMS03_true.npy"]
@@ -25,7 +25,7 @@ def D4():
     # true_flow=true_flow.reshape(3375,307,12)
     true_flow = true_flow.swapaxes(1, 2)
 
-    node = 100
+    node = 111
     day=1
     drow_pred_flow_15 = pred_flow[:day*24 * 12, node, 2, :]
     drow_true_flow_15 = true_flow[:day*24 * 12, node, 2, :]
@@ -139,7 +139,7 @@ def D8():
     # true_flow = true_flow.reshape(3375, 307, 12)
     true_flow=true_flow.swapaxes(1,2)
 
-    node = 100
+    node = 111
     day=1
     drow_pred_flow_15 = pred_flow[:day*24 * 12, node, 2, :]
     drow_true_flow_15 = true_flow[:day*24 * 12, node, 2, :]
@@ -189,7 +189,7 @@ def D8():
     plt.show()
 
 if __name__=="__main__":
-    D3()
+    # D3()
     # D4()
-    # D8()
+    D8()
 

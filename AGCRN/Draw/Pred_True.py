@@ -27,14 +27,15 @@ def D4():
 
     node = 111
     day=1
-    drow_pred_flow_15 = pred_flow[:day*24 * 12, node, 2, :]
-    drow_true_flow_15 = true_flow[:day*24 * 12, node, 2, :]
+    shifting=250
+    drow_pred_flow_15 = pred_flow[shifting:day*24 * 12+shifting, node, 2, :]
+    drow_true_flow_15 = true_flow[shifting:day*24 * 12+shifting, node, 2, :]
 
-    drow_pred_flow_30 = pred_flow[:day*24 * 12, node, 5, :]
-    drow_true_flow_30 = true_flow[:day*24 * 12, node, 5, :]
+    drow_pred_flow_30 = pred_flow[shifting:day*24 * 12+shifting, node, 5, :]
+    drow_true_flow_30 = true_flow[shifting:day*24 * 12+shifting, node, 5, :]
 
-    drow_pred_flow_60 = pred_flow[:day*24 * 12, node, 11, :]
-    drow_true_flow_60 = true_flow[:day*24 * 12, node, 11, :]
+    drow_pred_flow_60 = pred_flow[shifting:day*24 * 12+shifting, node, 11, :]
+    drow_true_flow_60 = true_flow[shifting:day*24 * 12+shifting, node, 11, :]
 
     # ax = plt.gca()   #表明设置图片的各个轴，plt.gcf()表示图片本身
 
@@ -42,36 +43,37 @@ def D4():
     # xs = ['00:00','03:00','06:00','09:00','12:00','15:00','18:00','21:00','24:00']
     #  = [datetime.strptime(d, '%Y%m%d%H') for d in dates]
     # fig = plt.figure( [figsize=(6,3)] )
-    fig=plt.figure(figsize=(12,14))
+    # fig=plt.figure(figsize=(12,15))
+    fig=plt.figure(figsize=(8,5))
     # 15 min
-    ax1=plt.subplot(3,1,1)
-    plt.plot(drow_pred_flow_15,label="pred_flow")
-    plt.plot(drow_true_flow_15,label="true_flow")
-    plt.title("PEMSD4 15min")
-    plt.xlabel("Time")
-    plt.ylabel("Traffic Flow")
-    plt.legend() # 显示图例
+    # ax1=plt.subplot(3,1,1)
+    # plt.plot(drow_pred_flow_15,label="Pred_flow")
+    # plt.plot(drow_true_flow_15,label="Truth_flow")
+    # plt.title("PEMSD4 15min")
+    # plt.xlabel("Time")
+    # plt.ylabel("Traffic Flow")
+    # plt.legend() # 显示图例
 
-    # 30 min
-    ax2=plt.subplot(3,1,2)
-    plt.plot(drow_pred_flow_30,label="pred_flow")
-    plt.plot(drow_true_flow_30,label="true_flow")
-    plt.title("PEMSD4 30min")
-    plt.xlabel("Time")
-    plt.ylabel("Traffic Flow")
-    plt.legend() # 显示图例
-
-    # 60 min
-    ax3=plt.subplot(3,1,3)
-    plt.plot(drow_pred_flow_60,label="pred_flow")
-    plt.plot(drow_true_flow_60,label="true_flow")
+    # # 30 min
+    # ax2=plt.subplot(3,1,2)
+    # plt.plot(drow_pred_flow_30,label="pred_flow")
+    # plt.plot(drow_true_flow_30,label="true_flow")
+    # plt.title("PEMSD4 30min")
+    # plt.xlabel("Time")
+    # plt.ylabel("Traffic Flow")
+    # plt.legend() # 显示图例
+    # #
+    # # # 60 min
+    # ax3=plt.subplot(3,1,3)
+    plt.plot(drow_pred_flow_60,label="Pred_flow")
+    plt.plot(drow_true_flow_60,label="Trurh_flow")
     plt.title("PEMSD4 60min")
     plt.xlabel("Time")
     plt.ylabel("Traffic Flow")
 
     plt.legend() # 显示图例
 
-    plt.savefig(r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD4\3.1\Pred_True_{}_day{}.png".format(str(node),str(day)))
+    plt.savefig(r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD4\3.1\Pred_True_{}_day{}_111.png".format(str(node),str(day)))
 
     plt.show()
 
@@ -84,14 +86,15 @@ def D3():
     true_flow = true_flow.swapaxes(1, 2)
     node=111
     day=1
-    drow_pred_flow_15 = pred_flow[:day*24 * 12, node, 2,:]
-    drow_true_flow_15 = true_flow[:day*24 * 12, node, 2,:]
+    shifting=50
+    drow_pred_flow_15 = pred_flow[shifting:day*24 * 12+shifting, node, 2,:]
+    drow_true_flow_15 = true_flow[shifting:day*24 * 12+shifting, node, 2,:]
 
-    drow_pred_flow_30 = pred_flow[:day*24 * 12, node, 5,:]
-    drow_true_flow_30 = true_flow[:day*24 * 12, node, 5,:]
+    drow_pred_flow_30 = pred_flow[shifting:day*24 * 12+shifting, node, 5,:]
+    drow_true_flow_30 = true_flow[shifting:day*24 * 12+shifting, node, 5,:]
 
-    drow_pred_flow_60 = pred_flow[:day*24 * 12, node, 11,:]
-    drow_true_flow_60 = true_flow[:day*24 * 12, node, 11,:]
+    drow_pred_flow_60 = pred_flow[shifting:day*24 * 12+shifting, node, 11,:]
+    drow_true_flow_60 = true_flow[shifting:day*24 * 12+shifting, node, 11,:]
 
     # ax = plt.gca()   #表明设置图片的各个轴，plt.gcf()表示图片本身
 
@@ -141,14 +144,15 @@ def D8():
 
     node = 111
     day=1
-    drow_pred_flow_15 = pred_flow[:day*24 * 12, node, 2, :]
-    drow_true_flow_15 = true_flow[:day*24 * 12, node, 2, :]
+    shifting=50
+    drow_pred_flow_15 = pred_flow[shifting:day*24 * 12+shifting, node, 2, :]
+    drow_true_flow_15 = true_flow[shifting:day*24 * 12+shifting, node, 2, :]
 
-    drow_pred_flow_30 = pred_flow[:day*24 * 12, node, 5, :]
-    drow_true_flow_30 = true_flow[:day*24 * 12, node, 5, :]
+    drow_pred_flow_30 = pred_flow[shifting:day*24 * 12+shifting, node, 5, :]
+    drow_true_flow_30 = true_flow[shifting:day*24 * 12+shifting, node, 5, :]
 
-    drow_pred_flow_60 = pred_flow[:day*24 * 12, node, 11, :]
-    drow_true_flow_60 = true_flow[:day*24 * 12, node, 11, :]
+    drow_pred_flow_60 = pred_flow[shifting:day*24 * 12+shifting, node, 11, :]
+    drow_true_flow_60 = true_flow[shifting:day*24 * 12+shifting, node, 11, :]
 
     # ax = plt.gca()   #表明设置图片的各个轴，plt.gcf()表示图片本身
 
@@ -156,36 +160,38 @@ def D8():
     # xs = ['00:00','03:00','06:00','09:00','12:00','15:00','18:00','21:00','24:00']
     #  = [datetime.strptime(d, '%Y%m%d%H') for d in dates]
     # fig = plt.figure( [figsize=(6,3)] )
-    fig = plt.figure(figsize=(12, 14))
+    fig = plt.figure(figsize=(8, 5))
     # 15 min
-    ax1 = plt.subplot(3, 1, 1)
-    plt.plot(drow_pred_flow_15, label="pred_flow")
-    plt.plot(drow_true_flow_15, label="true_flow")
-    plt.title("PEMSD8 15min")
-    plt.xlabel("Time")
-    plt.ylabel("Traffic Flow")
-    plt.legend()  # 显示图例
+    # ax1 = plt.subplot(3, 1, 1)
+    ax1 = plt.subplot(1, 1, 1)
+    # plt.plot(drow_pred_flow_15, label="pred_flow")
+    # plt.plot(drow_true_flow_15, label="true_flow")
+    # plt.title("PEMSD8 15min")
+    # plt.xlabel("Time")
+    # plt.ylabel("Traffic Flow")
+    # plt.legend()  # 显示图例
 
     # 30 min
-    ax2 = plt.subplot(3, 1, 2)
-    plt.plot(drow_pred_flow_30, label="pred_flow")
-    plt.plot(drow_true_flow_30, label="true_flow")
-    plt.title("PEMSD8 30min")
-    plt.xlabel("Time")
-    plt.ylabel("Traffic Flow")
-    plt.legend()  # 显示图例
-
-    # 60 min
-    ax3 = plt.subplot(3, 1, 3)
-    plt.plot(drow_pred_flow_60, label="pred_flow")
-    plt.plot(drow_true_flow_60, label="true_flow")
+    # ax2 = plt.subplot(3, 1, 2)
+    # ax2 = plt.subplot(3, 1, 2)
+    # plt.plot(drow_pred_flow_30, label="pred_flow")
+    # plt.plot(drow_true_flow_30, label="true_flow")
+    # plt.title("PEMSD8 30min")
+    # plt.xlabel("Time")
+    # plt.ylabel("Traffic Flow")
+    # plt.legend()  # 显示图例
+    #
+    # # 60 min
+    # ax3 = plt.subplot(3, 1, 3)
+    plt.plot(drow_pred_flow_60, label="Pred_flow")
+    plt.plot(drow_true_flow_60, label="Truth_flow")
     plt.title("PEMSD8 60min")
     plt.xlabel("Time")
     plt.ylabel("Traffic Flow")
 
     plt.legend()  # 显示图例
 
-    plt.savefig(r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\3.1\Pred_True_{}_day{}.png".format(str(node),str(day)))
+    plt.savefig(r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\3.1\Pred_True_{}_day{}_30min.png".format(str(node),str(day)))
     plt.show()
 
 if __name__=="__main__":

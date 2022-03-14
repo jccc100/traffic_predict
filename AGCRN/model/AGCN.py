@@ -149,7 +149,7 @@ class AVWGCN(nn.Module):
         # x_g = torch.einsum("nn,bnc->bnc", supports, x)    #
         # x_gconv = self.Linear(x_g)
 
-        score,_=self.att_score(x) # b n n
+        # score,_=self.att_score(x) # b n n
         # att_out=torch.einsum('bnn,bnc->bnc')
         # att_out=torch.einsum()
         # print(self.sym_norm_Adj_matrix.shape,"aaaa")
@@ -177,8 +177,8 @@ class AVWGCN(nn.Module):
         # print(x_gconv.shape)
         # static_out=torch.einsum("nn,bnc->bnc",self.sym_norm_Adj_matrix,x)
         # print(static_out.shape)
-        gcn_out=self.alpha*score+self.beta*x_gconv
-        # gcn_out=x_gconv
+        # gcn_out=self.alpha*score+self.beta*x_gconv
+        gcn_out=x_gconv
         return gcn_out
 
 if __name__=="__main__":

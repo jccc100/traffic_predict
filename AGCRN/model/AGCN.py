@@ -156,7 +156,7 @@ class AVWGCN(nn.Module):
         # supports=torch.einsum("bnn,knm->bknm",score,supports)
         # # print(supports.shape)
         # x_g = torch.einsum("bknm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
-        # supports=torch.einsum("bnn,knm->bknm",self.att_score(x)[0],supports)# 加上空间注意力
+        supports=self.att_score(x)[0]+supports# 加上空间注意力
         # 加静态
 
         # supports=torch.einsum("nn,knm->knm",self.alpha*self.sym_norm_Adj_matrix,supports)# 加上静态邻接矩阵

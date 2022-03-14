@@ -132,9 +132,9 @@ class AVWGCN(nn.Module):
         #x shaped[B, N, C], node_embeddings shaped [N, D] -> supports shaped [N, N]
         #output shape [B, N, C]
         node_num = node_embeddings.shape[0]
-        supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))+self.att_score(x)[0]), dim=1) # N N
-        # supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))), dim=1) # N N
-        
+        # supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))+self.att_score(x)[0]), dim=1) # N N
+        supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))), dim=1) # N N
+
         support_set = [torch.eye(node_num).to(supports.device), supports]
         #default cheb_k = 3
         for k in range(2, self.cheb_k):
@@ -148,7 +148,8 @@ class AVWGCN(nn.Module):
         # x_g = torch.einsum("nn,bnc->bnc", supports, x)    #
         # x_gconv = self.Linear(x_g)
 
-        # score,_=self.att_score(x) # b n n
+        score,_=self.att_score(x) # b n n
+        # att_out=torch.einsum()
         # print(self.sym_norm_Adj_matrix.shape,"aaaa")
         # score=torch.einsum("bnn,nn->bnn",score,self.sym_norm_Adj_matrix)
         # score=torch.matmul(score,self.sym_norm_Adj_matrix)
@@ -160,7 +161,7 @@ class AVWGCN(nn.Module):
         # x_g = torch.einsum("bknm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
 
         # 加静态
-
+        supports = score + supports  # 加上空间注意力
         # supports=torch.einsum("nn,knm->knm",self.alpha*self.sym_norm_Adj_matrix,supports)# 加上静态邻接矩阵
         static_out=torch.einsum("mm,bmc->bmc",self.sym_norm_Adj_matrix,x)
         static_out=self.Linear(static_out) # b n o

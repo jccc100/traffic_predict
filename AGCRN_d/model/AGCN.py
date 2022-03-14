@@ -192,8 +192,8 @@ class AVWGCN_d(nn.Module):
         self.cheb_k = cheb_k
         self.weights_pool = nn.Parameter(torch.FloatTensor(embed_dim, cheb_k, dim_in, dim_out))
         self.bias_pool = nn.Parameter(torch.FloatTensor(embed_dim, dim_out))
-        self.E1 = nn.Embedding(170,2)
-        self.E2 = nn.Embedding(170,2)
+        self.E1 = nn.Embedding(170,170)
+        self.E2 = nn.Embedding(170,170)
     def forward(self, x, node_embeddings):
         #x shaped[B, N, C], node_embeddings shaped [N, D] -> supports shaped [N, N]
         #output shape [B, N, C]
@@ -235,7 +235,11 @@ class AVWGCN_d(nn.Module):
         # static_out=self.Linear(static_out) # b n o
         # static_out=nn.ReLU(static_out)
         # 不改
-        supports=nn.ReLU(nn.Tanh(3*(supports2-supports)))
+        m1=nn.Tanh(torch.einsum("knn,nn->knn",supports,self.E1))
+        m2=nn.Tanh(torch.einsum("knn,nn->knn",supports2,self.E2))
+        m2_1=torch.einsum('knn,knn->knn',m1,m2.permute(0,2,1))-torch.einsum('knn,knn->knn',m2,m1.permute(0,2,1))
+        m2_1=3*m2_1
+        supports=nn.ReLU(nn.Tanh(m2_1))
         x_g = torch.einsum("knm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
         # x_g2 = torch.einsum("knn,bnc->bknc", supports.permute(0,2,1), x)      #B, cheb_k, N, dim_in
         # x_g=nn.Tanh(3*(x_g-x_g2)) # b k n i

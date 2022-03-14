@@ -175,8 +175,8 @@ class AVWGCN(nn.Module):
         # print(x_gconv.shape)
         # static_out=torch.einsum("nn,bnc->bnc",self.sym_norm_Adj_matrix,x)
         # print(static_out.shape)
-        gcn_out=self.alpha*static_out+self.beta*x_gconv
-        # gcn_out=x_gconv
+        # gcn_out=self.alpha*static_out+self.beta*x_gconv
+        gcn_out=x_gconv
         return gcn_out
 
 

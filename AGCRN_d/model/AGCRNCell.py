@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-from model.AGCN import AVWGCN
+from model.AGCN import AVWGCN_d as AVWGCN
 
 class AGCRNCell(nn.Module):
     def __init__(self, node_num, dim_in, dim_out,adj, cheb_k, embed_dim):

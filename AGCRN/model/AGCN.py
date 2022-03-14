@@ -132,7 +132,9 @@ class AVWGCN(nn.Module):
         #x shaped[B, N, C], node_embeddings shaped [N, D] -> supports shaped [N, N]
         #output shape [B, N, C]
         node_num = node_embeddings.shape[0]
-        supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))), dim=1) # N N
+        supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))+self.att_score(x)[0]), dim=1) # N N
+        # supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))), dim=1) # N N
+        
         support_set = [torch.eye(node_num).to(supports.device), supports]
         #default cheb_k = 3
         for k in range(2, self.cheb_k):
@@ -156,7 +158,7 @@ class AVWGCN(nn.Module):
         # supports=torch.einsum("bnn,knm->bknm",score,supports)
         # # print(supports.shape)
         # x_g = torch.einsum("bknm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
-        supports=self.att_score(x)[0]+supports# 加上空间注意力
+
         # 加静态
 
         # supports=torch.einsum("nn,knm->knm",self.alpha*self.sym_norm_Adj_matrix,supports)# 加上静态邻接矩阵

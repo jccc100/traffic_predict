@@ -235,10 +235,10 @@ class AVWGCN_d(nn.Module):
         # static_out=self.Linear(static_out) # b n o
         # static_out=nn.ReLU(static_out)
         # 不改
-
+        supports=nn.ReLU(nn.Tanh(3*(supports2-supports)))
         x_g = torch.einsum("knm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
-        x_g2 = torch.einsum("knm,bmc->bknc", supports2, x)      #B, cheb_k, N, dim_in
-        x_g=nn.Tanh(3*(x_g-x_g2)) # b k n i
+        # x_g2 = torch.einsum("knn,bnc->bknc", supports.permute(0,2,1), x)      #B, cheb_k, N, dim_in
+        # x_g=nn.Tanh(3*(x_g-x_g2)) # b k n i
 
 
         x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in

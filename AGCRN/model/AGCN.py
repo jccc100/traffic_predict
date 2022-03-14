@@ -123,7 +123,7 @@ class AVWGCN(nn.Module):
         self.sym_norm_Adj_matrix = F.softmax(self.sym_norm_Adj_matrix, dim=1).to(device=torch.device("cuda"))
         self.alpha = nn.Parameter(torch.FloatTensor([0.05]), requires_grad=True)  # D
         self.beta = nn.Parameter(torch.FloatTensor([0.95]), requires_grad=True)  # S
-
+        self.Linear=nn.Linear(dim_in,dim_out,bias=True)
         self.att_score=Spatial_Attention_layer(adj.shape[0],dim_in,dim_out)
         self.cheb_k = cheb_k
         self.weights_pool = nn.Parameter(torch.FloatTensor(embed_dim, cheb_k, dim_in, dim_out))
@@ -159,7 +159,8 @@ class AVWGCN(nn.Module):
 
         x_g = torch.einsum("knm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
         x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in
-        x_gconv = torch.einsum('bnki,nkio->bno', x_g, weights) + bias     #b, N, dim_out
+        # x_gconv = torch.einsum('bnki,nkio->bno', x_g, weights) + bias     #b, N, dim_out
+        x_gconv=self.Linear(x_g)
         # print(x_gconv.shape)
         # static_out=torch.einsum("nn,bnc->bnc",self.sym_norm_Adj_matrix,x)
         # print(static_out.shape)

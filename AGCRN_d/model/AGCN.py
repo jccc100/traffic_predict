@@ -192,8 +192,8 @@ class AVWGCN_d(nn.Module):
         self.cheb_k = cheb_k
         self.weights_pool = nn.Parameter(torch.FloatTensor(embed_dim, cheb_k, dim_in, dim_out))
         self.bias_pool = nn.Parameter(torch.FloatTensor(embed_dim, dim_out))
-        self.E1 = nn.Embedding(170,170)
-        self.E2 = nn.Embedding(170,170)
+        self.E1 = nn.Parameter(torch.FloatTensor(170,170),requires_grad=True)
+        self.E2 = nn.Parameter(torch.FloatTensor(170,170),requires_grad=True)
     def forward(self, x, node_embeddings):
         #x shaped[B, N, C], node_embeddings shaped [N, D] -> supports shaped [N, N]
         #output shape [B, N, C]

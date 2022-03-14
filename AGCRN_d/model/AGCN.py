@@ -128,73 +128,15 @@ class AVWGCN(nn.Module):
         self.cheb_k = cheb_k
         self.weights_pool = nn.Parameter(torch.FloatTensor(embed_dim, cheb_k, dim_in, dim_out))
         self.bias_pool = nn.Parameter(torch.FloatTensor(embed_dim, dim_out))
-    def forward(self, x, node_embeddings):
-        #x shaped[B, N, C], node_embeddings shaped [N, D] -> supports shaped [N, N]
-        #output shape [B, N, C]
-        node_num = node_embeddings.shape[0]
-        supports1 = F.softmax(F.relu(torch.mm(node_embeddings[0], node_embeddings[0].transpose(0, 1))), dim=1) # N N
-        supports2 = F.softmax(F.relu(torch.mm(node_embeddings[1], node_embeddings[1].transpose(0, 1))), dim=1)
-        supports = nn.Tanh(supports1-supports2)
-        support_set = [torch.eye(node_num).to(supports.device), supports]
-        #default cheb_k = 3
-        for k in range(2, self.cheb_k):
-            support_set.append(torch.matmul(2 * supports, support_set[-1]) - support_set[-2])
-        supports = torch.stack(support_set, dim=0)
-        weights = torch.einsum('nd,dkio->nkio', node_embeddings, self.weights_pool)  #N, cheb_k, dim_in, dim_out
-        bias = torch.matmul(node_embeddings, self.bias_pool)                       #N, dim_out
-
-        # 修改
-        # supports=supports+torch.eye(node_num).to(supports.device) # n n
-        # x_g = torch.einsum("nn,bnc->bnc", supports, x)    #
-        # x_gconv = self.Linear(x_g)
-
-        # score,_=self.att_score(x) # b n n
-        # print(self.sym_norm_Adj_matrix.shape,"aaaa")
-        # score=torch.einsum("bnn,nn->bnn",score,self.sym_norm_Adj_matrix)
-        # score=torch.matmul(score,self.sym_norm_Adj_matrix)
-        # # print(score.shape)
-        # # print(supports.shape)
-        # # print(supports[0])
-        # supports=torch.einsum("bnn,knm->bknm",score,supports)
-        # # print(supports.shape)
-        # x_g = torch.einsum("bknm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
-        # supports=torch.einsum("bnn,knm->bknm",self.att_score(x)[0],supports)# 加上空间注意力
-        # 加静态
-
-        # supports=torch.einsum("nn,knm->knm",self.alpha*self.sym_norm_Adj_matrix,supports)# 加上静态邻接矩阵
-        static_out=torch.einsum("mm,bmc->bmc",self.sym_norm_Adj_matrix,x)
-        static_out=self.Linear(static_out) # b n o
-        static_out=nn.ReLU(static_out)
-        # 不改
-        x_g = torch.einsum("knm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
-        x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in
-        x_gconv = torch.einsum('bnki,nkio->bno', x_g, weights) + bias     #b, N, dim_out
-
-        # print(x_gconv.shape)
-        # static_out=torch.einsum("nn,bnc->bnc",self.sym_norm_Adj_matrix,x)
-        # print(static_out.shape)
-        gcn_out=self.alpha*static_out+self.beta*x_gconv
-        # gcn_out=x_gconv
-        return gcn_out
-
-
-class AVWGCN_d(nn.Module):
-    def __init__(self, dim_in, dim_out, adj,cheb_k, embed_dim):
-        super(AVWGCN, self).__init__()
-        self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(adj)).to(torch.float32)
-        self.sym_norm_Adj_matrix = F.softmax(self.sym_norm_Adj_matrix, dim=1).to(device=torch.device("cuda"))
-        self.alpha = nn.Parameter(torch.FloatTensor([0.05]), requires_grad=True)  # D
-        self.beta = nn.Parameter(torch.FloatTensor([0.95]), requires_grad=True)  # S
-        self.Linear=nn.Linear(dim_in,dim_out,bias=True)
-        self.att_score=Spatial_Attention_layer(adj.shape[0],dim_in,dim_out)
-        self.cheb_k = cheb_k
-        self.weights_pool = nn.Parameter(torch.FloatTensor(embed_dim, cheb_k, dim_in, dim_out))
-        self.bias_pool = nn.Parameter(torch.FloatTensor(embed_dim, dim_out))
+        self.E1=nn.Embedding(170,2)
+        self.E2=nn.Embedding(170,2)
     def forward(self, x, node_embeddings):
         #x shaped[B, N, C], node_embeddings shaped [N, D] -> supports shaped [N, N]
         #output shape [B, N, C]
         node_num = node_embeddings.shape[0]
         supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))), dim=1) # N N
+        # supports2 = F.softmax(F.relu(torch.mm(node_embeddings[1], node_embeddings[1].transpose(0, 1))), dim=1)
+        # supports = nn.ReLU(nn.Tanh(supports1-supports2))
         support_set = [torch.eye(node_num).to(supports.device), supports]
         #default cheb_k = 3
         for k in range(2, self.cheb_k):
@@ -227,6 +169,78 @@ class AVWGCN_d(nn.Module):
         # static_out=nn.ReLU(static_out)
         # 不改
         x_g = torch.einsum("knm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
+        x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in
+        x_gconv = torch.einsum('bnki,nkio->bno', x_g, weights) + bias     #b, N, dim_out
+
+        # print(x_gconv.shape)
+        # static_out=torch.einsum("nn,bnc->bnc",self.sym_norm_Adj_matrix,x)
+        # print(static_out.shape)
+        gcn_out=self.alpha*static_out+self.beta*x_gconv
+        # gcn_out=x_gconv
+        return gcn_out
+
+
+class AVWGCN_d(nn.Module):
+    def __init__(self, dim_in, dim_out, adj,cheb_k, embed_dim):
+        super(AVWGCN, self).__init__()
+        self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(adj)).to(torch.float32)
+        self.sym_norm_Adj_matrix = F.softmax(self.sym_norm_Adj_matrix, dim=1).to(device=torch.device("cuda"))
+        self.alpha = nn.Parameter(torch.FloatTensor([0.05]), requires_grad=True)  # D
+        self.beta = nn.Parameter(torch.FloatTensor([0.95]), requires_grad=True)  # S
+        self.Linear=nn.Linear(dim_in,dim_out,bias=True)
+        self.att_score=Spatial_Attention_layer(adj.shape[0],dim_in,dim_out)
+        self.cheb_k = cheb_k
+        self.weights_pool = nn.Parameter(torch.FloatTensor(embed_dim, cheb_k, dim_in, dim_out))
+        self.bias_pool = nn.Parameter(torch.FloatTensor(embed_dim, dim_out))
+        self.E1 = nn.Embedding(170,2)
+        self.E2 = nn.Embedding(170,2)
+    def forward(self, x, node_embeddings):
+        #x shaped[B, N, C], node_embeddings shaped [N, D] -> supports shaped [N, N]
+        #output shape [B, N, C]
+        node_num = node_embeddings.shape[0]
+        supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))), dim=1) # N N
+        supports2=supports.permute(1,0)
+
+        support_set = [torch.eye(node_num).to(supports.device), supports]
+        support_set2 = [torch.eye(node_num).to(supports2.device), supports2]
+        #default cheb_k = 3
+        for k in range(2, self.cheb_k):
+            support_set.append(torch.matmul(2 * supports, support_set[-1]) - support_set[-2])
+            support_set2.append(torch.matmul(2 * supports2, support_set2[-1]) - support_set2[-2])
+        supports = torch.stack(support_set, dim=0)
+        supports2 = torch.stack(support_set2, dim=0)
+        weights = torch.einsum('nd,dkio->nkio', node_embeddings, self.weights_pool)  #N, cheb_k, dim_in, dim_out
+        bias = torch.matmul(node_embeddings, self.bias_pool)                       #N, dim_out
+        # supports=nn.ReLU(nn.Tanh(3*(supports-supports2)))
+        # 修改
+        # supports=supports+torch.eye(node_num).to(supports.device) # n n
+        # x_g = torch.einsum("nn,bnc->bnc", supports, x)    #
+        # x_gconv = self.Linear(x_g)
+
+        # score,_=self.att_score(x) # b n n
+        # print(self.sym_norm_Adj_matrix.shape,"aaaa")
+        # score=torch.einsum("bnn,nn->bnn",score,self.sym_norm_Adj_matrix)
+        # score=torch.matmul(score,self.sym_norm_Adj_matrix)
+        # # print(score.shape)
+        # # print(supports.shape)
+        # # print(supports[0])
+        # supports=torch.einsum("bnn,knm->bknm",score,supports)
+        # # print(supports.shape)
+        # x_g = torch.einsum("bknm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
+        # supports=torch.einsum("bnn,knm->bknm",self.att_score(x)[0],supports)# 加上空间注意力
+        # 加静态
+
+        # supports=torch.einsum("nn,knm->knm",self.alpha*self.sym_norm_Adj_matrix,supports)# 加上静态邻接矩阵
+        # static_out=torch.einsum("mm,bmc->bmc",self.sym_norm_Adj_matrix,x)
+        # static_out=self.Linear(static_out) # b n o
+        # static_out=nn.ReLU(static_out)
+        # 不改
+
+        x_g = torch.einsum("knm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
+        x_g2 = torch.einsum("knm,bmc->bknc", supports2, x)      #B, cheb_k, N, dim_in
+        x_g=nn.Tanh(3*(x_g-x_g2)) # b k n i
+
+
         x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in
         x_gconv = torch.einsum('bnki,nkio->bno', x_g, weights) + bias     #b, N, dim_out
 

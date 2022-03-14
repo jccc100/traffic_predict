@@ -78,6 +78,7 @@ class Spatial_Attention_layer(nn.Module):
         V=x
         score = torch.matmul(Q, K.transpose(1, 2))
         score=F.softmax(score,dim=1)
+        score=torch.einsum('bnn,bnc->bnv',score,V)
         # score=torch.matmul(score,V)
         # score=F.relu(score)
         # # print("V:", V.shape)
@@ -149,6 +150,7 @@ class AVWGCN(nn.Module):
         # x_gconv = self.Linear(x_g)
 
         score,_=self.att_score(x) # b n n
+        # att_out=torch.einsum('bnn,bnc->bnc')
         # att_out=torch.einsum()
         # print(self.sym_norm_Adj_matrix.shape,"aaaa")
         # score=torch.einsum("bnn,nn->bnn",score,self.sym_norm_Adj_matrix)
@@ -160,12 +162,13 @@ class AVWGCN(nn.Module):
         # # print(supports.shape)
         # x_g = torch.einsum("bknm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
 
-        # 加静态
-        supports = score + supports  # 加上空间注意力
+
+        # supports = score + supports  # 加上空间注意力
         # supports=torch.einsum("nn,knm->knm",self.alpha*self.sym_norm_Adj_matrix,supports)# 加上静态邻接矩阵
-        static_out=torch.einsum("mm,bmc->bmc",self.sym_norm_Adj_matrix,x)
-        static_out=self.Linear(static_out) # b n o
-        static_out=nn.ReLU(static_out)
+
+        # static_out=torch.einsum("mm,bmc->bmc",self.sym_norm_Adj_matrix,x)
+        # static_out=self.Linear(static_out) # b n o
+        # static_out=nn.ReLU(static_out)
         # 不改
         x_g = torch.einsum("knm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
         x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in
@@ -174,7 +177,7 @@ class AVWGCN(nn.Module):
         # print(x_gconv.shape)
         # static_out=torch.einsum("nn,bnc->bnc",self.sym_norm_Adj_matrix,x)
         # print(static_out.shape)
-        gcn_out=self.alpha*static_out+self.beta*x_gconv
+        gcn_out=self.alpha*score+self.beta*x_gconv
         # gcn_out=x_gconv
         return gcn_out
 

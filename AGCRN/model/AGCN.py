@@ -155,7 +155,7 @@ class AVWGCN(nn.Module):
         # 加静态
 
         # supports=torch.einsum("nn,knm->knm",self.alpha*self.sym_norm_Adj_matrix,supports)# 加上静态邻接矩阵
-        static_out=torch.einsum("mm,bmc->bmc",self.sym_norm_Adj_matrix,x)
+        # static_out=torch.einsum("mm,bmc->bmc",self.sym_norm_Adj_matrix,x)
 
         x_g = torch.einsum("knm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
         x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in
@@ -163,8 +163,8 @@ class AVWGCN(nn.Module):
         # print(x_gconv.shape)
         # static_out=torch.einsum("nn,bnc->bnc",self.sym_norm_Adj_matrix,x)
         # print(static_out.shape)
-        gcn_out=self.alpha*static_out+self.beta*x_gconv
-        # gcn_out=x_gconv
+        # gcn_out=self.alpha*static_out+self.beta*x_gconv
+        gcn_out=x_gconv
         return gcn_out
 if __name__=="__main__":
     x=torch.randn(64,170,1)

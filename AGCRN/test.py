@@ -91,8 +91,15 @@ class MultiHeadAttention(nn.Module):
         # return self.linears[-1](x)
         return x
 
+def aa():
+    node_embeddings = nn.Parameter(torch.randn(170,3), requires_grad=True)
+    print(node_embeddings.shape)
+    supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))), dim=1)
+    print(supports.shape)
+
 if __name__=="__main__":
-    x=torch.randn((64,12,10,32))
-    mha=MultiHeadAttention(8,64)
-    out=mha(x,x,x)
+    # x=torch.randn((64,12,10,32))
+    # mha=MultiHeadAttention(8,64)
+    # out=mha(x,x,x)
+    aa()
 

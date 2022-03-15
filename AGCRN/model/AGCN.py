@@ -117,7 +117,7 @@ class Spatial_Attention_layer(nn.Module):
         # 公式6  返回注意力和更新的score_his用于下一次传参
         # return score.reshape((batch_size, num_of_timesteps, num_of_vertices, num_of_vertices)),score_his # (b t n n)
         return score,score_his # (b n n)
-class AVWGCN(nn.Module):
+class AVWGCN2(nn.Module):
     def __init__(self, dim_in, dim_out, adj,cheb_k, embed_dim):
         super(AVWGCN, self).__init__()
         self.cheb_k = cheb_k
@@ -139,15 +139,15 @@ class AVWGCN(nn.Module):
         x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in
         x_gconv = torch.einsum('bnki,nkio->bno', x_g, weights) + bias     #b, N, dim_out
         return x_gconv
-class AVWGCN2(nn.Module):
+class AVWGCN(nn.Module):
     def __init__(self, dim_in, dim_out, adj,cheb_k, embed_dim):
         super(AVWGCN, self).__init__()
         self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(adj)).to(torch.float32)
         self.sym_norm_Adj_matrix = F.softmax(self.sym_norm_Adj_matrix, dim=1).to(device=torch.device("cuda"))
-        self.alpha = nn.Parameter(torch.FloatTensor([0.05]), requires_grad=True)  # D
-        self.beta = nn.Parameter(torch.FloatTensor([0.95]), requires_grad=True)  # S
-        self.Linear=nn.Linear(dim_in,dim_out,bias=True)
-        self.att_score=Spatial_Attention_layer(adj.shape[0],dim_in,dim_out)
+        # self.alpha = nn.Parameter(torch.FloatTensor([0.05]), requires_grad=True)  # D
+        # self.beta = nn.Parameter(torch.FloatTensor([0.95]), requires_grad=True)  # S
+        # self.Linear=nn.Linear(dim_in,dim_out,bias=True)
+        # self.att_score=Spatial_Attention_layer(adj.shape[0],dim_in,dim_out)
         self.cheb_k = cheb_k
         self.weights_pool = nn.Parameter(torch.FloatTensor(embed_dim, cheb_k, dim_in, dim_out))
         self.bias_pool = nn.Parameter(torch.FloatTensor(embed_dim, dim_out))

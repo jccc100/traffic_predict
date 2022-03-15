@@ -8,8 +8,8 @@ class AGCRNCell(nn.Module):
         self.adj=adj
         self.node_num = node_num
         self.hidden_dim = dim_out
-        self.gate = AVWGCN(dim_in+self.hidden_dim, 2*dim_out, self.adj,cheb_k, embed_dim)
-        self.update = AVWGCN(dim_in+self.hidden_dim, dim_out, self.adj,cheb_k, embed_dim)
+        self.gate = AVWGCN(dim_in+self.hidden_dim, 2*dim_out, self.adj, cheb_k, embed_dim)
+        self.update = AVWGCN(dim_in+self.hidden_dim, dim_out, self.adj, cheb_k, embed_dim)
 
     def forward(self, x, state, node_embeddings):
         #x: B, num_nodes, input_dim

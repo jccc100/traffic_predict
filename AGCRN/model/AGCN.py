@@ -118,7 +118,7 @@ class Spatial_Attention_layer(nn.Module):
         # return score.reshape((batch_size, num_of_timesteps, num_of_vertices, num_of_vertices)),score_his # (b t n n)
         return score,score_his # (b n n)
 class AVWGCN(nn.Module):
-    def __init__(self, dim_in, dim_out, cheb_k, embed_dim):
+    def __init__(self, dim_in, dim_out, adj,cheb_k, embed_dim):
         super(AVWGCN, self).__init__()
         self.cheb_k = cheb_k
         self.weights_pool = nn.Parameter(torch.FloatTensor(embed_dim, cheb_k, dim_in, dim_out))

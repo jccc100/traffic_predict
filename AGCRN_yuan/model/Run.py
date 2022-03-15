@@ -19,7 +19,7 @@ from lib.TrainInits import print_model_parameters
 
 
 #*************************************************************************#
-Mode = 'Train'
+Mode = 'train'
 DEBUG = 'True'
 DATASET = 'PEMSD8'      #PEMSD4 or PEMSD8
 DEVICE = 'cuda:0'

@@ -174,7 +174,7 @@ class AVWGCN(nn.Module):
         # x_gconv = self.Linear(x_g)
 
         score,_=self.att_score(x) # b n n
-        score=torch.einsum('bnn,bnc->bnc',score,x)
+        # score=torch.einsum('bnm,bmc->bnc',score,x)
         score=nn.ReLU(score)
         # att_out=torch.einsum('bnn,bnc->bnc')
         # att_out=torch.einsum()

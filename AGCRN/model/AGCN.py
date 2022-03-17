@@ -22,7 +22,7 @@ def sym_norm_Adj(W):
     D = np.zeros([N, N], dtype=type(W[0][0]))
 
 
-    W = W + 0.5*np.identity(N) # 为邻居矩阵加上自连接
+    W = W + np.identity(N) # 为邻居矩阵加上自连接
     for i in range(W.shape[0]):
         for j in range(W.shape[0]):
             if W[i][j] != 0.:
@@ -53,6 +53,8 @@ class Spatial_Attention_layer(nn.Module):
         global device
         self.in_channels=c_in
         self.dropout = nn.Dropout(p=dropout)
+        self.conv1 = nn.Conv2d(num_node, num_node, (1, 3), bias=False)
+        self.conv2 = nn.Conv2d(num_node, num_node, (1, 3), bias=False)
 
         # self.Wq=nn.Linear(c_in,c_in,bias=False)
         # # nn.init.kaiming_uniform_(self.Wq.weight, nonlinearity="relu")
@@ -73,8 +75,8 @@ class Spatial_Attention_layer(nn.Module):
         # K=self.Wk(x)
         # # print("K:", K.shape)
         # V=self.Wv(x)
-        Q=x
-        K=x
+        Q=self.conv1(x)
+        K=self.conv2(x)
         V=x
         score = torch.matmul(Q, K.transpose(1, 2))
         score=F.softmax(score,dim=1)
@@ -144,8 +146,8 @@ class AVWGCN(nn.Module):
         super(AVWGCN, self).__init__()
         self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(adj)).to(torch.float32)
         self.sym_norm_Adj_matrix = F.softmax(self.sym_norm_Adj_matrix, dim=1).to(device=torch.device("cuda"))
-        # self.alpha = nn.Parameter(torch.FloatTensor([0.05]), requires_grad=True)  # D
-        # self.beta = nn.Parameter(torch.FloatTensor([0.95]), requires_grad=True)  # S
+        self.alpha = nn.Parameter(torch.FloatTensor([0.05]), requires_grad=True)  # D
+        self.beta = nn.Parameter(torch.FloatTensor([0.95]), requires_grad=True)  # S
         # self.Linear=nn.Linear(dim_in,dim_out,bias=True)
         self.att_score=Spatial_Attention_layer(adj.shape[0],dim_in,dim_out)
         self.cheb_k = cheb_k
@@ -171,7 +173,9 @@ class AVWGCN(nn.Module):
         # x_g = torch.einsum("nn,bnc->bnc", supports, x)    #
         # x_gconv = self.Linear(x_g)
 
-        # score,_=self.att_score(x) # b n n
+        score,_=self.att_score(x) # b n n
+        score=torch.einsum('bnn,bnc->bnc',score,x)
+        score=nn.ReLU(score)
         # att_out=torch.einsum('bnn,bnc->bnc')
         # att_out=torch.einsum()
         # print(self.sym_norm_Adj_matrix.shape,"aaaa")
@@ -185,7 +189,7 @@ class AVWGCN(nn.Module):
         # x_g = torch.einsum("bknm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
 
 
-        # supports = score + supports  # 加上空间注意力
+        # supports = self.alpha*score + self.beta*supports  # 加上空间注意力
         # supports=torch.einsum("nn,knm->knm",self.alpha*self.sym_norm_Adj_matrix,supports)# 加上静态邻接矩阵
 
         # static_out=torch.einsum("mm,bmc->bmc",self.sym_norm_Adj_matrix,x)
@@ -201,8 +205,8 @@ class AVWGCN(nn.Module):
         # print(x_gconv.shape)
         # static_out=torch.einsum("nn,bnc->bnc",self.sym_norm_Adj_matrix,x)
         # print(static_out.shape)
-        # gcn_out=self.alpha*score+self.beta*x_gconv
-        gcn_out=x_gconv
+        gcn_out=self.alpha*score+self.beta*x_gconv
+        # gcn_out=x_gconv
         return gcn_out
 
 if __name__=="__main__":

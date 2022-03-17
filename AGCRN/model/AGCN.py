@@ -56,9 +56,9 @@ class Spatial_Attention_layer(nn.Module):
         self.conv1 = nn.Conv2d(num_node, num_node, (1, 3), bias=False)
         self.conv2 = nn.Conv2d(num_node, num_node, (1, 3), bias=False)
 
-        # self.Wq=nn.Linear(c_in,c_in,bias=False)
+        self.Wq=nn.Linear(c_in,c_out,bias=False)
         # # nn.init.kaiming_uniform_(self.Wq.weight, nonlinearity="relu")
-        # self.Wk=nn.Linear(c_in,c_in,bias=False)
+        self.Wk=nn.Linear(c_in,c_out,bias=False)
         # # nn.init.kaiming_uniform_(self.Wk.weight, nonlinearity="relu")
         # self.Wv=nn.Linear(c_in,num_node,bias=False)
         # # nn.init.kaiming_uniform_(self.Wv.weight, nonlinearity="relu")
@@ -75,8 +75,8 @@ class Spatial_Attention_layer(nn.Module):
         # K=self.Wk(x)
         # # print("K:", K.shape)
         # V=self.Wv(x)
-        Q=self.conv1(x)
-        K=self.conv2(x)
+        Q=self.Wq(x)
+        K=self.Wk(x)
         V=x
         score = torch.matmul(Q, K.transpose(1, 2))
         score=F.softmax(score,dim=1)

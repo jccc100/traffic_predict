@@ -121,7 +121,7 @@ class AVWDCRNN(nn.Module):
             self.dcrnn_cells.append(AGCRNCell(node_num, dim_out, dim_out,self.adj ,cheb_k, embed_dim))
 
     def forward(self, x, init_state, node_embeddings):
-        x=self.trans_layer_T(x)
+        x=self.trans_layer_T(x.permute(0,3,2,1))
         #shape of x: (B, T, N, D)
         #shape of init_state: (num_layers, B, N, hidden_dim)
         assert x.shape[2] == self.node_num and x.shape[3] == self.input_dim
@@ -131,7 +131,7 @@ class AVWDCRNN(nn.Module):
         # x = x.permute(0, 2, 3, 1)  # b n d t
         # x = x.reshape(b * n, d, t)  # b*n d t
         # current_inputs = self.tcn(x).reshape(b, n, d, t).permute(0, 3, 1, 2)  # [b*n d t] --> [b n d t] -->[b t n d]
-        current_inputs = x
+        current_inputs = x.permutr(0,3,2,1)
         # current_inputs = self.trans_layer_T(x)
         output_hidden = []
         for i in range(self.num_layers):

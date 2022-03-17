@@ -22,8 +22,8 @@ class Transform(nn.Module):
         # nn.init.kaiming_uniform_(self.kff.weight, nonlinearity="relu")
         self.vff = nn.Linear(outfea, outfea)
         # nn.init.kaiming_uniform_(self.vff.weight, nonlinearity="relu")
-        self.conv1=nn.Conv2d(12,12,(1,2),bias=True)
-        self.conv2=nn.Conv2d(12,12,(1,2),bias=True)
+        self.conv1=nn.Conv2d(12,12,(1,3),bias=True)
+        self.conv2=nn.Conv2d(12,12,(1,3),bias=True)
 
         self.ln = nn.LayerNorm(outfea)
         self.lnff = nn.LayerNorm(outfea)
@@ -38,12 +38,12 @@ class Transform(nn.Module):
 
     def forward(self, x,score_his=None):# x : b t n hidden
         b, t, n, c = x.shape
-        # query = self.qff(x)
-        # key = self.kff(x)
-        # value = self.vff(x)
-        query=self.conv1(x)
-        key=self.conv2(x)
-        value=x
+        query = self.qff(x)
+        key = self.kff(x)
+        value = self.vff(x)
+        # query=self.conv1(x)
+        # key=self.conv2(x)
+        # value=x
         query = query.permute(0, 2, 1, 3)
         # print(query.shape)
         key = key.permute(0, 2, 3, 1)

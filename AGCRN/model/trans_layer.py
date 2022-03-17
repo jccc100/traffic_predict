@@ -38,12 +38,15 @@ class Transform(nn.Module):
 
     def forward(self, x,score_his=None):# x : b t n hidden
         b, t, n, c = x.shape
-        query = self.qff(x)
-        key = self.kff(x)
-        value = self.vff(x)
+        # query = self.qff(x)
+        # key = self.kff(x)
+        # value = self.vff(x)
         # query=self.conv1(x)
         # key=self.conv2(x)
         # value=x
+        query=x
+        key=x
+        value=x
         query = query.permute(0, 2, 1, 3)
         # print(query.shape)
         key = key.permute(0, 2, 3, 1)

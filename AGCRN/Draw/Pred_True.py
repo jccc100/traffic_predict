@@ -11,8 +11,8 @@ from datetime import datetime
 file_path_D4=[r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD4\3.1\PEMSD4_pred.npy",
            r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD4\3.1\PEMSD4_true.npy"]
 
-file_path_D8=[r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\3.1\PEMSD4_pred.npy",
-           r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\3.1\PEMSD4_true.npy"]
+file_path_D8=[r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\3.1\PEMSD8_pred.npy",
+           r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\3.1\PEMSD8_true.npy"]
 
 file_path_D3=[r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD3\3.1\PEMS03_pred.npy",
            r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD3\3.1\PEMS03_true.npy"]
@@ -143,7 +143,7 @@ def D8():
     true_flow=true_flow.swapaxes(1,2)
 
     node = 111
-    day=1
+    day=3
     shifting=50
     drow_pred_flow_15 = pred_flow[shifting:day*24 * 12+shifting, node, 2, :]
     drow_true_flow_15 = true_flow[shifting:day*24 * 12+shifting, node, 2, :]
@@ -194,8 +194,31 @@ def D8():
     plt.savefig(r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\3.1\Pred_True_{}_day{}_30min.png".format(str(node),str(day)))
     plt.show()
 
+def different_node():
+    true_flow = np.load(file_path_D8[1])
+    true_flow = true_flow.swapaxes(1, 2)
+    node = 111
+    day = 2
+    shifting = 110
+    drow_true_flow_1 = true_flow[shifting:day * 24 * 12 + shifting, 1, 11, :]
+    drow_true_flow_2 = true_flow[shifting:day * 24 * 12 + shifting, 16, 11, :]
+    drow_true_flow_3 = true_flow[shifting:day * 24 * 12 + shifting, 121, 11, :]
+    drow_true_flow_4 = true_flow[shifting:day * 24 * 12 + shifting, 164, 11, :]
+    fig = plt.figure(figsize=(12, 6))
+
+    plt.plot(drow_true_flow_1, label="node1")
+    plt.plot(drow_true_flow_2, label="node2")
+    plt.plot(drow_true_flow_3, label="node3")
+    plt.plot(drow_true_flow_4, label="node3")
+    # plt.title("PEMSD3 60min")
+    plt.xlabel("Time")
+    plt.ylabel("Traffic Flow")
+    plt.legend()  # 显示图例
+    # plt.savefig(r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD3\3.1\Pred_True_{}_day{}.png".format(str(node), str(day)))
+    plt.show()
+
 if __name__=="__main__":
     # D3()
     # D4()
-    D8()
-
+    # D8()
+    different_node()

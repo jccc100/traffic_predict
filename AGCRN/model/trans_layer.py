@@ -10,8 +10,8 @@ import pandas as pd
 from torch.autograd import Variable
 import math
 
-device=torch.device('cuda')
-# device=torch.device('cpu')
+# device=torch.device('cuda')
+device=torch.device('cpu')
 
 class Transform(nn.Module):
     def __init__(self, outfea, d):
@@ -174,4 +174,4 @@ if __name__=="__main__":
     d=64
     transformer=transformer_layer(dim_in,dim_out,num_layer,d)
     res=transformer(x)
-    print(res[0].shape)
+    print(res.shape)

@@ -122,7 +122,7 @@ class AVWDCRNN(nn.Module):
 
     def forward(self, x, init_state, node_embeddings):
         # x=self.trans_layer_T(x.permute(0,3,2,1))
-        print(x.shape,"AAAAAAAAAAAAAAAAA")
+        # print(x.shape,"AAAAAAAAAAAAAAAAA")
         x=self.trans_layer_T(x)
         #shape of x: (B, T, N, D)
         #shape of init_state: (num_layers, B, N, hidden_dim)

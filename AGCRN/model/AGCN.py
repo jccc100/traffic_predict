@@ -149,7 +149,7 @@ class AVWGCN(nn.Module):
         self.alpha = nn.Parameter(torch.FloatTensor([0.05]), requires_grad=True)  # D
         self.beta = nn.Parameter(torch.FloatTensor([0.95]), requires_grad=True)  # S
         # self.Linear=nn.Linear(dim_in,dim_out,bias=True)
-        self.att_score=Spatial_Attention_layer(adj.shape[0],dim_in,dim_out)
+        # self.att_score=Spatial_Attention_layer(adj.shape[0],dim_in,dim_out)
         self.cheb_k = cheb_k
         self.weights_pool = nn.Parameter(torch.FloatTensor(embed_dim, cheb_k, dim_in, dim_out))
         self.bias_pool = nn.Parameter(torch.FloatTensor(embed_dim, dim_out))
@@ -173,9 +173,9 @@ class AVWGCN(nn.Module):
         # x_g = torch.einsum("nn,bnc->bnc", supports, x)    #
         # x_gconv = self.Linear(x_g)
 
-        score,_=self.att_score(x) # b n n
-        # score=torch.einsum('bnm,bmc->bnc',score,x)
-        score=nn.functional.relu(score)
+        # score,_=self.att_score(x) # b n n
+        # # score=torch.einsum('bnm,bmc->bnc',score,x)
+        # score=nn.functional.relu(score)
         # att_out=torch.einsum('bnn,bnc->bnc')
         # att_out=torch.einsum()
         # print(self.sym_norm_Adj_matrix.shape,"aaaa")
@@ -205,8 +205,8 @@ class AVWGCN(nn.Module):
         # print(x_gconv.shape)
         # static_out=torch.einsum("nn,bnc->bnc",self.sym_norm_Adj_matrix,x)
         # print(static_out.shape)
-        gcn_out=self.alpha*score+self.beta*x_gconv
-        # gcn_out=x_gconv
+        # gcn_out=self.alpha*score+self.beta*x_gconv
+        gcn_out=x_gconv
         return gcn_out
 
 if __name__=="__main__":

@@ -80,7 +80,7 @@ class Spatial_Attention_layer(nn.Module):
         V=x
         score = torch.matmul(Q, K.transpose(1, 2))
         score=F.softmax(score,dim=1)
-        score=torch.einsum('bnn,bnc->bnc',score,V)
+        score=torch.einsum('bnn,bnc->bnc',score,V)#+x
         # score=torch.matmul(score,V)
         # score=F.relu(score)
         # # print("V:", V.shape)
@@ -175,7 +175,7 @@ class AVWGCN(nn.Module):
 
         score,_=self.att_score(x) # b n n
         # score=torch.einsum('bnm,bmc->bnc',score,x)
-        score=nn.ReLU(score)
+        score=nn.functional.relu(score)
         # att_out=torch.einsum('bnn,bnc->bnc')
         # att_out=torch.einsum()
         # print(self.sym_norm_Adj_matrix.shape,"aaaa")

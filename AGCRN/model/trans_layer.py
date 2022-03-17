@@ -22,8 +22,8 @@ class Transform(nn.Module):
         # nn.init.kaiming_uniform_(self.kff.weight, nonlinearity="relu")
         self.vff = nn.Linear(outfea, outfea)
         # nn.init.kaiming_uniform_(self.vff.weight, nonlinearity="relu")
-        self.conv1=nn.Conv2d(12,12,(1,3),bias=True)
-        self.conv2=nn.Conv2d(12,12,(1,3),bias=True)
+        self.conv1=nn.Conv2d(12,12,(1,2),bias=True)
+        self.conv2=nn.Conv2d(12,12,(1,2),bias=True)
 
         self.ln = nn.LayerNorm(outfea)
         self.lnff = nn.LayerNorm(outfea)
@@ -43,12 +43,14 @@ class Transform(nn.Module):
         # value = self.vff(x)
         query=self.conv1(x)
         key=self.conv2(x)
-        value=self.vff(x)
+        value=x
         query = query.permute(0, 2, 1, 3)
         # print(query.shape)
         key = key.permute(0, 2, 3, 1)
         # print(key.shape)
         value = value.permute(0, 2, 1, 3)
+        # key=key.permute(0,1,3,2)
+        # value=value.permute()
 
         # query = torch.cat(torch.split(query, self.d, -1), 0).permute(0, 2, 1, 3)
         # # print(query.shape)
@@ -61,6 +63,7 @@ class Transform(nn.Module):
         A = torch.matmul(query, key)
         # print("A:",A.shape)
         A /= (c ** 0.5)
+        print(A.shape,"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaaaa")
 
         # print(score_his.shape)
 

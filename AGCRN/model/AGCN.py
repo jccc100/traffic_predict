@@ -60,7 +60,7 @@ class Spatial_Attention_layer(nn.Module):
         # # nn.init.kaiming_uniform_(self.Wq.weight, nonlinearity="relu")
         self.Wk=nn.Linear(c_in,c_out,bias=False)
         # # nn.init.kaiming_uniform_(self.Wk.weight, nonlinearity="relu")
-        # self.Wv=nn.Linear(c_in,num_node,bias=False)
+        self.Wv=nn.Linear(c_in,c_out,bias=False)
         # # nn.init.kaiming_uniform_(self.Wv.weight, nonlinearity="relu")
     def forward(self, x,score_his=None):
         '''
@@ -77,10 +77,10 @@ class Spatial_Attention_layer(nn.Module):
         # V=self.Wv(x)
         Q=self.Wq(x)
         K=self.Wk(x)
-        V=x
+        V=self.Wv(x)
         score = torch.matmul(Q, K.transpose(1, 2))
         score=F.softmax(score,dim=1)
-        score=torch.einsum('bnn,bnc->bnc',score,V)#+x
+        score=torch.einsum('bnn,bno->bno',score,V)#+x
         # score=torch.matmul(score,V)
         # score=F.relu(score)
         # # print("V:", V.shape)

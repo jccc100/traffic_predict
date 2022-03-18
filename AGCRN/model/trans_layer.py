@@ -13,7 +13,7 @@ import math
 device=torch.device('cuda')
 # device=torch.device('cpu')
 
-class Transform(nn.Module):
+class Transform2(nn.Module):
     def __init__(self, outfea, d):
         super(Transform, self).__init__()
         # self.qff = nn.Linear(outfea, outfea)
@@ -65,6 +65,76 @@ class Transform(nn.Module):
         # print("A:",A.shape)
         A /= (c ** 0.5)
         # print(A.shape,"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaaaa")
+
+        # print(score_his.shape)
+
+        A = torch.softmax(A, -1)
+
+        # 残差注意力
+        if score_his is not None:
+            try:
+                A=A+score_his
+            except:
+                pass
+        score_his=A.clone().detach()
+
+        value = torch.matmul(A, value)
+        # value = torch.softmax(value,-2)
+        value = torch.cat(torch.split(value, x.shape[0], 0), -1).permute(0, 2, 1, 3)
+        # value = value.permute(0,2,1,3)
+        value += x
+
+        value = self.ln(value)
+        x = self.ff(value) + value
+        return self.lnff(x),score_his
+class Transform(nn.Module):
+    def __init__(self, outfea, d):
+        super(Transform, self).__init__()
+        # self.qff = nn.Linear(outfea, outfea)
+        # # nn.init.kaiming_uniform_(self.qff.weight,nonlinearity="relu")
+        # self.kff = nn.Linear(outfea, outfea)
+        # nn.init.kaiming_uniform_(self.kff.weight, nonlinearity="relu")
+        self.vff = nn.Linear(outfea, outfea)
+        # nn.init.kaiming_uniform_(self.vff.weight, nonlinearity="relu")
+        self.conv1=nn.Conv2d(12,12,(1,3),bias=True)
+        self.conv2=nn.Conv2d(12,12,(1,3),bias=True)
+
+        self.ln = nn.LayerNorm(outfea)
+        self.lnff = nn.LayerNorm(outfea)
+
+        self.ff = nn.Sequential(
+            nn.Linear(outfea, outfea),
+            nn.ReLU(),
+            nn.Linear(outfea, outfea)
+        )
+
+        self.d = d
+
+    def forward(self, x,score_his=None):# x : b t n hidden
+        b, t, n, c = x.shape
+        # query = self.qff(x)
+        # key = self.kff(x)
+        # value = self.vff(x)
+        query=self.conv1(x)
+        key=self.conv2(x)
+        value=self.vff(x)
+        query = query.permute(0, 2, 1, 3)
+        # print(query.shape)
+        key = key.permute(0, 2, 3, 1)
+        # print(key.shape)
+        value = value.permute(0, 2, 1, 3)
+
+        # query = torch.cat(torch.split(query, self.d, -1), 0).permute(0, 2, 1, 3)
+        # # print(query.shape)
+        # key = torch.cat(torch.split(key, self.d, -1), 0).permute(0, 2, 3, 1)
+        # # print(key.shape)
+        # value = torch.cat(torch.split(value, self.d, -1), 0).permute(0, 2, 1, 3)
+
+
+
+        A = torch.matmul(query, key)
+        # print("A:",A.shape)
+        A /= (c ** 0.5)
 
         # print(score_his.shape)
 

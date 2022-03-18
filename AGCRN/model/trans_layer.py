@@ -96,8 +96,8 @@ class Transform(nn.Module):
         # nn.init.kaiming_uniform_(self.kff.weight, nonlinearity="relu")
         self.vff = nn.Linear(outfea, outfea)
         # nn.init.kaiming_uniform_(self.vff.weight, nonlinearity="relu")
-        self.conv1=nn.Conv2d(12,12,(1,3),padding=1,bias=True)
-        self.conv2=nn.Conv2d(12,12,(1,3),padding=1,bias=True)
+        self.conv1=nn.Conv2d(12,12,(1,5),bias=True)
+        self.conv2=nn.Conv2d(12,12,(1,5),bias=True)
 
         self.ln = nn.LayerNorm(outfea)
         self.lnff = nn.LayerNorm(outfea)
@@ -110,28 +110,28 @@ class Transform(nn.Module):
             nn.Linear(outfea, outfea)
         )
 
-        self.d = 8
+        self.d = 2
 
     def forward(self, x,score_his=None):# x : b t n hidden
         b, t, n, c = x.shape
         # query = self.qff(x)
         # key = self.kff(x)
         # value = self.vff(x)
-        query=self.conv1(x.permute(0,2,3,1))
+        query=self.conv1(x)
         print(query.shape)
         key=self.conv2(x)
         value=self.vff(x)
-        # query = query.permute(0, 2, 1, 3)
-        # # print(query.shape)
-        # key = key.permute(0, 2, 3, 1)
-        # # print(key.shape)
-        # value = value.permute(0, 2, 1, 3)
-
-        query = torch.cat(torch.split(query, self.d, -1), 0).permute(0, 2, 1, 3)
+        query = query.permute(0, 2, 1, 3)
         # print(query.shape)
-        key = torch.cat(torch.split(key, self.d, -1), 0).permute(0, 2, 3, 1)
+        key = key.permute(0, 2, 3, 1)
         # print(key.shape)
-        value = torch.cat(torch.split(value, self.d, -1), 0).permute(0, 2, 1, 3)
+        value = value.permute(0, 2, 1, 3)
+
+        # query = torch.cat(torch.split(query, self.d, -1), 0).permute(0, 2, 1, 3)
+        # # print(query.shape)
+        # key = torch.cat(torch.split(key, self.d, -1), 0).permute(0, 2, 3, 1)
+        # # print(key.shape)
+        # value = torch.cat(torch.split(value, self.d, -1), 0).permute(0, 2, 1, 3)
 
 
 

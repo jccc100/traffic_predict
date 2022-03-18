@@ -10,8 +10,8 @@ import pandas as pd
 from torch.autograd import Variable
 import math
 
-# device=torch.device('cuda')
-device=torch.device('cpu')
+device=torch.device('cuda')
+# device=torch.device('cpu')
 
 class Transform(nn.Module):
     def __init__(self, outfea, d):
@@ -52,8 +52,6 @@ class Transform(nn.Module):
         key = key.permute(0, 2, 3, 1)
         # print(key.shape)
         value = value.permute(0, 2, 1, 3)
-        # key=key.permute(0,1,3,2)
-        # value=value.permute()
 
         # query = torch.cat(torch.split(query, self.d, 1), 0).permute(0, 2, 1, 3)
         # # print(query.shape)
@@ -84,7 +82,7 @@ class Transform(nn.Module):
         # value = torch.softmax(value,-2)
         value = torch.cat(torch.split(value, x.shape[0], 0), -1).permute(0, 2, 1, 3)
         # value = value.permute(0,2,1,3)
-        # value += x
+        value += x
 
         value = self.ln(value)
         x = self.ff(value) + value

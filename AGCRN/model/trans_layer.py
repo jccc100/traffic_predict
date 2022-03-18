@@ -47,19 +47,19 @@ class Transform(nn.Module):
         # query=x
         # key=x
         # value=x
-        query = query.permute(0, 2, 1, 3)
-        # print(query.shape)
-        key = key.permute(0, 2, 3, 1)
-        # print(key.shape)
-        value = value.permute(0, 2, 1, 3)
-        # key=key.permute(0,1,3,2)
+        # query = query.permute(0, 2, 1, 3)
+        # # print(query.shape)
+        # key = key.permute(0, 2, 3, 1)
+        # # print(key.shape)
+        # value = value.permute(0, 2, 1, 3)
+        # # key=key.permute(0,1,3,2)
         # value=value.permute()
 
-        # query = torch.cat(torch.split(query, self.d, -1), 0).permute(0, 2, 1, 3)
-        # # print(query.shape)
-        # key = torch.cat(torch.split(key, self.d, -1), 0).permute(0, 2, 3, 1)
-        # # print(key.shape)
-        # value = torch.cat(torch.split(value, self.d, -1), 0).permute(0, 2, 1, 3)
+        query = torch.cat(torch.split(query, self.d, -1), 0).permute(0, 2, 1, 3)
+        # print(query.shape)
+        key = torch.cat(torch.split(key, self.d, -1), 0).permute(0, 2, 3, 1)
+        # print(key.shape)
+        value = torch.cat(torch.split(value, self.d, -1), 0).permute(0, 2, 1, 3)
 
 
 
@@ -113,7 +113,7 @@ class PositionalEncoding(nn.Module):
         return x
 
 class transformer_layer(nn.Module):
-    def __init__(self,dim_in,dim_out,num_layer,d=2,att_his=False):
+    def __init__(self,dim_in,dim_out,num_layer,d=8,att_his=False):
         super(transformer_layer,self).__init__()
         # self.linear1=nn.Linear(dim_in,dim_out)
         self.trans_layers=nn.ModuleList(Transform(dim_out,d) for l in range(num_layer))

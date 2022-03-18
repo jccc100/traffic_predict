@@ -84,7 +84,7 @@ class Transform(nn.Module):
         # value = torch.softmax(value,-2)
         value = torch.cat(torch.split(value, x.shape[0], 0), -1).permute(0, 2, 1, 3)
         # value = value.permute(0,2,1,3)
-        value += x
+        # value += x
 
         value = self.ln(value)
         x = self.ff(value) + value

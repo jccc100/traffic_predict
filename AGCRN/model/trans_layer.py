@@ -86,7 +86,7 @@ class Transform(nn.Module):
         # value = value.permute(0,2,1,3)
         # value += x
 
-        value = self.ln(value)
+        # value = self.ln(value)
         x = self.ff(value) + value
         return self.lnff(x),score_his
 

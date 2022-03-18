@@ -10,8 +10,8 @@ import pandas as pd
 from torch.autograd import Variable
 import math
 
-device=torch.device('cuda')
-# device=torch.device('cpu')
+# device=torch.device('cuda')
+device=torch.device('cpu')
 
 class Transform2(nn.Module):
     def __init__(self, outfea, d):
@@ -96,8 +96,8 @@ class Transform(nn.Module):
         # nn.init.kaiming_uniform_(self.kff.weight, nonlinearity="relu")
         self.vff = nn.Linear(outfea, outfea)
         # nn.init.kaiming_uniform_(self.vff.weight, nonlinearity="relu")
-        self.conv1=nn.Conv2d(12,12,(1,3),bias=True)
-        self.conv2=nn.Conv2d(12,12,(1,3),bias=True)
+        self.conv1=nn.Conv2d(12,12,(1,3),padding=1,bias=True)
+        self.conv2=nn.Conv2d(12,12,(1,3),padding=1,bias=True)
 
         self.ln = nn.LayerNorm(outfea)
         self.lnff = nn.LayerNorm(outfea)
@@ -117,7 +117,7 @@ class Transform(nn.Module):
         # query = self.qff(x)
         # key = self.kff(x)
         # value = self.vff(x)
-        query=self.conv1(x)
+        query=self.conv1(x.permute(0,2,3,1))
         print(query.shape)
         key=self.conv2(x)
         value=self.vff(x)

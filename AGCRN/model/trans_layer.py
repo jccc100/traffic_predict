@@ -16,11 +16,11 @@ device=torch.device('cpu')
 class Transform(nn.Module):
     def __init__(self, outfea, d):
         super(Transform, self).__init__()
-        self.qff = nn.Linear(outfea, outfea)
-        # nn.init.kaiming_uniform_(self.qff.weight,nonlinearity="relu")
-        self.kff = nn.Linear(outfea, outfea)
-        nn.init.kaiming_uniform_(self.kff.weight, nonlinearity="relu")
-        self.vff = nn.Linear(outfea, outfea)
+        # self.qff = nn.Linear(outfea, outfea)
+        # # nn.init.kaiming_uniform_(self.qff.weight,nonlinearity="relu")
+        # self.kff = nn.Linear(outfea, outfea)
+        # nn.init.kaiming_uniform_(self.kff.weight, nonlinearity="relu")
+        # self.vff = nn.Linear(outfea, outfea)
         # nn.init.kaiming_uniform_(self.vff.weight, nonlinearity="relu")
         self.conv1=nn.Conv2d(12,12,(1,3),bias=True)
         self.conv2=nn.Conv2d(12,12,(1,3),bias=True)
@@ -34,7 +34,7 @@ class Transform(nn.Module):
             nn.Linear(outfea, outfea)
         )
 
-        self.d = 3
+        self.d = d
 
     def forward(self, x,score_his=None):# x : b t n hidden
         b, t, n, c = x.shape

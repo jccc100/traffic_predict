@@ -20,7 +20,7 @@ class Transform(nn.Module):
         # # nn.init.kaiming_uniform_(self.qff.weight,nonlinearity="relu")
         # self.kff = nn.Linear(outfea, outfea)
         # nn.init.kaiming_uniform_(self.kff.weight, nonlinearity="relu")
-        # self.vff = nn.Linear(outfea, outfea)
+        self.vff = nn.Linear(outfea, outfea)
         # nn.init.kaiming_uniform_(self.vff.weight, nonlinearity="relu")
         self.conv1=nn.Conv2d(12,12,(1,3),bias=True)
         self.conv2=nn.Conv2d(12,12,(1,3),bias=True)
@@ -43,7 +43,7 @@ class Transform(nn.Module):
         # value = self.vff(x)
         query=self.conv1(x)
         key=self.conv2(x)
-        value=x
+        value=self.vff(x)
         # query=x
         # key=x
         # value=x
@@ -53,11 +53,11 @@ class Transform(nn.Module):
         # print(key.shape)
         value = value.permute(0, 2, 1, 3)
 
-        # query = torch.cat(torch.split(query, self.d, 1), 0).permute(0, 2, 1, 3)
+        # query = torch.cat(torch.split(query, self.d, -1), 0).permute(0, 2, 1, 3)
         # # print(query.shape)
-        # key = torch.cat(torch.split(key, self.d, 1), 0).permute(0, 2, 3, 1)
+        # key = torch.cat(torch.split(key, self.d, -1), 0).permute(0, 2, 3, 1)
         # # print(key.shape)
-        # value = torch.cat(torch.split(value, self.d, 1), 0).permute(0, 2, 1, 3)
+        # value = torch.cat(torch.split(value, self.d, -1), 0).permute(0, 2, 1, 3)
 
 
 
@@ -82,9 +82,9 @@ class Transform(nn.Module):
         # value = torch.softmax(value,-2)
         value = torch.cat(torch.split(value, x.shape[0], 0), -1).permute(0, 2, 1, 3)
         # value = value.permute(0,2,1,3)
-        # value += x
+        value += x
 
-        # value = self.ln(value)
+        value = self.ln(value)
         x = self.ff(value) + value
         return self.lnff(x),score_his
 
@@ -111,7 +111,7 @@ class PositionalEncoding(nn.Module):
         return x
 
 class transformer_layer(nn.Module):
-    def __init__(self,dim_in,dim_out,num_layer,d=8,att_his=False):
+    def __init__(self,dim_in,dim_out,num_layer,d=2,att_his=False):
         super(transformer_layer,self).__init__()
         # self.linear1=nn.Linear(dim_in,dim_out)
         self.trans_layers=nn.ModuleList(Transform(dim_out,d) for l in range(num_layer))

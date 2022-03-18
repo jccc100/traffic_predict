@@ -108,7 +108,7 @@ class Transform(nn.Module):
             nn.Linear(outfea, outfea)
         )
 
-        self.d = d
+        self.d = 2
 
     def forward(self, x,score_his=None):# x : b t n hidden
         b, t, n, c = x.shape
@@ -118,17 +118,17 @@ class Transform(nn.Module):
         query=self.conv1(x)
         key=self.conv2(x)
         value=x
-        query = query.permute(0, 2, 1, 3)
-        # print(query.shape)
-        key = key.permute(0, 2, 3, 1)
-        # print(key.shape)
-        value = value.permute(0, 2, 1, 3)
-
-        # query = torch.cat(torch.split(query, self.d, -1), 0).permute(0, 2, 1, 3)
+        # query = query.permute(0, 2, 1, 3)
         # # print(query.shape)
-        # key = torch.cat(torch.split(key, self.d, -1), 0).permute(0, 2, 3, 1)
+        # key = key.permute(0, 2, 3, 1)
         # # print(key.shape)
-        # value = torch.cat(torch.split(value, self.d, -1), 0).permute(0, 2, 1, 3)
+        # value = value.permute(0, 2, 1, 3)
+
+        query = torch.cat(torch.split(query, self.d, 1), 0).permute(0, 2, 1, 3)
+        # print(query.shape)
+        key = torch.cat(torch.split(key, self.d, 1), 0).permute(0, 2, 3, 1)
+        # print(key.shape)
+        value = torch.cat(torch.split(value, self.d, 1), 0).permute(0, 2, 1, 3)
 
 
 

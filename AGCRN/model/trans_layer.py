@@ -34,7 +34,7 @@ class Transform(nn.Module):
             nn.Linear(outfea, outfea)
         )
 
-        self.d = d
+        self.d = 3
 
     def forward(self, x,score_his=None):# x : b t n hidden
         b, t, n, c = x.shape
@@ -55,11 +55,11 @@ class Transform(nn.Module):
         # # key=key.permute(0,1,3,2)
         # value=value.permute()
 
-        query = torch.cat(torch.split(query, self.d, -1), 0).permute(0, 2, 1, 3)
+        query = torch.cat(torch.split(query, self.d, 1), 0).permute(0, 2, 1, 3)
         # print(query.shape)
-        key = torch.cat(torch.split(key, self.d, -1), 0).permute(0, 2, 3, 1)
+        key = torch.cat(torch.split(key, self.d, 1), 0).permute(0, 2, 3, 1)
         # print(key.shape)
-        value = torch.cat(torch.split(value, self.d, -1), 0).permute(0, 2, 1, 3)
+        value = torch.cat(torch.split(value, self.d, 1), 0).permute(0, 2, 1, 3)
 
 
 

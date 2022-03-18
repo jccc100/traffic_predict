@@ -118,7 +118,7 @@ class Transform(nn.Module):
         # key = self.kff(x)
         # value = self.vff(x)
         query=self.conv1(x)
-        print(query.shape)
+        # print(query.shape)
         key=self.conv2(x)
         value=self.vff(x)
         query = query.permute(0, 2, 1, 3)

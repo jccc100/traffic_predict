@@ -47,19 +47,19 @@ class Transform(nn.Module):
         # query=x
         # key=x
         # value=x
-        # query = query.permute(0, 2, 1, 3)
-        # # print(query.shape)
-        # key = key.permute(0, 2, 3, 1)
-        # # print(key.shape)
-        # value = value.permute(0, 2, 1, 3)
-        # # key=key.permute(0,1,3,2)
+        query = query.permute(0, 2, 1, 3)
+        # print(query.shape)
+        key = key.permute(0, 2, 3, 1)
+        # print(key.shape)
+        value = value.permute(0, 2, 1, 3)
+        # key=key.permute(0,1,3,2)
         # value=value.permute()
 
-        query = torch.cat(torch.split(query, self.d, 1), 0).permute(0, 2, 1, 3)
-        # print(query.shape)
-        key = torch.cat(torch.split(key, self.d, 1), 0).permute(0, 2, 3, 1)
-        # print(key.shape)
-        value = torch.cat(torch.split(value, self.d, 1), 0).permute(0, 2, 1, 3)
+        # query = torch.cat(torch.split(query, self.d, 1), 0).permute(0, 2, 1, 3)
+        # # print(query.shape)
+        # key = torch.cat(torch.split(key, self.d, 1), 0).permute(0, 2, 3, 1)
+        # # print(key.shape)
+        # value = torch.cat(torch.split(value, self.d, 1), 0).permute(0, 2, 1, 3)
 
 
 
@@ -82,11 +82,11 @@ class Transform(nn.Module):
 
         value = torch.matmul(A, value)
         # value = torch.softmax(value,-2)
-        value = torch.cat(torch.split(value, x.shape[0], 0), -1).permute(0, 2, 1, 3)
-        # value = value.permute(0,2,1,3)
+        # value = torch.cat(torch.split(value, x.shape[0], 0), -1).permute(0, 2, 1, 3)
+        value = value.permute(0,2,1,3)
         # value += x
 
-        # value = self.ln(value)
+        value = self.ln(value)
         x = self.ff(value) + value
         return self.lnff(x),score_his
 

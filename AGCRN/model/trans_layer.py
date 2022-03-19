@@ -96,8 +96,8 @@ class Transform(nn.Module):
         # nn.init.kaiming_uniform_(self.kff.weight, nonlinearity="relu")
         self.vff = nn.Linear(outfea, outfea)
         # nn.init.kaiming_uniform_(self.vff.weight, nonlinearity="relu")
-        self.conv1=nn.Conv2d(12,12,(1,5),bias=True)
-        self.conv2=nn.Conv2d(12,12,(1,5),bias=True)
+        self.conv1=nn.Conv2d(12,12,(1,3),bias=True)
+        self.conv2=nn.Conv2d(12,12,(1,3),bias=True)
 
         self.ln = nn.LayerNorm(outfea)
         self.lnff = nn.LayerNorm(outfea)
@@ -155,7 +155,7 @@ class Transform(nn.Module):
         # value = torch.softmax(value,-2)
         value = torch.cat(torch.split(value, x.shape[0], 0), -1).permute(0, 2, 1, 3)
         # value = value.permute(0,2,1,3)
-        # value += x
+        value += x
 
         value = self.ln(value)
         x = self.ff(value) + value

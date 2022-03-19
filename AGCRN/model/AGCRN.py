@@ -147,7 +147,7 @@ class AVWDCRNN(nn.Module):
         #current_inputs: the outputs of last layer: (B, T, N, hidden_dim)
         #output_hidden: the last state for each layer: (num_layers, B, N, hidden_dim)
         #last_state: (B, N, hidden_dim)
-        # current_inputs=self.trans_layer_T(current_inputs)
+        current_inputs=self.trans_layer_T(current_inputs)
         return current_inputs, output_hidden
 
     def init_hidden(self, batch_size):
@@ -174,7 +174,7 @@ class AGCRN(nn.Module):
                                 args.embed_dim,self.adj, args.num_layers)
 
         #predictor
-        self.end_conv = nn.Conv2d(6, args.horizon * self.output_dim, kernel_size=(1, self.hidden_dim), bias=True)
+        self.end_conv = nn.Conv2d(1, args.horizon * self.output_dim, kernel_size=(1, self.hidden_dim), bias=True)
         # self.FC = nn.Linear(6,6)
 
     def forward(self, source, targets, teacher_forcing_ratio=0.5):

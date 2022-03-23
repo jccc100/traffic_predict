@@ -97,9 +97,37 @@ def aa():
     supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))), dim=1)
     print(supports.shape)
 
+
 if __name__=="__main__":
     # x=torch.randn((64,12,10,32))
     # mha=MultiHeadAttention(8,64)
     # out=mha(x,x,x)
-    aa()
+    # aa()
+    a=torch.randn(64,12,170,3)
+    b=torch.randn(64,12,170,3)
+    v=torch.randn(64,12,170,3)
+    # c=torch.cat([a,b],)
+    aa=torch.split(a,32,2)
+    bb=torch.split(b,32,2)
+    vv=torch.split(v,32,2)
+    sc=[]
+    for i in range(len(aa)):
+        print(i)
+        qk=torch.matmul(aa[i],bb[i].permute(0,1,3,2))
+        # print(qk.shape)
+        qk=torch.softmax(qk,-2)
+        qkv=torch.matmul(qk,vv[i])
+        sc.append(qkv)
+    print(len(sc))
+    att=None
+    for i in range(len(sc)-1):
+        if att==None:
+            att=torch.cat([sc[i],sc[i+1]],2)
+        else:
+            att=torch.cat([att,sc[i+1]],2)
 
+    print(att.shape)
+
+    # aa=torch.cat([a[0],a[5]],2)
+    # print(aa.shape)
+    # # print(a[5].shape)

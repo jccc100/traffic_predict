@@ -53,8 +53,8 @@ class Spatial_Attention_layer(nn.Module):
         global device
         self.in_channels=c_in
         self.dropout = nn.Dropout(p=dropout)
-        self.conv1 = nn.Conv2d(num_node, num_node, (1, 3), bias=False)
-        self.conv2 = nn.Conv2d(num_node, num_node, (1, 3), bias=False)
+        # self.conv1 = nn.Conv2d(num_node, num_node, (1, 3), bias=False)
+        # self.conv2 = nn.Conv2d(num_node, num_node, (1, 3), bias=False)
 
         self.Wq=nn.Linear(c_in,c_out,bias=False)
         # # nn.init.kaiming_uniform_(self.Wq.weight, nonlinearity="relu")
@@ -76,11 +76,30 @@ class Spatial_Attention_layer(nn.Module):
         # # print("K:", K.shape)
         # V=self.Wv(x)
         Q=self.Wq(x)
+        Q=torch.split(Q,32,1)
         K=self.Wk(x)
+        K=torch.split(K,32,1)
         V=self.Wv(x)
-        score = torch.matmul(Q, K.transpose(1, 2))
-        score=F.softmax(score,dim=1)
-        score=torch.einsum('bnn,bno->bno',score,V)#+x
+        V=torch.split(V,32,1)
+        sc=[]
+        for i in range(len(Q)):
+            qk=torch.matmul(Q[i],K[i].permute(0,2,1))
+            qk=torch.softmax(qk,dim=1)
+            qkv=torch.matmul(qk,V[i])
+            sc.append(qkv)
+        score = None
+        for i in range(len(sc) - 1):
+            if score == None:
+                score = torch.cat([sc[i], sc[i + 1]], 2)
+            else:
+                score= torch.cat([score, sc[i + 1]], 2)
+        score=torch.relu(score)
+        # Q=torch.split(Q,10,)
+
+        # score = torch.matmul(Q, K.transpose(1, 2))
+        # score=F.softmax(score,dim=1)
+        # score=torch.einsum('bnn,bno->bno',score,V)#+x
+
         # score=torch.matmul(score,V)
         # score=F.relu(score)
         # # print("V:", V.shape)
@@ -149,13 +168,14 @@ class AVWGCN(nn.Module):
         self.alpha = nn.Parameter(torch.FloatTensor([0.05]), requires_grad=True)  # D
         self.beta = nn.Parameter(torch.FloatTensor([0.95]), requires_grad=True)  # S
         # self.Linear=nn.Linear(dim_in,dim_out,bias=True)
-        # self.att_score=Spatial_Attention_layer(adj.shape[0],dim_in,dim_out)
+        self.att_score=Spatial_Attention_layer(adj.shape[0],dim_in,dim_out)
         self.cheb_k = cheb_k
         self.weights_pool = nn.Parameter(torch.FloatTensor(embed_dim, cheb_k, dim_in, dim_out))
         self.bias_pool = nn.Parameter(torch.FloatTensor(embed_dim, dim_out))
     def forward(self, x, node_embeddings):
         #x shaped[B, N, C], node_embeddings shaped [N, D] -> supports shaped [N, N]
         #output shape [B, N, C]
+        x=self.att_score(x)
         node_num = node_embeddings.shape[0]
         # supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))+self.att_score(x)[0]), dim=1) # N N
         supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))), dim=1) # N N

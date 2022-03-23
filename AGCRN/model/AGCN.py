@@ -90,9 +90,9 @@ class Spatial_Attention_layer(nn.Module):
         score = None
         for i in range(len(sc) - 1):
             if score == None:
-                score = torch.cat([sc[i], sc[i + 1]], 2)
+                score = torch.cat([sc[i], sc[i + 1]], 1)
             else:
-                score= torch.cat([score, sc[i + 1]], 2)
+                score= torch.cat([score, sc[i + 1]], 1)
         score=torch.relu(score)
         # Q=torch.split(Q,10,)
 

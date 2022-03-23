@@ -175,7 +175,9 @@ class AVWGCN(nn.Module):
     def forward(self, x, node_embeddings):
         #x shaped[B, N, C], node_embeddings shaped [N, D] -> supports shaped [N, N]
         #output shape [B, N, C]
+        print(x.shape)
         x,_=self.att_score(x)
+        print(x.shape,"att_shape")
         node_num = node_embeddings.shape[0]
         # supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))+self.att_score(x)[0]), dim=1) # N N
         supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))), dim=1) # N N

@@ -109,7 +109,7 @@ if __name__=="__main__":
     data1=np.load(r'G:\研究方向论文\读\ASTGNN\ASTGNN-main\ASTGNN-main\data\PEMS03\PEMS03_r1_d0_w0.npz')
     print(data1.files)
     print(data1['train_x'].shape)
-    data2= np.load(r'G:\研究方向论文\读\ASTGNN\ASTGNN-main\ASTGNN-main\data\PEMS03\PEMS03.npz')
+    data2= np.load(r'G:\研究方向论文\读\ASTGNN\ASTGNN-main\ASTGNN-main\data\PEMS07\PEMS07.npz')
     print(data2.files)
     print(data2['data'].shape)
 

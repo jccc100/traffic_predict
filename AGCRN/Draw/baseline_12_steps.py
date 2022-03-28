@@ -43,8 +43,8 @@ class PeMSD8():
         plt.plot(my_x_ticks,AGCRN [:],'black', label="AGCRN")
         plt.plot(my_x_ticks,AGCRN [:], 'o',color='black')
 
-        plt.plot(my_x_ticks,Ours_model[:], 'yellow',label="Ours")
-        plt.plot(my_x_ticks,Ours_model[:], 'o',color='yellow')
+        plt.plot(my_x_ticks,Ours_model[:], 'lime',label="Ours")
+        plt.plot(my_x_ticks,Ours_model[:], 'o',color='lime')
 
 
 
@@ -88,8 +88,8 @@ class PeMSD8():
         plt.plot(my_x_ticks,AGCRN[:],'black', label="AGCRN")
         plt.plot(my_x_ticks,AGCRN[:], 'o',color='black')
 
-        plt.plot(my_x_ticks,Ours_model[:], 'yellow',label="Ours")
-        plt.plot(my_x_ticks,Ours_model[:], 'o',color='yellow')
+        plt.plot(my_x_ticks,Ours_model[:], 'lime',label="Ours")
+        plt.plot(my_x_ticks,Ours_model[:], 'o',color='lime')
         # y_ticks=np.arange(20,50,5)
         # plt.yticks(y_ticks)
 
@@ -133,8 +133,8 @@ class PeMSD8():
         plt.plot(my_x_ticks,AGCRN[:],'black', label="AGCRN")
         plt.plot(my_x_ticks,AGCRN[:], 'o',color='black')
 
-        plt.plot(my_x_ticks,Ours_model[:], 'yellow',label="Ours")
-        plt.plot(my_x_ticks,Ours_model[:], 'o',color='yellow')
+        plt.plot(my_x_ticks,Ours_model[:], 'lime',label="Ours")
+        plt.plot(my_x_ticks,Ours_model[:], 'o',color='lime')
         # y_ticks=np.arange(20,50,5)
         # plt.yticks(y_ticks)
 
@@ -184,8 +184,8 @@ class PeMSD4():
         plt.plot(my_x_ticks,AGCRN [:],'black', label="AGCRN")
         plt.plot(my_x_ticks,AGCRN [:], 'o',color='black')
 
-        plt.plot(my_x_ticks,Ours_model[:], 'yellow',label="Ours")
-        plt.plot(my_x_ticks,Ours_model[:], 'o',color='yellow')
+        plt.plot(my_x_ticks,Ours_model[:], 'lime',label="Ours")
+        plt.plot(my_x_ticks,Ours_model[:], 'o',color='lime')
 
 
 
@@ -229,8 +229,8 @@ class PeMSD4():
         plt.plot(my_x_ticks,AGCRN[:],'black', label="AGCRN")
         plt.plot(my_x_ticks,AGCRN[:], 'o',color='black')
 
-        plt.plot(my_x_ticks,Ours_model[:], 'yellow',label="Ours")
-        plt.plot(my_x_ticks,Ours_model[:], 'o',color='yellow')
+        plt.plot(my_x_ticks,Ours_model[:], 'lime',label="Ours")
+        plt.plot(my_x_ticks,Ours_model[:], 'o',color='lime')
         # y_ticks=np.arange(20,50,5)
         # plt.yticks(y_ticks)
 
@@ -275,8 +275,8 @@ class PeMSD4():
         plt.plot(my_x_ticks,AGCRN[:],'black', label="AGCRN")
         plt.plot(my_x_ticks,AGCRN[:], 'o',color='black')
 
-        plt.plot(my_x_ticks,Ours_model[:], 'yellow',label="Ours")
-        plt.plot(my_x_ticks,Ours_model[:], 'o',color='yellow')
+        plt.plot(my_x_ticks,Ours_model[:], 'lime',label="Ours")
+        plt.plot(my_x_ticks,Ours_model[:], 'o',color='lime')
         # y_ticks=np.arange(20,50,5)
         # plt.yticks(y_ticks)
 
@@ -287,9 +287,9 @@ class PeMSD4():
 if __name__=='__main__':
     PeMSD8=PeMSD8()
     PeMSD4=PeMSD4()
-    PeMSD8.MAE()
-    PeMSD8.RMSE()
-    PeMSD8.MAPE()
-    # PeMSD4.MAE()
-    # PeMSD4.RMSE()
-    # PeMSD4.MAPE()
+    # PeMSD8.MAE()
+    # PeMSD8.RMSE()
+    # PeMSD8.MAPE()
+    PeMSD4.MAE()
+    PeMSD4.RMSE()
+    PeMSD4.MAPE()

@@ -176,21 +176,21 @@ class AVWGCN(nn.Module):
         #x shaped[B, N, C], node_embeddings shaped [N, D] -> supports shaped [N, N]
         #output shape [B, N, C]
         # print(x.shape)
-        x,_=self.att_score(x)
-        x=self.Linear(x)
+        # x,_=self.att_score(x)
+        # x=self.Linear(x)
         # print(x.shape,"att_shape")
         # yuanlai
-        # node_num = node_embeddings.shape[0]
-        # # supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))+self.att_score(x)[0]), dim=1) # N N
-        # supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))), dim=1) # N N
+        node_num = node_embeddings.shape[0]
+        supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))+self.att_score(x)[0]), dim=1) # N N
+        supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))), dim=1) # N N
         #
-        # support_set = [torch.eye(node_num).to(supports.device), supports]
-        # #default cheb_k = 3
-        # for k in range(2, self.cheb_k):
-        #     support_set.append(torch.matmul(2 * supports, support_set[-1]) - support_set[-2])
-        # supports = torch.stack(support_set, dim=0)
-        # weights = torch.einsum('nd,dkio->nkio', node_embeddings, self.weights_pool)  #N, cheb_k, dim_in, dim_out
-        # bias = torch.matmul(node_embeddings, self.bias_pool)                       #N, dim_out
+        support_set = [torch.eye(node_num).to(supports.device), supports]
+        #default cheb_k = 3
+        for k in range(2, self.cheb_k):
+            support_set.append(torch.matmul(2 * supports, support_set[-1]) - support_set[-2])
+        supports = torch.stack(support_set, dim=0)
+        weights = torch.einsum('nd,dkio->nkio', node_embeddings, self.weights_pool)  #N, cheb_k, dim_in, dim_out
+        bias = torch.matmul(node_embeddings, self.bias_pool)                       #N, dim_out
 
         # 修改
         # supports=supports+torch.eye(node_num).to(supports.device) # n n
@@ -221,16 +221,16 @@ class AVWGCN(nn.Module):
         # static_out=nn.ReLU(static_out)
         # 不改
 
-        # x_g = torch.einsum("knm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
-        # x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in
-        # x_gconv = torch.einsum('bnki,nkio->bno', x_g, weights) + bias     #b, N, dim_out
+        x_g = torch.einsum("knm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
+        x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in
+        x_gconv = torch.einsum('bnki,nkio->bno', x_g, weights) + bias     #b, N, dim_out
 
         # print(x_gconv.shape)
         # static_out=torch.einsum("nn,bnc->bnc",self.sym_norm_Adj_matrix,x)
         # print(static_out.shape)
         # gcn_out=self.alpha*score+self.beta*x_gconv
-        # gcn_out=x_gconv
-        gcn_out=x
+        gcn_out=torch.relu(x_gconv)
+        # gcn_out=x
 
         return gcn_out
 

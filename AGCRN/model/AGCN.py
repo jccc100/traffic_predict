@@ -163,12 +163,12 @@ class AVWGCN2(nn.Module):
 class AVWGCN(nn.Module):
     def __init__(self, dim_in, dim_out, adj,cheb_k, embed_dim):
         super(AVWGCN, self).__init__()
-        self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(adj)).to(torch.float32)
-        self.sym_norm_Adj_matrix = F.softmax(self.sym_norm_Adj_matrix, dim=1).to(device=torch.device("cuda"))
-        self.alpha = nn.Parameter(torch.FloatTensor([0.05]), requires_grad=True)  # D
-        self.beta = nn.Parameter(torch.FloatTensor([0.95]), requires_grad=True)  # S
-        self.Linear=nn.Linear(dim_in,dim_out,bias=True)
-        self.att_score=Spatial_Attention_layer(adj.shape[0],dim_in,dim_out)
+        # self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(adj)).to(torch.float32)
+        # self.sym_norm_Adj_matrix = F.softmax(self.sym_norm_Adj_matrix, dim=1).to(device=torch.device("cuda"))
+        # self.alpha = nn.Parameter(torch.FloatTensor([0.05]), requires_grad=True)  # D
+        # self.beta = nn.Parameter(torch.FloatTensor([0.95]), requires_grad=True)  # S
+        # self.Linear=nn.Linear(dim_in,dim_out,bias=True)
+        # self.att_score=Spatial_Attention_layer(adj.shape[0],dim_in,dim_out)
         self.cheb_k = cheb_k
         self.weights_pool = nn.Parameter(torch.FloatTensor(embed_dim, cheb_k, dim_in, dim_out))
         self.bias_pool = nn.Parameter(torch.FloatTensor(embed_dim, dim_out))
@@ -229,10 +229,10 @@ class AVWGCN(nn.Module):
         # static_out=torch.einsum("nn,bnc->bnc",self.sym_norm_Adj_matrix,x)
         # print(static_out.shape)
         # gcn_out=self.alpha*score+self.beta*x_gconv
-        gcn_out=torch.relu(x_gconv)
+        # gcn_out=torch.relu(x_gconv)
         # gcn_out=x
 
-        return gcn_out
+        return x_gconv
 
 if __name__=="__main__":
     x=torch.randn(64,170,1)

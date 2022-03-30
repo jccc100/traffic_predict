@@ -168,8 +168,8 @@ class AVWGCN(nn.Module):
         # self.alpha = nn.Parameter(torch.FloatTensor([0.05]), requires_grad=True)  # D
         # self.beta = nn.Parameter(torch.FloatTensor([0.95]), requires_grad=True)  # S
         self.Linear=nn.Linear(dim_in,dim_out,bias=True)
-        self.linear_weight=nn.parameter(torch.FloatTensor(170,cheb_k,dim_in,dim_out),requires_grad=True)
-        self.linear_b=nn.parameter(torch.FloatTensor(170,dim_out),requires_grad=True)
+        self.linear_weight=nn.Parameter(torch.FloatTensor(170,cheb_k,dim_in,dim_out),requires_grad=True)
+        self.linear_b=nn.Parameter(torch.FloatTensor(170,dim_out),requires_grad=True)
         # self.att_score=Spatial_Attention_layer(adj.shape[0],dim_in,dim_out)
         self.cheb_k = cheb_k
         self.weights_pool = nn.Parameter(torch.FloatTensor(embed_dim, cheb_k, dim_in, dim_out))

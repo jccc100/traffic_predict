@@ -201,7 +201,7 @@ class AVWGCN(nn.Module):
         # x_gconv = self.Linear(x_g)
 
         score,_=self.att_score(x) # b n n
-        score=torch.einsum('bnn,nn->bnn',score,self.sym_norm_Adj_matrix)
+        score=torch.einsum('bnn,nn->bnn',score.to(torch.device('cuda')),self.sym_norm_Adj_matrix)
         score=torch.einsum('bnm,bmc->bnc',score,x)
         x_gconv=self.Linear(score)
         # score=nn.functional.relu(score)

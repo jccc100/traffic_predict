@@ -164,7 +164,7 @@ class AVWGCN2(nn.Module):
 class AVWGCN(nn.Module):
     def __init__(self, dim_in, dim_out, adj,cheb_k, embed_dim):
         super(AVWGCN, self).__init__()
-        # self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(adj)).to(torch.float32)
+        self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(adj)).to(torch.float32)
         # self.sym_norm_Adj_matrix = F.softmax(self.sym_norm_Adj_matrix, dim=1).to(device=torch.device("cuda"))
         # self.alpha = nn.Parameter(torch.FloatTensor([0.05]), requires_grad=True)  # D
         # self.beta = nn.Parameter(torch.FloatTensor([0.95]), requires_grad=True)  # S
@@ -201,6 +201,7 @@ class AVWGCN(nn.Module):
         # x_gconv = self.Linear(x_g)
 
         score,_=self.att_score(x) # b n n
+        score=torch.einsum('bnn,nn->bnn',score,self.sym_norm_Adj_matrix)
         score=torch.einsum('bnm,bmc->bnc',score,x)
         x_gconv=self.Linear(score)
         # score=nn.functional.relu(score)

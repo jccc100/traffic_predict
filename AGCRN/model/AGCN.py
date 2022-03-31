@@ -70,34 +70,35 @@ class Spatial_Attention_layer(nn.Module):
         batch_size, num_of_vertices, in_channels = x.shape
 
         # Q K V 改之后
-        # Q=self.Wq(x)
-        # # print("Q:",Q.shape)
-        # K=self.Wk(x)
-        # # print("K:", K.shape)
-        # V=self.Wv(x)
         Q=self.Wq(x)
-        Q=torch.split(Q,32,1)
+        # print("Q:",Q.shape)
         K=self.Wk(x)
-        K=torch.split(K,32,1)
+        # print("K:", K.shape)
         V=self.Wv(x)
-        V=torch.split(V,32,1)
-        sc=[]
-        for i in range(len(Q)):
-            qk=torch.matmul(Q[i],K[i].permute(0,2,1))
-            qk=torch.softmax(qk,dim=1)
-            qkv=torch.matmul(qk,V[i])
-            sc.append(qkv)
-        score = None
-        for i in range(len(sc) - 1):
-            if score == None:
-                score = torch.cat([sc[i], sc[i + 1]], 1)
-            else:
-                score= torch.cat([score, sc[i + 1]], 1)
-        score=torch.relu(score)
-        # Q=torch.split(Q,10,)
 
-        # score = torch.matmul(Q, K.transpose(1, 2))
-        # score=F.softmax(score,dim=1)
+        # Q=self.Wq(x)
+        # Q=torch.split(Q,32,1)
+        # K=self.Wk(x)
+        # K=torch.split(K,32,1)
+        # V=self.Wv(x)
+        # V=torch.split(V,32,1)
+        # sc=[]
+        # for i in range(len(Q)):
+        #     qk=torch.matmul(Q[i],K[i].permute(0,2,1))
+        #     qk=torch.softmax(qk,dim=1)
+        #     qkv=torch.matmul(qk,V[i])
+        #     sc.append(qkv)
+        # score = None
+        # for i in range(len(sc) - 1):
+        #     if score == None:
+        #         score = torch.cat([sc[i], sc[i + 1]], 1)
+        #     else:
+        #         score= torch.cat([score, sc[i + 1]], 1)
+        # score=torch.relu(score)
+        # Q=torch.split(Q,10,)Q
+
+        score = torch.matmul(Q, K.transpose(1, 2))
+        score=F.softmax(score,dim=1)
         # score=torch.einsum('bnn,bno->bno',score,V)#+x
 
         # score=torch.matmul(score,V)
@@ -168,9 +169,9 @@ class AVWGCN(nn.Module):
         # self.alpha = nn.Parameter(torch.FloatTensor([0.05]), requires_grad=True)  # D
         # self.beta = nn.Parameter(torch.FloatTensor([0.95]), requires_grad=True)  # S
         self.Linear=nn.Linear(dim_in,dim_out,bias=True)
-        self.linear_weight=nn.Parameter(torch.FloatTensor(170,cheb_k,dim_in,dim_out),requires_grad=True)
-        self.linear_b=nn.Parameter(torch.FloatTensor(170,dim_out),requires_grad=True)
-        # self.att_score=Spatial_Attention_layer(adj.shape[0],dim_in,dim_out)
+        # self.linear_weight=nn.Parameter(torch.FloatTensor(170,cheb_k,dim_in,dim_out),requires_grad=True)
+        # self.linear_b=nn.Parameter(torch.FloatTensor(170,dim_out),requires_grad=True)
+        self.att_score=Spatial_Attention_layer(adj.shape[0],dim_in,dim_out)
         self.cheb_k = cheb_k
         self.weights_pool = nn.Parameter(torch.FloatTensor(embed_dim, cheb_k, dim_in, dim_out))
         self.bias_pool = nn.Parameter(torch.FloatTensor(embed_dim, dim_out))
@@ -182,15 +183,15 @@ class AVWGCN(nn.Module):
         # x=self.Linear(x)
         # print(x.shape,"att_shape")
         # yuanlai
-        node_num = node_embeddings.shape[0]
-        # supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))+self.att_score(x)[0]), dim=1) # N N
-        supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))), dim=1) # N N
-        #
-        support_set = [torch.eye(node_num).to(supports.device), supports]
-        #default cheb_k = 3
-        for k in range(2, self.cheb_k):
-            support_set.append(torch.matmul(2 * supports, support_set[-1]) - support_set[-2])
-        supports = torch.stack(support_set, dim=0)
+        # node_num = node_embeddings.shape[0]
+        # # supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))+self.att_score(x)[0]), dim=1) # N N
+        # supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))), dim=1) # N N
+        # #
+        # support_set = [torch.eye(node_num).to(supports.device), supports]
+        # #default cheb_k = 3
+        # for k in range(2, self.cheb_k):
+        #     support_set.append(torch.matmul(2 * supports, support_set[-1]) - support_set[-2])
+        # supports = torch.stack(support_set, dim=0)
         # weights = torch.einsum('nd,dkio->nkio', node_embeddings, self.weights_pool)  #N, cheb_k, dim_in, dim_out
         # bias = torch.matmul(node_embeddings, self.bias_pool)                       #N, dim_out
 
@@ -199,8 +200,9 @@ class AVWGCN(nn.Module):
         # x_g = torch.einsum("nn,bnc->bnc", supports, x)    #
         # x_gconv = self.Linear(x_g)
 
-        # score,_=self.att_score(x) # b n n
-        # # score=torch.einsum('bnm,bmc->bnc',score,x)
+        score,_=self.att_score(x) # b n n
+        score=torch.einsum('bnm,bmc->bnc',score,x)
+        x_gconv=self.Linear(score)
         # score=nn.functional.relu(score)
         # att_out=torch.einsum('bnn,bnc->bnc')
         # att_out=torch.einsum()
@@ -221,11 +223,11 @@ class AVWGCN(nn.Module):
         # static_out=torch.einsum("mm,bmc->bmc",self.sym_norm_Adj_matrix,x)
         # static_out=self.Linear(static_out) # b n o
         # static_out=nn.ReLU(static_out)
-        # 不改
 
-        x_g = torch.einsum("knm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
-        x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in
-        x_gconv=torch.einsum('bnki,nkio->bno',x_g,self.linear_weight)+self.linear_b
+        # x_gconv=torch.einsum('bnki,nkio->bno',x_g,self.linear_weight)+self.linear_b # TA-GCN_linear
+        # 不改
+        # x_g = torch.einsum("knm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
+        # x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in
         # x_gconv = torch.einsum('bnki,nkio->bno', x_g, weights) + bias     #b, N, dim_out
 
 

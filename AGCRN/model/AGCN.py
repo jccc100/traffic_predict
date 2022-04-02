@@ -183,7 +183,7 @@ class AVWGCN(nn.Module):
         # x=self.Linear(x)
         # print(x.shape,"att_shape")
         # yuanlai
-        # node_num = node_embeddings.shape[0]
+        node_num = node_embeddings.shape[0]
         # # supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))+self.att_score(x)[0]), dim=1) # N N
         supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))), dim=1) # N N
         # #

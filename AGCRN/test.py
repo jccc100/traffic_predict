@@ -106,38 +106,12 @@ if __name__=="__main__":
     
     import numpy as np
 
-    data1=np.load(r'G:\研究方向论文\读\ASTGNN\ASTGNN-main\ASTGNN-main\data\PEMS03\PEMS03_r1_d0_w0.npz')
-    print(data1.files)
-    print(data1['train_x'].shape)
-    data2= np.load(r'G:\研究方向论文\读\ASTGNN\ASTGNN-main\ASTGNN-main\data\PEMS07\PEMS07.npz')
-    print(data2.files)
-    print(data2['data'].shape)
-
-    exit()
-    a=torch.randn(64,12,170,3)
-    b=torch.randn(64,12,170,3)
-    v=torch.randn(64,12,170,3)
-    # c=torch.cat([a,b],)
-    aa=torch.split(a,32,2)
-    bb=torch.split(b,32,2)
-    vv=torch.split(v,32,2)
-    sc=[]
-    for i in range(len(aa)):
-        print(i)
-        qk=torch.matmul(aa[i],bb[i].permute(0,1,3,2))
-        # print(qk.shape)
-        qk=torch.softmax(qk,-2)
-        qkv=torch.matmul(qk,vv[i])
-        sc.append(qkv)
-    print(len(sc))
-    att=None
-    for i in range(len(sc)-1):
-        if att==None:
-            att=torch.cat([sc[i],sc[i+1]],2)
-        else:
-            att=torch.cat([att,sc[i+1]],2)
-
-    print(att.shape)
+    path=r'G:\研究方向论文\读\Data\Data\METR-LA\test.npz'
+    test_data=np.load(path)
+    print(test_data.files)
+    print(test_data['x'].shape)
+    print(test_data['y'].shape)
+    # print(test_data['x_offsets'].shape)
 
     # aa=torch.cat([a[0],a[5]],2)
     # print(aa.shape)

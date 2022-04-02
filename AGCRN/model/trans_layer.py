@@ -16,14 +16,14 @@ device=torch.device('cpu')
 class Transform2(nn.Module):
     def __init__(self, outfea, d):
         super(Transform, self).__init__()
-        # self.qff = nn.Linear(outfea, outfea)
+        self.qff = nn.Linear(outfea, outfea)
         # # nn.init.kaiming_uniform_(self.qff.weight,nonlinearity="relu")
-        # self.kff = nn.Linear(outfea, outfea)
+        self.kff = nn.Linear(outfea, outfea)
         # nn.init.kaiming_uniform_(self.kff.weight, nonlinearity="relu")
         self.vff = nn.Linear(outfea, outfea)
         # nn.init.kaiming_uniform_(self.vff.weight, nonlinearity="relu")
-        self.conv1=nn.Conv2d(12,12,(1,3),bias=True)
-        self.conv2=nn.Conv2d(12,12,(1,3),bias=True)
+        # self.conv1=nn.Conv2d(12,12,(1,3),bias=True)
+        # self.conv2=nn.Conv2d(12,12,(1,3),bias=True)
 
         self.ln = nn.LayerNorm(outfea)
         self.lnff = nn.LayerNorm(outfea)
@@ -38,11 +38,11 @@ class Transform2(nn.Module):
 
     def forward(self, x,score_his=None):# x : b t n hidden
         b, t, n, c = x.shape
-        # query = self.qff(x)
-        # key = self.kff(x)
+        query = self.qff(x)
+        key = self.kff(x)
         # value = self.vff(x)
-        query=self.conv1(x)
-        key=self.conv2(x)
+        # query=self.conv1(x)
+        # key=self.conv2(x)
         value=self.vff(x)
         # query=x
         # key=x

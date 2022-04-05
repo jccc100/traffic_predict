@@ -184,7 +184,7 @@ class PositionalEncoding(nn.Module):
         return x
 
 class transformer_layer(nn.Module):
-    def __init__(self,dim_in,dim_out,num_layer,d=2,att_his=True):
+    def __init__(self,dim_in,dim_out,num_layer,d=2,att_his=False):
         super(transformer_layer,self).__init__()
         # self.linear1=nn.Linear(dim_in,dim_out)
         self.trans_layers=nn.ModuleList(Transform(dim_out,d) for l in range(num_layer))

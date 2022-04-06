@@ -4,6 +4,8 @@ import torch.nn as nn
 import numpy as np
 from torch.autograd import Variable
 import math
+
+device=torch.device('cuda')
 def sym_norm_Adj(W):
     '''
     compute Symmetric normalized Adj matrix

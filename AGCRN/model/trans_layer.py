@@ -10,8 +10,8 @@ import pandas as pd
 from torch.autograd import Variable
 import math
 
-# device=torch.device('cuda')
-device=torch.device('cpu')
+device=torch.device('cuda')
+# device=torch.device('cpu')
 
 class Transform2(nn.Module):
     def __init__(self, outfea, d):

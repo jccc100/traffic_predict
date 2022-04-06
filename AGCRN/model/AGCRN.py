@@ -5,7 +5,7 @@ from model.AGCRNCell import AGCRNCell
 from model.trans_layer import transformer_layer
 from torch.autograd import Variable
 import math
-
+device=torch.device('cuda')
 class PositionalEncoding(nn.Module):
     "Implement the PE function."
 

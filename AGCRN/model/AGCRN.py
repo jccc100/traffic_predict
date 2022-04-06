@@ -35,7 +35,7 @@ class AVWDCRNN(nn.Module):
         self.node_num = node_num
         self.input_dim = dim_in
         self.num_layers = num_layers
-        self.PE=PositionalEncoding(dim_out)
+        self.PE=PositionalEncoding(dim_in)
         self.trans_layer_T = transformer_layer(dim_out, dim_out, 2, 2)
         self.dcrnn_cells = nn.ModuleList()
         self.dcrnn_cells.append(AGCRNCell(node_num, dim_in, dim_out, self.adj,cheb_k, embed_dim))

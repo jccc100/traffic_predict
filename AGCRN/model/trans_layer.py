@@ -194,8 +194,8 @@ class transformer_layer(nn.Module):
         self.score_his = torch.zeros((64, 170, 12, 12), requires_grad=False).to(device)
     def forward(self, x):
         # x=self.linear1(x)
-        x=self.PE(x)
-        print(x.shape,"xxxx")
+        # x=self.PE(x)
+        # print(x.shape,"xxxx")
         for l in range(self.num_layer):
             if  self.att_his:
                 x,self.score_his=self.trans_layers[l](x,self.score_his)

@@ -56,9 +56,9 @@ class AVWDCRNN(nn.Module):
         # x = x.permute(0, 2, 3, 1)  # b n d t
         # x = x.reshape(b * n, d, t)  # b*n d t
         # current_inputs = self.tcn(x).reshape(b, n, d, t).permute(0, 3, 1, 2)  # [b*n d t] --> [b n d t] -->[b t n d]
-        print(x.shape,"no pe")
+        # print(x.shape,"no pe")
         current_inputs = self.PE(x)
-        print(current_inputs.shape, "pe")
+        # print(current_inputs.shape, "pe")
         # current_inputs = self.trans_layer_T(x)
         output_hidden = []
         for i in range(self.num_layers):

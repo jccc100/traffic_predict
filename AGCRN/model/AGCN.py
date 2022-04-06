@@ -2,6 +2,8 @@ import torch
 import torch.nn.functional as F
 import torch.nn as nn
 import numpy as np
+from torch.autograd import Variable
+import math
 def sym_norm_Adj(W):
     '''
     compute Symmetric normalized Adj matrix
@@ -139,15 +141,38 @@ class Spatial_Attention_layer(nn.Module):
         # 公式6  返回注意力和更新的score_his用于下一次传参
         # return score.reshape((batch_size, num_of_timesteps, num_of_vertices, num_of_vertices)),score_his # (b t n n)
         return score,score_his # (b n n)
-class AVWGCN2(nn.Module):
+class PositionalEncoding(nn.Module):
+    "Implement the PE function."
+
+    def __init__(self, outfea, max_len=12):
+        super(PositionalEncoding, self).__init__()
+
+        # Compute the positional encodings once in log space.
+        pe = torch.zeros(max_len, outfea).to(device)
+        position = torch.arange(0, max_len).unsqueeze(1)
+        div_term = torch.exp(torch.arange(0, outfea, 2) *
+                             -(math.log(10000.0) / outfea))
+        pe[:, 0::2] = torch.sin(position * div_term)
+        pe[:, 1::2] = torch.cos(position * div_term)
+        pe = pe.unsqueeze(0).unsqueeze(2)  # [1,T,1,F]
+        self.register_buffer('pe', pe)
+
+    def forward(self, x):
+        x = x + Variable(self.pe,
+                         requires_grad=False)
+        return x
+
+class AVWGCN(nn.Module):
     def __init__(self, dim_in, dim_out, adj,cheb_k, embed_dim):
         super(AVWGCN, self).__init__()
         self.cheb_k = cheb_k
         self.weights_pool = nn.Parameter(torch.FloatTensor(embed_dim, cheb_k, dim_in, dim_out))
         self.bias_pool = nn.Parameter(torch.FloatTensor(embed_dim, dim_out))
+        self.PE=PositionalEncoding(dim_out)
     def forward(self, x, node_embeddings):
         #x shaped[B, N, C], node_embeddings shaped [N, D] -> supports shaped [N, N]
         #output shape [B, N, C]
+        x=self.PE(x)
         node_num = node_embeddings.shape[0]
         supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))), dim=1)
         support_set = [torch.eye(node_num).to(supports.device), supports]
@@ -161,7 +186,8 @@ class AVWGCN2(nn.Module):
         x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in
         x_gconv = torch.einsum('bnki,nkio->bno', x_g, weights) + bias     #b, N, dim_out
         return x_gconv
-class AVWGCN(nn.Module):
+
+class AVWGCN2(nn.Module):
     def __init__(self, dim_in, dim_out, adj,cheb_k, embed_dim):
         super(AVWGCN, self).__init__()
         self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(adj)).to(torch.float32).to(torch.device('cuda'))
@@ -171,7 +197,7 @@ class AVWGCN(nn.Module):
         self.Linear=nn.Linear(dim_in,dim_out,bias=True)
         # self.linear_weight=nn.Parameter(torch.FloatTensor(170,cheb_k,dim_in,dim_out),requires_grad=True)
         # self.linear_b=nn.Parameter(torch.FloatTensor(170,dim_out),requires_grad=True)
-        self.att_score=Spatial_Attention_layer(adj.shape[0],dim_in,dim_out)
+        # self.att_score=Spatial_Attention_layer(adj.shape[0],dim_in,dim_out)
         self.cheb_k = cheb_k
         self.weights_pool = nn.Parameter(torch.FloatTensor(embed_dim, cheb_k, dim_in, dim_out))
         self.bias_pool = nn.Parameter(torch.FloatTensor(embed_dim, dim_out))

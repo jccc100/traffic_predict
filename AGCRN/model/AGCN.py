@@ -192,7 +192,7 @@ class AVWGCN(nn.Module):
         weights = torch.einsum('nd,dio->nio', node_embeddings, self.weights_pool)  #N, cheb_k, dim_in, dim_out
         bias = torch.matmul(node_embeddings, self.bias_pool)                       #N, dim_out
         x_g = torch.einsum("nm,bmi->bni", supports, x)      #B, cheb_k, N, dim_in
-        x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in
+        # x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in
         x_gconv = torch.einsum('bni,nio->bno', x_g, weights) + bias     #b, N, dim_out
         return x_gconv
 

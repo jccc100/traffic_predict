@@ -103,14 +103,19 @@ if __name__=="__main__":
     # mha=MultiHeadAttention(8,64)
     # out=mha(x,x,x)
     # aa()
-    
-    import numpy as np
+    k=2
+    for i in range(2,k):
+        print(i)
 
-    path=r'G:\研究方向论文\读\Data\Data\METR-LA\test.npz'
-    test_data=np.load(path)
-    print(test_data.files)
-    print(test_data['x'].shape)
-    print(test_data['y'].shape)
+
+    
+    # import numpy as np
+    #
+    # path=r'G:\研究方向论文\读\Data\Data\METR-LA\test.npz'
+    # test_data=np.load(path)
+    # print(test_data.files)
+    # print(test_data['x'].shape)
+    # print(test_data['y'].shape)
     # print(test_data['x_offsets'].shape)
 
     # aa=torch.cat([a[0],a[5]],2)

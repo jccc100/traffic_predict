@@ -6,26 +6,7 @@ from model.trans_layer import transformer_layer
 from torch.autograd import Variable
 import math
 device=torch.device('cuda')
-class PositionalEncoding(nn.Module):
-    "Implement the PE function."
 
-    def __init__(self, outfea, max_len=12):
-        super(PositionalEncoding, self).__init__()
-
-        # Compute the positional encodings once in log space.
-        pe = torch.zeros(max_len, outfea).to(device)
-        position = torch.arange(0, max_len).unsqueeze(1)
-        div_term = torch.exp(torch.arange(0, outfea, 2) *
-                             -(math.log(10000.0) / outfea))
-        pe[:, 0::2] = torch.sin(position * div_term)
-        pe[:, 1::2] = torch.cos(position * div_term)
-        pe = pe.unsqueeze(0).unsqueeze(2)  # [1,T,1,F]
-        self.register_buffer('pe', pe)
-
-    def forward(self, x):
-        x = x + Variable(self.pe,
-                         requires_grad=False)
-        return x
 
 class AVWDCRNN(nn.Module):
     def __init__(self, node_num, dim_in, dim_out, cheb_k, embed_dim, adj,num_layers=1):
@@ -57,7 +38,7 @@ class AVWDCRNN(nn.Module):
         # x = x.reshape(b * n, d, t)  # b*n d t
         # current_inputs = self.tcn(x).reshape(b, n, d, t).permute(0, 3, 1, 2)  # [b*n d t] --> [b n d t] -->[b t n d]
         # print(x.shape,"no pe")
-        current_inputs = self.PE(x)
+        # current_inputs = self.PE(x)
         # print(current_inputs.shape, "pe")
         # current_inputs = self.trans_layer_T(x)
         output_hidden = []

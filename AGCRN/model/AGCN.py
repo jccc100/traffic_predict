@@ -159,7 +159,7 @@ class AVWGCN(nn.Module):
         support_set = [torch.eye(node_num).to(supports.device), supports]
         #default cheb_k = 3
         for k in range(2, self.cheb_k):
-            print("cheb_kcheb_kcheb_kcheb_kcheb_k")
+            # print("cheb_kcheb_kcheb_kcheb_kcheb_k")
             support_set.append(torch.matmul(2 * supports, support_set[-1]) - support_set[-2])
         supports = torch.stack(support_set, dim=0)
 

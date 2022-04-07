@@ -144,7 +144,7 @@ class Spatial_Attention_layer(nn.Module):
         return score,score_his # (b n n)
 
 
-class AVWGCN2(nn.Module):
+class AVWGCN(nn.Module):
     def __init__(self, dim_in, dim_out, adj,cheb_k, embed_dim):
         super(AVWGCN, self).__init__()
         self.cheb_k = cheb_k
@@ -170,7 +170,7 @@ class AVWGCN2(nn.Module):
         x_gconv = torch.einsum('bnki,nkio->bno', x_g, weights) + bias     #b, N, dim_out
         return x_gconv
 
-class AVWGCN(nn.Module):
+class AVWGCN2(nn.Module):
     def __init__(self, dim_in, dim_out, adj,cheb_k, embed_dim):
         super(AVWGCN, self).__init__()
         self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(adj)).to(torch.float32).to(torch.device('cuda'))

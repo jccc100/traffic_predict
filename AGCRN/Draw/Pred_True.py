@@ -14,6 +14,9 @@ file_path_D4=[r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD4\3.1\PEMSD4_
 file_path_D8=[r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\3.1\PEMSD8_pred.npy",
            r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\3.1\PEMSD8_true.npy"]
 
+file_path_D8_noTA=[r"C:\Users\jc\Desktop\毕业相关\实验数据\TA-GCN_noTA\PEMSD8_pred.npy",
+           r"C:\Users\jc\Desktop\毕业相关\实验数据\TA-GCN_noTA\PEMSD8_true.npy"]
+
 file_path_D3=[r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD3\3.1\PEMS03_pred.npy",
            r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD3\3.1\PEMS03_true.npy"]
 # 12代表0-60分钟的预测
@@ -135,15 +138,15 @@ def D3():
     plt.show()
 
 def D8():
-    pred_flow = np.load(file_path_D3[0])
+    pred_flow = np.load(file_path_D8[0])
     # pred_flow = pred_flow.reshape(3375, 307, 12)
     pred_flow=pred_flow.swapaxes(1,2)
-    true_flow = np.load(file_path_D3[1])
+    true_flow = np.load(file_path_D8[1])
     # true_flow = true_flow.reshape(3375, 307, 12)
     true_flow=true_flow.swapaxes(1,2)
 
-    node = 111
-    day=1
+    node = 167
+    day=2
     shifting=50
     drow_pred_flow_15 = pred_flow[shifting+9:day*24 * 12+shifting+9, node, 2, :]
     drow_true_flow_15 = true_flow[shifting+9:day*24 * 12+shifting+9, node, 2, :]
@@ -160,15 +163,16 @@ def D8():
     # xs = ['00:00','03:00','06:00','09:00','12:00','15:00','18:00','21:00','24:00']
     #  = [datetime.strptime(d, '%Y%m%d%H') for d in dates]
     # fig = plt.figure( [figsize=(6,3)] )
-    fig = plt.figure(figsize=(8, 5))
+    # fig = plt.figure(figsize=(8, 5))
+    fig = plt.figure(figsize=(30, 15))
     # 15 min
-    # ax1 = plt.subplot(3, 1, 1)
+    ax1 = plt.subplot(3, 1, 1)
     # ax1 = plt.subplot(1, 1, 1)
-    shang_x, shang_y, xia_x, xia_y, zuo_x, zuo_y, you_x, you_y = huakuang(486, 320, 62, 96)
-    plt.plot(shang_x, shang_y, 'red', linewidth=2.0)
-    plt.plot(zuo_x, zuo_y, 'red', linewidth=2.0)
-    plt.plot(xia_x, xia_y, 'red', linewidth=2.0)
-    plt.plot(you_x, you_y, 'red', linewidth=2.0)
+    # shang_x, shang_y, xia_x, xia_y, zuo_x, zuo_y, you_x, you_y = huakuang(486, 320, 62, 96)
+    # plt.plot(shang_x, shang_y, 'red', linewidth=2.0)
+    # plt.plot(zuo_x, zuo_y, 'red', linewidth=2.0)
+    # plt.plot(xia_x, xia_y, 'red', linewidth=2.0)
+    # plt.plot(you_x, you_y, 'red', linewidth=2.0)
     plt.plot(drow_pred_flow_15, label="pred_flow")
     plt.plot(drow_true_flow_15, label="Truth_flow")
     plt.title("PEMSD8 15min")
@@ -177,22 +181,22 @@ def D8():
     plt.legend()  # 显示图例
 
     # 30 min
-    # ax2 = plt.subplot(3, 1, 2)
+    ax2 = plt.subplot(3, 1, 2)
     # # ax2 = plt.subplot(3, 1, 2)
     # shang_x, shang_y, xia_x, xia_y, zuo_x, zuo_y, you_x, you_y = huakuang(486, 320, 62, 96)
     # plt.plot(shang_x, shang_y, 'red', linewidth=2.0)
     # plt.plot(zuo_x, zuo_y, 'red', linewidth=2.0)
     # plt.plot(xia_x, xia_y, 'red', linewidth=2.0)
     # plt.plot(you_x, you_y, 'red', linewidth=2.0)
-    # plt.plot(drow_pred_flow_30, label="pred_flow")
-    # plt.plot(drow_true_flow_30, label="Truth_flow")
-    # plt.title("PEMSD8 30min")
-    # plt.xlabel("Time")
-    # plt.ylabel("Traffic Flow")
-    # plt.legend()  # 显示图例
+    plt.plot(drow_pred_flow_30, label="pred_flow")
+    plt.plot(drow_true_flow_30, label="Truth_flow")
+    plt.title("PEMSD8 30min")
+    plt.xlabel("Time")
+    plt.ylabel("Traffic Flow")
+    plt.legend()  # 显示图例
 
     # # 60 min
-    # ax3 = plt.subplot(3, 1, 3)
+    ax3 = plt.subplot(3, 1, 3)
     # 画框
     # shang_x,shang_y,xia_x,xia_y,zuo_x,zuo_y,you_x,you_y=huakuang(486,320,62,96)
     # plt.plot(shang_x,shang_y,'red',linewidth=2.0)
@@ -201,12 +205,12 @@ def D8():
     # plt.plot(you_x,you_y,'red',linewidth=2.0)
     #
     # # 画线
-    # plt.plot(drow_pred_flow_60, label="Pred_flow")
-    # plt.plot(drow_true_flow_60, label="Truth_flow")
-    # plt.title("PEMSD8 60min")
-    # plt.xlabel("Time")
-    # plt.ylabel("Traffic Flow")
-    # plt.legend()  # 显示图例
+    plt.plot(drow_pred_flow_60, label="Pred_flow")
+    plt.plot(drow_true_flow_60, label="Truth_flow")
+    plt.title("PEMSD8 60min")
+    plt.xlabel("Time")
+    plt.ylabel("Traffic Flow")
+    plt.legend()  # 显示图例
 
     plt.savefig(r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\3.1\Pred_True_{}_day{}_15min.png".format(str(node),str(day)))
     plt.show()

@@ -284,12 +284,109 @@ class PeMSD4():
         plt.legend()  # 显示图例
         plt.show()
 
+class ablation_result():
+    def __init__(self):
+        super(ablation_result,self).__init__()
+
+    def MAE(self):
+        TA_GCN_linear  = [17.04,17.16,17.35,17.66,17.97,18.33,18.81,19.27,19.56,19.92,20.45,21.24]
+        TA_GCN_SA  =     [14.47,15.2,15.8,16.23,16.57,16.86,17.23,17.59,17.9,18.21,18.65,19.33]
+        TA_GCN_noTA  =   [13.79,14.37,14.64,14.97,15.43,15.62,15.95,16.25,16.56,16.82,17.29,17.64]
+        TA_GCN=         [13.46,13.85,14.25,14.58,14.87,15.15,15.42,15.70,15.95,16.17,16.46,16.86]
+        my_x_ticks=np.arange(5,65,5)
+        # my_x_ticks=['5','10']
+
+        plt.title("PEMSD8 MAE")
+        plt.xlabel("Time")
+        plt.ylabel("MAE")
+
+        plt.plot(my_x_ticks,TA_GCN_linear [:], 'red',label="TA_GCN_linear")
+        plt.plot(my_x_ticks,TA_GCN_linear [:],'ro')
+
+        plt.plot(my_x_ticks,TA_GCN_SA [:], 'green',label="TA_GCN_SA")
+        plt.plot(my_x_ticks,TA_GCN_SA [:], 'go')
+
+        plt.plot(my_x_ticks,TA_GCN_noTA [:],'b',label="TA_GCN_noTA")
+        plt.plot(my_x_ticks,TA_GCN_noTA [:], 'bo')
+
+        plt.plot(my_x_ticks,TA_GCN [:], 'peru',label="TA_GCN")
+        plt.plot(my_x_ticks,TA_GCN [:], 'o',color='peru')
+
+
+
+
+
+        plt.legend()  # 显示图例
+        plt.show()
+    def RMSE(self):
+        TA_GCN_linear = [26.37,26.63,27,27.49,27.97,28.45,29.01,29.51,29.86,30.28,30.93,31.89]
+        TA_GCN_SA = [22.48,23.74,24.75,25.47,26.02,26.49,27.02,27.52,27.97,28.43,29.08,30.04]
+        TA_GCN_noTA = [21.68,22.45,23.15,23.92,24.37,24.74,25.46,25.97,26.46,26.82,27.23,27.94]
+        TA_GCN = [21.05,21.85,22.66,23.25,23.72,24.22,24.85,25.25,25.6,26.01,26.38,26.94]
+        my_x_ticks = np.arange(5, 65, 5)
+        # my_x_ticks=['5','10']
+
+        plt.title("PEMSD8 RMSE")
+        plt.xlabel("Time")
+        plt.ylabel("MAE")
+
+        plt.plot(my_x_ticks, TA_GCN_linear[:], 'red', label="TA_GCN_linear")
+        plt.plot(my_x_ticks, TA_GCN_linear[:], 'ro')
+
+        plt.plot(my_x_ticks, TA_GCN_SA[:], 'green', label="TA_GCN_SA")
+        plt.plot(my_x_ticks, TA_GCN_SA[:], 'go')
+
+        plt.plot(my_x_ticks, TA_GCN_noTA[:], 'b', label="TA_GCN_noTA")
+        plt.plot(my_x_ticks, TA_GCN_noTA[:], 'bo')
+
+        plt.plot(my_x_ticks, TA_GCN[:], 'peru', label="TA_GCN")
+        plt.plot(my_x_ticks, TA_GCN[:], 'o', color='peru')
+
+
+        plt.legend()  # 显示图例
+
+        plt.show()
+
+    def MAPE(self):
+        TA_GCN_linear = [11.23,11.23,11.28,11.41,11.56,11.77,12.14,12.67,12.99,13.44,13.76,14.37]
+        TA_GCN_SA = [9.49,9.82,10.13,10.40,10.62,10.84,11.09,11.32,11.55,11.79,12.14,12.65]
+        TA_GCN_noTA = [9.12,9.41,9.56,9.77,9.98,10.12,10.34,10.56,10.72,10.83,11.02,11.18]
+        TA_GCN = [8.73,8.93,9.15,9.32,9.51,9.68,9.91,10.12,10.27,10.50,10.71,11.01]
+        my_x_ticks = np.arange(5, 65, 5)
+        # my_x_ticks=['5','10']
+
+        plt.title("PEMSD8 MAPE")
+        plt.xlabel("Time")
+        plt.ylabel("MAE")
+
+        plt.plot(my_x_ticks, TA_GCN_linear[:], 'red', label="TA_GCN_linear")
+        plt.plot(my_x_ticks, TA_GCN_linear[:], 'ro')
+
+        plt.plot(my_x_ticks, TA_GCN_SA[:], 'green', label="TA_GCN_SA")
+        plt.plot(my_x_ticks, TA_GCN_SA[:], 'go')
+
+        plt.plot(my_x_ticks, TA_GCN_noTA[:], 'b', label="TA_GCN_noTA")
+        plt.plot(my_x_ticks, TA_GCN_noTA[:], 'bo')
+
+        plt.plot(my_x_ticks, TA_GCN[:], 'peru', label="TA_GCN")
+        plt.plot(my_x_ticks, TA_GCN[:], 'o', color='peru')
+
+
+        plt.legend()  # 显示图例
+        # plt.savefig(r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\3.1\Pred_True_{}_day{}_15min.png".format(str(node), str(day)))
+        plt.show()
+
+
 if __name__=='__main__':
     PeMSD8=PeMSD8()
     PeMSD4=PeMSD4()
+    ablation_result=ablation_result()
     # PeMSD8.MAE()
     # PeMSD8.RMSE()
     # PeMSD8.MAPE()
-    PeMSD4.MAE()
-    PeMSD4.RMSE()
-    PeMSD4.MAPE()
+    # PeMSD4.MAE()
+    # PeMSD4.RMSE()
+    # PeMSD4.MAPE()
+    ablation_result.MAE()
+    ablation_result.RMSE()
+    ablation_result.MAPE()

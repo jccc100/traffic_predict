@@ -187,7 +187,7 @@ class AVWGCN(nn.Module):
         # for k in range(2, self.cheb_k):
         #     print("cheb_kcheb_kcheb_kcheb_kcheb_k")
         #     support_set.append(torch.matmul(2 * supports, support_set[-1]) - support_set[-2])
-        supports = torch.stack(support_set, dim=0)
+        # supports = torch.stack(support_set, dim=0)
 
         weights = torch.einsum('nd,dio->nio', node_embeddings, self.weights_pool)  #N, cheb_k, dim_in, dim_out
         bias = torch.matmul(node_embeddings, self.bias_pool)                       #N, dim_out

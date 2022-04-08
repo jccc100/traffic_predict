@@ -6,32 +6,19 @@ import numpy as np
 
 device=torch.device('cuda')
 def sym_norm_Adj(W):
-    '''
-    compute Symmetric normalized Adj matrix
 
-    Parameters
-    ----------
-    W: np.ndarray, shape is (N, N), N is the num of vertices
-
-    Returns
-    ----------
-    Symmetric normalized Laplacian: (D^hat)^1/2 A^hat (D^hat)^1/2; np.ndarray, shape (N, N)
-    '''
     W=W.to(device=torch.device('cpu'))
     assert W.shape[0] == W.shape[1]
     W=W.cpu().detach().numpy()
 
     N = W.shape[0]
-    D = np.zeros([N, N], dtype=type(W[0][0]))
+    # D = np.zeros([N, N], dtype=type(W[0][0]))
 
 
     W = W + np.identity(N) # 为邻居矩阵加上自连接
-    for i in range(W.shape[0]):
-        for j in range(W.shape[0]):
-            if W[i][j] != 0.:
-                D[i][j] = 1
+
     # print(D)
-    D = np.diag(np.sum(D, axis=1))
+    D = np.diag(1.0/np.sum(W, axis=1))
     # D = np.diag(np.sum(W, axis=1))
     # print("D:",D)
     sym_norm_Adj_matrix = np.dot(np.sqrt(D),W)
@@ -148,6 +135,7 @@ class AVWGCN(nn.Module):
     def __init__(self, dim_in, dim_out, adj,cheb_k, embed_dim):
         super(AVWGCN, self).__init__()
         self.cheb_k = cheb_k
+        self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(adj)).to(torch.float32).to(torch.device('cuda'))
         self.weights_pool = nn.Parameter(torch.FloatTensor(embed_dim, cheb_k, dim_in, dim_out))
         self.bias_pool = nn.Parameter(torch.FloatTensor(embed_dim, dim_out))
     def forward(self, x, node_embeddings):
@@ -162,6 +150,9 @@ class AVWGCN(nn.Module):
             # print("cheb_kcheb_kcheb_kcheb_kcheb_k")
             support_set.append(torch.matmul(2 * supports, support_set[-1]) - support_set[-2])
         supports = torch.stack(support_set, dim=0)
+        # 加上静态邻接矩阵
+        supports = torch.einsum("nn,knn->knn",torch.softmax(self.sym_norm_Adj_matrix),supports)
+
 
         weights = torch.einsum('nd,dkio->nkio', node_embeddings, self.weights_pool)  #N, cheb_k, dim_in, dim_out
         bias = torch.matmul(node_embeddings, self.bias_pool)                       #N, dim_out

@@ -21,7 +21,7 @@ from lib.TrainInits import print_model_parameters
 #*************************************************************************#
 Mode = 'train'
 DEBUG = 'True'
-DATASET = 'PEMS03'      #PEMSD4 or PEMSD8
+DATASET = 'PEMSD4'      #PEMSD4 or PEMSD8
 DEVICE = 'cuda:0'
 MODEL = 'AGCRN'
 
@@ -152,8 +152,8 @@ def get_adjacent_matrix(distance_file: str, num_nodes: int, id_file: str = None,
 
     return torch.from_numpy(A)
 
-# adj=get_adjacent_matrix(distance_file,args.num_nodes)#.to(device=args.device)
-adj=torch.randn(50,50)
+adj=get_adjacent_matrix(distance_file,args.num_nodes)#.to(device=args.device)
+# adj=torch.randn(50,50)
 #init model
 model = Network(args,adj)
 model = model.to(args.device)

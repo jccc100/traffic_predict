@@ -145,7 +145,7 @@ def D8():
     # true_flow = true_flow.reshape(3375, 307, 12)
     true_flow=true_flow.swapaxes(1,2)
 
-    node = 167
+    node = 110
     day=2
     shifting=50
     drow_pred_flow_15 = pred_flow[shifting+9:day*24 * 12+shifting+9, node, 2, :]
@@ -164,7 +164,7 @@ def D8():
     #  = [datetime.strptime(d, '%Y%m%d%H') for d in dates]
     # fig = plt.figure( [figsize=(6,3)] )
     # fig = plt.figure(figsize=(8, 5))
-    fig = plt.figure(figsize=(30, 15))
+    fig = plt.figure(figsize=(22, 15))
     # 15 min
     ax1 = plt.subplot(3, 1, 1)
     # ax1 = plt.subplot(1, 1, 1)

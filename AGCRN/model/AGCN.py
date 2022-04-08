@@ -151,7 +151,7 @@ class AVWGCN(nn.Module):
             support_set.append(torch.matmul(2 * supports, support_set[-1]) - support_set[-2])
         supports = torch.stack(support_set, dim=0)
         # 加上静态邻接矩阵
-        supports = torch.einsum("nn,knm->knm",torch.softmax(self.sym_norm_Adj_matrix),supports)
+        supports = torch.einsum("nn,knm->knm",torch.softmax(self.sym_norm_Adj_matrix,dim=-1),supports)
 
 
         weights = torch.einsum('nd,dkio->nkio', node_embeddings, self.weights_pool)  #N, cheb_k, dim_in, dim_out

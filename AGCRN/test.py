@@ -97,16 +97,18 @@ def aa():
     supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))), dim=1)
     print(supports.shape)
 
-
+def load_parameters(file_path):
+    #G:\研究方向论文\读\已读\AGCRN\AGCRN-master\traffic_predict\AGCRN\model\model_para\PEMSD7
+    state_dict = torch.load(file_path)
+    for i in state_dict:
+        print(i)
 if __name__=="__main__":
     # x=torch.randn((64,12,10,32))
     # mha=MultiHeadAttention(8,64)
     # out=mha(x,x,x)
     # aa()
-    k=2
-    for i in range(2,k):
-        print(i)
-
+    file_path=r"G:\研究方向论文\读\已读\AGCRN\AGCRN-master\traffic_predict\AGCRN\model\model_para\PEMSD7\epoch_75.pth"
+    load_parameters(file_path)
 
     
     # import numpy as np

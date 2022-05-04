@@ -125,8 +125,8 @@ class AVWGCN(nn.Module):
     def __init__(self, dim_in, dim_out, adj,cheb_k, embed_dim):
         super(AVWGCN, self).__init__()
         self.cheb_k = cheb_k
-        self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(adj)).to(torch.float32).to(torch.device('cuda'))
-        self.sym_norm_Adj_matrix=F.softmax(self.sym_norm_Adj_matrix)
+        # self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(adj)).to(torch.float32).to(torch.device('cuda'))
+        # self.sym_norm_Adj_matrix=F.softmax(self.sym_norm_Adj_matrix)
         # self.sym_norm_Adj_matrix=F.softmax(torch.Tensor(adj).to(torch.device('cuda')))
 
         self.weights_pool = nn.Parameter(torch.FloatTensor(embed_dim, cheb_k, dim_in, dim_out))
@@ -149,7 +149,7 @@ class AVWGCN(nn.Module):
 
         weights = torch.einsum('nd,dkio->nkio', node_embeddings, self.weights_pool)  #N, cheb_k, dim_in, dim_out
         bias = torch.matmul(node_embeddings, self.bias_pool)#N, dim_out
-        supports=torch.einsum('knm,mm->knm',supports,self.sym_norm_Adj_matrix)
+        # supports=torch.einsum('knm,mm->knm',supports,self.sym_norm_Adj_matrix)
         x_g = torch.einsum("knm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
 
         x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in

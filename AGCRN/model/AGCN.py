@@ -136,7 +136,7 @@ class AVWGCN(nn.Module):
         super(AVWGCN, self).__init__()
         self.cheb_k = cheb_k
         # self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(adj)).to(torch.float32).to(torch.device('cuda'))
-        self.sym_norm_Adj_matrix=F.softmax(torch.from_numpy(adj).to(torch.device('cuda')))
+        self.sym_norm_Adj_matrix=F.softmax(torch.Tensor(adj).to(torch.device('cuda')))
 
         self.weights_pool = nn.Parameter(torch.FloatTensor(embed_dim, cheb_k, dim_in, dim_out))
         self.bias_pool = nn.Parameter(torch.FloatTensor(embed_dim, dim_out))

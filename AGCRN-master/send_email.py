@@ -32,7 +32,7 @@ def get_type_file(path="./test/aa.npy", keyword='.npy'):  # 这里可以更改�
     return filelist
 
 
-def send_email(path, keyword='.pth', content=""):
+def send_email(path, keyword='.pth', content="PEMS08"):
     smtpHost = 'smtp.qq.com'  # 139邮箱SMTP服务器
     sendAddr = '1323114884@qq.com'
     password = 'bxbzlopushpbfjjh'  # 163邮箱,则为授权码

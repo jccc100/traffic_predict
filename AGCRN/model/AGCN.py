@@ -17,23 +17,13 @@ def sym_norm_Adj(W):
 
     W = W + np.identity(N) # 为邻居矩阵加上自连接
 
-    # print(D)
-    D = np.diag(1.0/np.sum(W, axis=1))
-    # D = np.diag(np.sum(W, axis=1))
-    # print("D:",D)
-    sym_norm_Adj_matrix = np.dot(np.sqrt(D),W)
-    # print("*****")
-    # print(sym_norm_Adj_matrix.device)
-    # print(D.device)
-    sym_norm_Adj_matrix = np.dot(sym_norm_Adj_matrix,np.sqrt(D))
-    # N = W.shape[0]
-    # W = W + torch.from_numpy(np.identity(N)) # 为邻居矩阵加上自连接
-    # # D = np.diag(np.sum(W,axis=1))
-    # D = torch.diag(torch.sum(W,dim=1))
-    # sym_norm_Adj_matrix = torch.dot(np.sqrt(D),W)
-    # sym_norm_Adj_matrix = torch.dot(sym_norm_Adj_matrix,np.sqrt(D))
-    # print(sym_norm_Adj_matrix)
-    return sym_norm_Adj_matrix # D^-0.5AD^-0.5
+    # D = np.diag(1.0/np.sum(W, axis=1))
+    #
+    # sym_norm_Adj_matrix = np.dot(np.sqrt(D),W)
+    #
+    # sym_norm_Adj_matrix = np.dot(sym_norm_Adj_matrix,np.sqrt(D))
+
+    return W # D^-0.5AD^-0.5
 class Spatial_Attention_layer(nn.Module):
     '''
     compute spatial attention scores
@@ -135,8 +125,9 @@ class AVWGCN(nn.Module):
     def __init__(self, dim_in, dim_out, adj,cheb_k, embed_dim):
         super(AVWGCN, self).__init__()
         self.cheb_k = cheb_k
-        # self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(adj)).to(torch.float32).to(torch.device('cuda'))
-        self.sym_norm_Adj_matrix=F.softmax(torch.Tensor(adj).to(torch.device('cuda')))
+        self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(adj)).to(torch.float32).to(torch.device('cuda'))
+        self.sym_norm_Adj_matrix=F.softmax(self.sym_norm_Adj_matrix)
+        # self.sym_norm_Adj_matrix=F.softmax(torch.Tensor(adj).to(torch.device('cuda')))
 
         self.weights_pool = nn.Parameter(torch.FloatTensor(embed_dim, cheb_k, dim_in, dim_out))
         self.bias_pool = nn.Parameter(torch.FloatTensor(embed_dim, dim_out))

@@ -15,7 +15,7 @@ def sym_norm_Adj(W):
     # D = np.zeros([N, N], dtype=type(W[0][0]))
 
 
-    W = W + np.identity(N) # 为邻居矩阵加上自连接
+    # W = W + np.identity(N) # 为邻居矩阵加上自连接
 
     # D = np.diag(1.0/np.sum(W, axis=1))
     #

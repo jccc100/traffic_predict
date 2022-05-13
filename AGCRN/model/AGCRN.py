@@ -31,7 +31,7 @@ class AVWDCRNN(nn.Module):
         #shape of init_state: (num_layers, B, N, hidden_dim)
         assert x.shape[2] == self.node_num and x.shape[3] == self.input_dim
         seq_length = x.shape[1]
-        b, t, n, d = x.shape
+        # b, t, n, d = x.shape
         # x = x.to(device=device)
         # x = x.permute(0, 2, 3, 1)  # b n d t
         # x = x.reshape(b * n, d, t)  # b*n d t

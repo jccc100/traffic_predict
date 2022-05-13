@@ -7,6 +7,61 @@ import torch.nn as nn
 import torch.nn.functional as F
 import math
 import copy
+import seaborn as sns
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+AGCRN_mae  = [18.8,18.95,19.11,19.28,19.41,19.66,19.84,20.08,20.27,20.42,20.81,21.44]
+AGCRN_rmse = [29.83,30.22,30.72,31.24,31.72,31.99,32.56,32.98,33.32,33.74,34.12,34.97]
+AGCRN_mape = [12.12,12.18,12.35,12.48,12.54,12.69,12.94,13.17,13.32,13.48,13.76,14.12]
+Ours_model_mae=[18.05,18.18,18.45,18.71,18.92,19.08,19.26,19.58,19.8,19.95,20.16,20.55]
+Ours_model_rmse=[29.62,30.09,30.62,31.25,31.67,31.84,32.28,32.78,33.18,33.48,33.86,34.38]
+Ours_model_mape=[12.04,12.11,12.3,12.45,12.52,12.64,12.82,13.01,13.14,13.22,13.37,13.6]
+sum=0
+for i in Ours_model_mae:
+    sum+=i
+print(sum/12)
+sum=0
+for i in Ours_model_rmse:
+    sum+=i
+print(sum/12)
+sum=0
+for i in Ours_model_mape:
+    sum+=i
+print(sum/12)
+exit()
+
+
+net=torch.load(r'C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\3.1\qk_conv2d\best_model.pth', map_location=lambda storage, loc: storage)
+print(net)
+# for i in net.values:
+#     print(i)
+nb=net['node_embeddings']
+
+adj=torch.mm(nb,nb.transpose(0,1))
+# print(max(adj))
+a = np.random.rand(4,3)
+fig, ax = plt.subplots(figsize = (9,9))
+#二维的数组的热力图，横轴和数轴的ticklabels要加上去的话，既可以通过将array转换成有column
+#和index的DataFrame直接绘图生成，也可以后续再加上去。后面加上去的话，更灵活，包括可设置labels大小方向等。
+sns.heatmap(adj,
+                annot=False, vmax=1,vmin = -1, xticklabels= False, yticklabels= False, square=True, cmap="YlGnBu")
+#sns.heatmap(np.round(a,2), annot=True, vmax=1,vmin = 0, xticklabels= True, yticklabels= True,
+#            square=True, cmap="YlGnBu")
+# ax.set_title('二维数组热力图', fontsize = 18)
+# ax.set_ylabel('数字', fontsize = 18)
+# ax.set_xlabel('字母', fontsize = 18) #横变成y轴，跟矩阵原始的布局情况是一样的
+# ax.set_yticklabels(['一', '二', '三'], fontsize = 18, rotation = 360, horizontalalignment='right')
+# ax.set_xticklabels(['a', 'b', 'c'], fontsize = 18, horizontalalignment='right')
+plt.show()
+
+
+
+
+
+
+exit()
 
 def clones(module, N):
     '''

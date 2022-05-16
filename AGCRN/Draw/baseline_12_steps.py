@@ -284,6 +284,148 @@ class PeMSD4():
         plt.legend()  # 显示图例
         plt.show()
 
+class PeMSD7():
+    def __init__(self):
+        super(PeMSD7, self).__init__()
+
+    def MAE(self):
+        VAR = []
+        SAR = []
+        DCRNN  = [18.55,20.52,21.33,22.05,22.65,23.38,24.03,24.69,25.43,26.11,26.81,27.56]
+        ASTGCN  = [19.22,21.21,22.59,23.74,24.88,25.59,26.62,27.59,28.43,29.44,30.72,31.98]
+        STSGCN  = [18.38,20,21.21,22.1,22.95,23.74,24.57,25.34,26.14,26.86,27.65,28.62]
+        STGCN  = [17.65,19.92,21.93,23.61,25.09,26.62,28.19,29.92,31.74,33.19,34.69,36.33]
+        AGCRN  = [19.02,19.4,19.98,20.52,20.99,21.34,21.65,21.95,22.32,22.45,22.85,23.64]
+
+        Ours_model=[18.27,19,19.69,20.23,20.71,21.07,21.37,21.68,21.96,22.25,22.47,22.85]
+        my_x_ticks=np.arange(5,65,5)
+        # my_x_ticks=['5','10']
+
+        plt.title("PEMS07 MAE")
+        plt.xlabel("Time")
+        plt.ylabel("MAE")
+
+        # plt.plot(my_x_ticks,VAR [:], 'red',label="VAR")
+        # plt.plot(my_x_ticks,VAR [:],'ro')
+
+        # plt.plot(my_x_ticks,SAR [:], 'green',label="SVR")
+        # plt.plot(my_x_ticks,SAR [:], 'go')
+
+        plt.plot(my_x_ticks,DCRNN [:],'b',label="DCRNN")
+        plt.plot(my_x_ticks,DCRNN [:], 'bo')
+
+        plt.plot(my_x_ticks,ASTGCN [:], 'peru',label="ASTGCN")
+        plt.plot(my_x_ticks,ASTGCN [:], 'o',color='peru')
+
+        plt.plot(my_x_ticks,STGCN [:], 'pink',label="STGCN")
+        plt.plot(my_x_ticks,STGCN [:], 'o',color='pink')
+
+        plt.plot(my_x_ticks,STSGCN [:], 'blueviolet',label="STSGCN")
+        plt.plot(my_x_ticks,STSGCN [:], 'o',color='blueviolet')
+
+        plt.plot(my_x_ticks,AGCRN [:],'black', label="AGCRN")
+        plt.plot(my_x_ticks,AGCRN [:], 'o',color='black')
+
+        plt.plot(my_x_ticks,Ours_model[:], 'lime',label="Ours")
+        plt.plot(my_x_ticks,Ours_model[:], 'o',color='lime')
+
+
+
+        plt.legend()  # 显示图例
+        plt.show()
+    def RMSE(self):
+        # VAR = [31.27,33.2,34.4,35.39,35.97,36.6,37.21,37.89,38.47,39.01,39.7,40.35]
+        # SAR = [29.95,32.65,35.31,37.81,40.15,42.77,45.08,47.5,50,53.89,57.2,62]
+        DCRNN= [28.8,31.34,32.96,34.16,35.23,36.28,37.26,38.1,39,39.86,40.92,42.04]
+        ASTGCN = [29.5,32.62,34.64,36.34,37.68,38.96,40.36,41.56,42.82,44.16,45.78,47.32]
+        STSGCN= [29.3,32.18,34.1,35.84,37.36,38.8,40.36,41.48,42.64,44.02,45.36,46.76]
+        STGCN = [27.54,30.92,33.38,35.7,37.6,39.58,41.6,43.66,45.84,47.62,49.52,51.56]
+        AGCRN = [30.53,31.63,32.68,33.69,34.45,35.09,35.89,36.44,36.97,37.65,38.33,38.98]
+
+        Ours_model=[29.41,31.1,32.47,33.61,34.57,35.36,36.06,36.72,37.3,37.78,38.16,38.66]
+        my_x_ticks=np.arange(5,65,5)
+        # my_x_ticks=['5','10']
+
+        plt.title("PEMS07 RMSE")
+        plt.xlabel("Time")
+        plt.ylabel("RMSE")
+
+        # plt.plot(my_x_ticks,VAR[:], 'red',label="VAR")
+        # plt.plot(my_x_ticks,VAR[:],'ro')
+
+        # plt.plot(my_x_ticks,SAR[:], 'green',label="SVR")
+        # plt.plot(my_x_ticks,SAR[:], 'go')
+
+        plt.plot(my_x_ticks,DCRNN[:],'b',label="DCRNN")
+        plt.plot(my_x_ticks,DCRNN[:], 'bo')
+
+        plt.plot(my_x_ticks,ASTGCN[:], 'peru',label="ASTGCN")
+        plt.plot(my_x_ticks,ASTGCN[:], 'o',color='peru')
+
+        plt.plot(my_x_ticks,STGCN[:], 'pink',label="STGCN")
+        plt.plot(my_x_ticks,STGCN[:], 'o',color='pink')
+
+        plt.plot(my_x_ticks,STSGCN[:], 'blueviolet',label="STSGCN")
+        plt.plot(my_x_ticks,STSGCN[:], 'o',color='blueviolet')
+
+        plt.plot(my_x_ticks,AGCRN[:],'black', label="AGCRN")
+        plt.plot(my_x_ticks,AGCRN[:], 'o',color='black')
+
+        plt.plot(my_x_ticks,Ours_model[:], 'lime',label="Ours")
+        plt.plot(my_x_ticks,Ours_model[:], 'o',color='lime')
+        # y_ticks=np.arange(20,50,5)
+        # plt.yticks(y_ticks)
+
+
+        plt.legend()  # 显示图例
+        plt.show()
+    def MAPE(self):
+        # VAR = [14.09,15.4,16.37,17,17.52,17.97,18.56,19.03,19.5,19.96,20.47,20.96]
+        # SAR = [12.27,13.46,14.69,15.97,16.96,18.64,19.57,20.83,21.18,23.66,25.37,26.73]
+        DCRNN= [8.42,8.92,9.26,9.61,9.88,10.16,10.46,10.8,11.03,11.34,11.68,12.12]
+        ASTGCN = [8.65,9.3,9.91,10.39,10.88,11.42,11.96,12.61,13.21,13.88,14.65,15.46]
+        STSGCN= [7.85,8.5,8.96,9.34,9.67,10.02,10.3,10.7,11,11.29,11.66,12.1]
+        STGCN = [7.8,8.88,9.73,10.45,11.11,11.8,12.66,13.49,14.26,14.95,15.61,16.3]
+        AGCRN = [8.1,8.19,8.4,8.6,8.75,8.91,9.1,9.21,9.32,9.39,9.53,9.83]
+
+        Ours_model=[8.04,8.23,8.39,8.56,8.74,8.89,8.99,9.11,9.23,9.39,9.51,9.7]
+        my_x_ticks=np.arange(5,65,5)
+        # my_x_ticks=['5','10']
+
+        plt.title("PEMS07 MAPE")
+        plt.xlabel("Time")
+        plt.ylabel("MAPE(%)")
+
+        # plt.plot(my_x_ticks,VAR[:], 'red',label="VAR")
+        # plt.plot(my_x_ticks,VAR[:],'ro')
+
+        # plt.plot(my_x_ticks,SAR[:], 'green',label="SVR")
+        # plt.plot(my_x_ticks,SAR[:], 'go')
+
+        plt.plot(my_x_ticks,DCRNN[:],'b',label="DCRNN")
+        plt.plot(my_x_ticks,DCRNN[:], 'bo')
+
+        plt.plot(my_x_ticks,ASTGCN[:], 'peru',label="ASTGCN")
+        plt.plot(my_x_ticks,ASTGCN[:], 'o',color='peru')
+
+        plt.plot(my_x_ticks,STGCN[:], 'pink',label="STGCN")
+        plt.plot(my_x_ticks,STGCN[:], 'o',color='pink')
+
+        plt.plot(my_x_ticks,STSGCN[:], 'blueviolet',label="STSGCN")
+        plt.plot(my_x_ticks,STSGCN[:], 'o',color='blueviolet')
+
+        plt.plot(my_x_ticks,AGCRN[:],'black', label="AGCRN")
+        plt.plot(my_x_ticks,AGCRN[:], 'o',color='black')
+
+        plt.plot(my_x_ticks,Ours_model[:], 'lime',label="Ours")
+        plt.plot(my_x_ticks,Ours_model[:], 'o',color='lime')
+        # y_ticks=np.arange(20,50,5)
+        # plt.yticks(y_ticks)
+
+
+        plt.legend()  # 显示图例
+        plt.show()
+
 class ablation_result():
     def __init__(self):
         super(ablation_result,self).__init__()
@@ -380,6 +522,7 @@ class ablation_result():
 if __name__=='__main__':
     PeMSD8=PeMSD8()
     PeMSD4=PeMSD4()
+    PeMSD7 = PeMSD7()
     ablation_result=ablation_result()
     # PeMSD8.MAE()
     # PeMSD8.RMSE()
@@ -387,6 +530,9 @@ if __name__=='__main__':
     # PeMSD4.MAE()
     # PeMSD4.RMSE()
     # PeMSD4.MAPE()
-    ablation_result.MAE()
-    ablation_result.RMSE()
-    ablation_result.MAPE()
+    PeMSD7.MAE()
+    PeMSD7.RMSE()
+    PeMSD7.MAPE()
+    # ablation_result.MAE()
+    # ablation_result.RMSE()
+    # ablation_result.MAPE()

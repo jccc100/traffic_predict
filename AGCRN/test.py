@@ -13,6 +13,14 @@ import matplotlib.pyplot as plt
 import csv
 import pandas as pd
 
+from AGCRN.model.AGCN import Spatial_Attention_layer
+sa=Spatial_Attention_layer(170,3,3)
+a=torch.randn(64,170,3)
+res=sa(a)
+print(a.shape)
+exit()
+
+
 #STFGNN  D8
 # [125, 14.33176861378684, 16.726921822312235, 16.704094070142812, 10.571109083770445, 26.265921894063844,
 #  [(13.978338178957296, 9.02985477894324, 21.495462437654542),

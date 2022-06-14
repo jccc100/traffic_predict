@@ -151,8 +151,8 @@ class AVWGCN(nn.Module):
         bias = torch.matmul(node_embeddings, self.bias_pool)#N, dim_out
         # supports=torch.einsum('knm,mm->knm',supports,self.sym_norm_Adj_matrix)
         #加空注
-        x=self.SA(x)
-        x_g = torch.einsum("knm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
+        
+        x_g = torch.einsum("knm,bmc->bknc", supports, self.SA(x))      #B, cheb_k, N, dim_in
 
         x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in
         x_gconv = torch.einsum('bnki,nkio->bno', x_g, weights) + bias     #b, N, dim_out

@@ -118,7 +118,7 @@ class Spatial_Attention_layer(nn.Module):
         # print(score_norm)
         # 公式6  返回注意力和更新的score_his用于下一次传参
         # return score.reshape((batch_size, num_of_timesteps, num_of_vertices, num_of_vertices)),score_his # (b t n n)
-        return score,score_his # (b n n)
+        return score # (b n n)
 
 
 class AVWGCN(nn.Module):
@@ -128,7 +128,7 @@ class AVWGCN(nn.Module):
         # self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(adj)).to(torch.float32).to(torch.device('cuda'))
         # self.sym_norm_Adj_matrix=F.softmax(self.sym_norm_Adj_matrix)
         # self.sym_norm_Adj_matrix=F.softmax(torch.Tensor(adj).to(torch.device('cuda')))
-
+        self.SA=Spatial_Attention_layer(170,dim_in,dim_in)
         self.weights_pool = nn.Parameter(torch.FloatTensor(embed_dim, cheb_k, dim_in, dim_out))
         self.bias_pool = nn.Parameter(torch.FloatTensor(embed_dim, dim_out))
     def forward(self, x, node_embeddings):
@@ -150,6 +150,8 @@ class AVWGCN(nn.Module):
         weights = torch.einsum('nd,dkio->nkio', node_embeddings, self.weights_pool)  #N, cheb_k, dim_in, dim_out
         bias = torch.matmul(node_embeddings, self.bias_pool)#N, dim_out
         # supports=torch.einsum('knm,mm->knm',supports,self.sym_norm_Adj_matrix)
+        #加空注
+        x=self.SA(x)
         x_g = torch.einsum("knm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
 
         x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in

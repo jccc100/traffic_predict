@@ -442,16 +442,16 @@ class ablation_result():
         plt.xlabel("Time")
         plt.ylabel("MAE")
 
-        plt.plot(my_x_ticks,TA_GCN_linear [:], 'red',label="TA_GCN_linear")
+        plt.plot(my_x_ticks,TA_GCN_linear [:], 'red',label="TARGCN_linear")
         plt.plot(my_x_ticks,TA_GCN_linear [:],'ro')
 
-        plt.plot(my_x_ticks,TA_GCN_SA [:], 'green',label="TA_GCN_SA")
+        plt.plot(my_x_ticks,TA_GCN_SA [:], 'green',label="TARGCN_SA")
         plt.plot(my_x_ticks,TA_GCN_SA [:], 'go')
 
-        plt.plot(my_x_ticks,TA_GCN_noTA [:],'b',label="TA_GCN_noTA")
+        plt.plot(my_x_ticks,TA_GCN_noTA [:],'b',label="TARGCN_noTA")
         plt.plot(my_x_ticks,TA_GCN_noTA [:], 'bo')
 
-        plt.plot(my_x_ticks,TA_GCN [:], 'peru',label="TA_GCN")
+        plt.plot(my_x_ticks,TA_GCN [:], 'peru',label="TARGCN")
         plt.plot(my_x_ticks,TA_GCN [:], 'o',color='peru')
 
 
@@ -472,16 +472,16 @@ class ablation_result():
         plt.xlabel("Time")
         plt.ylabel("MAE")
 
-        plt.plot(my_x_ticks, TA_GCN_linear[:], 'red', label="TA_GCN_linear")
+        plt.plot(my_x_ticks, TA_GCN_linear[:], 'red', label="TARGCN_linear")
         plt.plot(my_x_ticks, TA_GCN_linear[:], 'ro')
 
-        plt.plot(my_x_ticks, TA_GCN_SA[:], 'green', label="TA_GCN_SA")
+        plt.plot(my_x_ticks, TA_GCN_SA[:], 'green', label="TARGCN_SA")
         plt.plot(my_x_ticks, TA_GCN_SA[:], 'go')
 
-        plt.plot(my_x_ticks, TA_GCN_noTA[:], 'b', label="TA_GCN_noTA")
+        plt.plot(my_x_ticks, TA_GCN_noTA[:], 'b', label="TARGCN_noTA")
         plt.plot(my_x_ticks, TA_GCN_noTA[:], 'bo')
 
-        plt.plot(my_x_ticks, TA_GCN[:], 'peru', label="TA_GCN")
+        plt.plot(my_x_ticks, TA_GCN[:], 'peru', label="TARGCN")
         plt.plot(my_x_ticks, TA_GCN[:], 'o', color='peru')
 
 
@@ -501,16 +501,16 @@ class ablation_result():
         plt.xlabel("Time")
         plt.ylabel("MAE")
 
-        plt.plot(my_x_ticks, TA_GCN_linear[:], 'red', label="TA_GCN_linear")
+        plt.plot(my_x_ticks, TA_GCN_linear[:], 'red', label="TARGCN_linear")
         plt.plot(my_x_ticks, TA_GCN_linear[:], 'ro')
 
-        plt.plot(my_x_ticks, TA_GCN_SA[:], 'green', label="TA_GCN_SA")
+        plt.plot(my_x_ticks, TA_GCN_SA[:], 'green', label="TARGCN_SA")
         plt.plot(my_x_ticks, TA_GCN_SA[:], 'go')
 
-        plt.plot(my_x_ticks, TA_GCN_noTA[:], 'b', label="TA_GCN_noTA")
+        plt.plot(my_x_ticks, TA_GCN_noTA[:], 'b', label="TARGCN_noTA")
         plt.plot(my_x_ticks, TA_GCN_noTA[:], 'bo')
 
-        plt.plot(my_x_ticks, TA_GCN[:], 'peru', label="TA_GCN")
+        plt.plot(my_x_ticks, TA_GCN[:], 'peru', label="TARGCN")
         plt.plot(my_x_ticks, TA_GCN[:], 'o', color='peru')
 
 
@@ -530,9 +530,9 @@ if __name__=='__main__':
     # PeMSD4.MAE()
     # PeMSD4.RMSE()
     # PeMSD4.MAPE()
-    PeMSD7.MAE()
-    PeMSD7.RMSE()
-    PeMSD7.MAPE()
-    # ablation_result.MAE()
-    # ablation_result.RMSE()
-    # ablation_result.MAPE()
+    # PeMSD7.MAE()
+    # PeMSD7.RMSE()
+    # PeMSD7.MAPE()
+    ablation_result.MAE()
+    ablation_result.RMSE()
+    ablation_result.MAPE()

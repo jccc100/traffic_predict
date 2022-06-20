@@ -50,11 +50,14 @@ class Spatial_Attention_layer(nn.Module):
         batch_size, num_of_vertices, in_channels = x.shape
 
         # Q K V 改之后
-        Q=self.Wq(x)
+        # Q=self.Wq(x)
+        Q=x
         # print("Q:",Q.shape)
-        K=self.Wk(x)
+        # K=self.Wk(x)
+        K=x
         # print("K:", K.shape)
-        V=self.Wv(x)
+        # V=self.Wv(x)
+        V=x
 
         # Q=self.Wq(x)
         # Q=torch.split(Q,32,1)

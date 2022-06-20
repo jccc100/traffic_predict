@@ -34,11 +34,11 @@ class Spatial_Attention_layer(nn.Module):
         self.in_channels=c_in
         self.dropout = nn.Dropout(p=dropout)
         # self.conv1 = nn.Conv2d(num_node, num_node, (1, 3), bias=False)
-        # self.conv2 = nn.Conv2d(num_node, num_node, (1, 3), bias=False)
+        self.conv2 = nn.Conv2d(num_node, num_node, (1, 3), bias=True)
 
-        self.Wq=nn.Linear(c_in,c_in,bias=False)
+        self.Wq=nn.Linear(c_in,c_in,bias=True)
         # # nn.init.kaiming_uniform_(self.Wq.weight, nonlinearity="relu")
-        self.Wk=nn.Linear(c_in,c_in,bias=False)
+        self.Wk=nn.Linear(c_in,c_in,bias=True)
         # # nn.init.kaiming_uniform_(self.Wk.weight, nonlinearity="relu")
         self.Wv=nn.Linear(c_in,c_in,bias=False)
         # # nn.init.kaiming_uniform_(self.Wv.weight, nonlinearity="relu")
@@ -50,14 +50,15 @@ class Spatial_Attention_layer(nn.Module):
         batch_size, num_of_vertices, in_channels = x.shape
 
         # Q K V 改之后
-        # Q=self.Wq(x)
-        Q=x
+        Q=self.Wq(x)
+        # Q=x
         # print("Q:",Q.shape)
-        # K=self.Wk(x)
-        K=x
+        K=self.Wk(x)
+        # K=x
         # print("K:", K.shape)
-        # V=self.Wv(x)
-        V=x
+        V=self.Wv(x)
+        V=self.conv2(x)
+        # V=x
 
         # Q=self.Wq(x)
         # Q=torch.split(Q,32,1)

@@ -34,12 +34,12 @@ class Spatial_Attention_layer(nn.Module):
         self.in_channels=c_in
         self.dropout = nn.Dropout(p=dropout)
         # self.conv1 = nn.Conv2d(num_node, num_node, (1, 3), bias=False)
-        self.conv2 = nn.Conv2d(num_node, num_node, (1, 3), bias=True)
-        #
-        self.Wq=nn.Linear(c_in,c_in,bias=True)
-        nn.init.kaiming_uniform_(self.Wq.weight, nonlinearity="relu")
-        self.Wk=nn.Linear(c_in,c_in,bias=True)
-        nn.init.kaiming_uniform_(self.Wk.weight, nonlinearity="relu")
+        # self.conv2 = nn.Conv2d(num_node, num_node, (1, 3), bias=True)
+        # #
+        # self.Wq=nn.Linear(c_in,c_in,bias=True)
+        # nn.init.kaiming_uniform_(self.Wq.weight, nonlinearity="relu")
+        # self.Wk=nn.Linear(c_in,c_in,bias=True)
+        # nn.init.kaiming_uniform_(self.Wk.weight, nonlinearity="relu")
         # self.Wv=nn.Linear(c_in,c_in,bias=False)
         # # nn.init.kaiming_uniform_(self.Wv.weight, nonlinearity="relu")
     def forward(self, x,score_his=None):
@@ -50,15 +50,15 @@ class Spatial_Attention_layer(nn.Module):
         batch_size, num_of_vertices, in_channels = x.shape
 
         # Q K V 改之后
-        Q=self.Wq(x)
-        # Q=x
+        # Q=self.Wq(x)
+        Q=x
         # print("Q:",Q.shape)
-        K=self.Wk(x)
-        # K=x
+        # K=self.Wk(x)
+        K=x
         # print("K:", K.shape)
         # V=self.Wv(x)
-        V=self.conv2(x)
-        # V=x
+        # V=self.conv2(x)
+        V=x
 
         # Q=self.Wq(x)
         # Q=torch.split(Q,32,1)
@@ -84,6 +84,7 @@ class Spatial_Attention_layer(nn.Module):
         score = torch.matmul(Q, K.transpose(1, 2))
         score=F.softmax(score,dim=1)
         score=torch.einsum("bnm,bmc->bnc",score,V)
+        # score=F.relu(score)
         # score=torch.einsum('bnn,bno->bno',score,V)#+x
 
         # score=torch.matmul(score,V)
@@ -123,7 +124,7 @@ class Spatial_Attention_layer(nn.Module):
         # print(score_norm)
         # 公式6  返回注意力和更新的score_his用于下一次传参
         # return score.reshape((batch_size, num_of_timesteps, num_of_vertices, num_of_vertices)),score_his # (b t n n)
-        return F.relu(score) # (b n n)
+        return score # (b n n)
 
 
 class AVWGCN(nn.Module):
@@ -133,7 +134,7 @@ class AVWGCN(nn.Module):
         # self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(adj)).to(torch.float32).to(torch.device('cuda'))
         # self.sym_norm_Adj_matrix=F.softmax(self.sym_norm_Adj_matrix)
         # self.sym_norm_Adj_matrix=F.softmax(torch.Tensor(adj).to(torch.device('cuda')))
-        self.SA=Spatial_Attention_layer(170,dim_in,dim_in)
+        self.SA=Spatial_Attention_layer(307,dim_in,dim_in)
         self.weights_pool = nn.Parameter(torch.FloatTensor(embed_dim, cheb_k, dim_in, dim_out))
         self.bias_pool = nn.Parameter(torch.FloatTensor(embed_dim, dim_out))
     def forward(self, x, node_embeddings):

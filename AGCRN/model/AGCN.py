@@ -134,13 +134,13 @@ class AVWGCN(nn.Module):
         # self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(adj)).to(torch.float32).to(torch.device('cuda'))
         # self.sym_norm_Adj_matrix=F.softmax(self.sym_norm_Adj_matrix)
         # self.sym_norm_Adj_matrix=F.softmax(torch.Tensor(adj).to(torch.device('cuda')))
-        self.SA=Spatial_Attention_layer(170,dim_in,dim_in)
+        # self.SA=Spatial_Attention_layer(170,dim_in,dim_in)
         self.weights_pool = nn.Parameter(torch.FloatTensor(embed_dim, cheb_k, dim_in, dim_out))
         self.bias_pool = nn.Parameter(torch.FloatTensor(embed_dim, dim_out))
-    def forward(self, xx, node_embeddings):
+    def forward(self, x, node_embeddings):
         #x shaped[B, N, C], node_embeddings shaped [N, D] -> supports shaped [N, N]
         #output shape [B, N, C]
-        x=self.SA(xx)
+        # x=self.SA(x)
         node_num = node_embeddings.shape[0]
         supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))), dim=1) # N N
         support_set = [torch.eye(node_num).to(supports.device), supports]

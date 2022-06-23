@@ -14,10 +14,17 @@ import csv
 import pandas as pd
 
 from AGCRN.model.AGCN import Spatial_Attention_layer
-sa=Spatial_Attention_layer(170,3,3)
-a=torch.randn(64,170,3)
-res=sa(a)
-print(a.shape)
+# sa=Spatial_Attention_layer(170,3,3)
+# a=torch.randn(64,170,3)
+# res=sa(a)
+# print(a.shape)
+
+SVR_MAPE = [12.27,13.46,14.69,15.97,16.96,18.64,19.57,20.83,21.18,23.66,25.37,26.73]
+SVR_RMSE = [29.95,32.65,35.31,37.81,40.15,42.77,45.08,47.5,50,53.89,57.2,62]
+sum=0
+for i in SVR_RMSE:
+    sum=sum+i
+print(sum/12)
 exit()
 
 

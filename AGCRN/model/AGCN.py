@@ -15,15 +15,15 @@ def sym_norm_Adj(W):
     # D = np.zeros([N, N], dtype=type(W[0][0]))
 
 
-    # W = W + np.identity(N) # 为邻居矩阵加上自连接
+    W = W + np.identity(N) # 为邻居矩阵加上自连接
 
-    # D = np.diag(1.0/np.sum(W, axis=1))
-    #
-    # sym_norm_Adj_matrix = np.dot(np.sqrt(D),W)
-    #
-    # sym_norm_Adj_matrix = np.dot(sym_norm_Adj_matrix,np.sqrt(D))
+    D = np.diag(1.0/np.sum(W, axis=1))
 
-    return W # D^-0.5AD^-0.5
+    sym_norm_Adj_matrix = np.dot(np.sqrt(D),W)
+
+    sym_norm_Adj_matrix = np.dot(sym_norm_Adj_matrix,np.sqrt(D))
+
+    return sym_norm_Adj_matrix # D^-0.5AD^-0.5
 class Spatial_Attention_layer(nn.Module):
     '''
     compute spatial attention scores
@@ -131,8 +131,8 @@ class AVWGCN(nn.Module):
     def __init__(self, dim_in, dim_out, adj,cheb_k, embed_dim):
         super(AVWGCN, self).__init__()
         self.cheb_k = cheb_k
-        # self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(adj)).to(torch.float32).to(torch.device('cuda'))
-        # self.sym_norm_Adj_matrix=F.softmax(self.sym_norm_Adj_matrix)
+        self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(adj)).to(torch.float32).to(torch.device('cuda'))
+        self.sym_norm_Adj_matrix=F.softmax(self.sym_norm_Adj_matrix)
         # self.sym_norm_Adj_matrix=F.softmax(torch.Tensor(adj).to(torch.device('cuda')))
         # self.SA=Spatial_Attention_layer(170,dim_in,dim_in)
         self.weights_pool = nn.Parameter(torch.FloatTensor(embed_dim, cheb_k, dim_in, dim_out))
@@ -149,8 +149,9 @@ class AVWGCN(nn.Module):
         #     # print("cheb_kcheb_kcheb_kcheb_kcheb_k")
         #     support_set.append(torch.matmul(2 * supports, support_set[-1]) - support_set[-2])
         supports = torch.stack(support_set, dim=0)
-        # 加上静态邻接矩阵
-        # supports = torch.einsum("nn,knm->knm",torch.softmax(self.sym_norm_Adj_matrix,dim=-1),supports)
+        # 静态邻接矩阵
+        x_static = torch.einsum("nm,bmc->bmc",torch.softmax(self.sym_norm_Adj_matrix,dim=-1),x)
+        # x_static=F.relu(x_static)
 
 
         weights = torch.einsum('nd,dkio->nkio', node_embeddings, self.weights_pool)  #N, cheb_k, dim_in, dim_out
@@ -162,7 +163,7 @@ class AVWGCN(nn.Module):
 
         x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in
         x_gconv = torch.einsum('bnki,nkio->bno', x_g, weights) + bias     #b, N, dim_out
-        return x_gconv
+        return x_gconv+(F.tanh(x_gconv)+F.sigmoid(x_static))
 
 # class AVWGCN(nn.Module):
 #     def __init__(self, dim_in, dim_out, adj,cheb_k, embed_dim):

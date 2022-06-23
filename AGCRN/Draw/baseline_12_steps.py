@@ -148,7 +148,7 @@ class PeMSD4():
 
     def MAE(self):
         VAR = [19.52,20.93,21.97,22.72,23.23,23.72,24.21,24.66,25.46,25.79,26.15,26.95]
-        SAR = [18.84,20.67,22.5,24.23,25.94,27.72,29.51,31.25,33.08,34.82,36,42.6]
+        SVR = [18.84,20.67,22.5,24.23,25.94,27.72,29.51,None,None,None,None,None]
         DCRNN  = [17.62,19.05,20.3,21.28,22.19,23.17,24.17,25.22,26.16,27.07,28.14,29.32]
         ASTGCN  = [18.15,19.23,20.15,20.82,21.43,22.15,22.8,23.41,23.58,24.76,25.68,26.55]
         STSGCN  = [17.75,18.59,19.16,19.63,20.16,20.6,21.09,21.55,21.95,22.34,22.86,23.38]
@@ -158,6 +158,7 @@ class PeMSD4():
         Ours_model=[18.05,18.18,18.45,18.71,18.92,19.08,19.26,19.58,19.8,19.95,20.16,20.55]
         my_x_ticks=np.arange(5,65,5)
         # my_x_ticks=['5','10']
+        # plt.yticks([0,18,20,22,24,26,28,30])
 
         plt.title("PEMSD4 MAE")
         plt.xlabel("Time")
@@ -166,8 +167,8 @@ class PeMSD4():
         plt.plot(my_x_ticks,VAR [:], 'red',label="VAR")
         plt.plot(my_x_ticks,VAR [:],'ro')
 
-        # plt.plot(my_x_ticks,SAR [:], 'green',label="SVR")
-        # plt.plot(my_x_ticks,SAR [:], 'go')
+        plt.plot(my_x_ticks,SVR [:], 'green',label="SVR")
+        plt.plot(my_x_ticks,SVR [:], 'go')
 
         plt.plot(my_x_ticks,DCRNN [:],'b',label="DCRNN")
         plt.plot(my_x_ticks,DCRNN [:], 'bo')
@@ -193,7 +194,8 @@ class PeMSD4():
         plt.show()
     def RMSE(self):
         VAR = [31.27,33.2,34.4,35.39,35.97,36.6,37.21,37.89,38.47,39.01,39.7,40.35]
-        SAR = [29.95,32.65,35.31,37.81,40.15,42.77,45.08,47.5,50,53.89,57.2,62]
+        # SVR = [29.95,32.65,35.31,37.81,40.15,42.77,45.08,47.5,50,53.89,57.2,62]
+        SVR = [29.95,32.65,35.31,37.81,40.15,42.77,45.00,None,None,None,None,None]
         DCRNN= [28.09,30.28,32.15,33.47,34.76,36.37,37.58,39.02,40.39,41.71,43.28,44.93]
         ASTGCN = [28.55,30.27,31.48,32.46,33.31,34.14,35.28,36.41,36.95,37.81,38.95,40.15]
         STSGCN= [28.88,29.95,31.52,32.14,32.76,33.59,34.28,34.81,35.75,36.58,37.22,37.85]
@@ -211,8 +213,8 @@ class PeMSD4():
         plt.plot(my_x_ticks,VAR[:], 'red',label="VAR")
         plt.plot(my_x_ticks,VAR[:],'ro')
 
-        # plt.plot(my_x_ticks,SAR[:], 'green',label="SVR")
-        # plt.plot(my_x_ticks,SAR[:], 'go')
+        plt.plot(my_x_ticks,SVR[:], 'green',label="SVR")
+        plt.plot(my_x_ticks,SVR[:], 'go')
 
         plt.plot(my_x_ticks,DCRNN[:],'b',label="DCRNN")
         plt.plot(my_x_ticks,DCRNN[:], 'bo')
@@ -239,7 +241,8 @@ class PeMSD4():
         plt.show()
     def MAPE(self):
         VAR = [14.09,15.4,16.37,17,17.52,17.97,18.56,19.03,19.5,19.96,20.47,20.96]
-        SAR = [12.27,13.46,14.69,15.97,16.96,18.64,19.57,20.83,21.18,23.66,25.37,26.73]
+        # SVR = [12.27,13.46,14.69,15.97,16.96,18.64,19.57,20.83,21.18,23.66,25.37,26.73]
+        SVR = [12.27,13.46,14.69,15.97,16.96,18.64,19.57,20.83,21.18,None,None,None]
         DCRNN= [11.8,12.97,13.8,14.37,15.05,15.27,16.4,17.03,17.89,18.46,19.23,20.08]
         ASTGCN = [12.8,13.44,14.07,14.58,15.08,15.52,16.08,16.6,17.07,17.7,18.37,19.14]
         STSGCN= [11.97,12.45,12.83,13.11,13.33,13.57,13.83,14.17,14.47,14.78,14.95,15.53]
@@ -257,8 +260,8 @@ class PeMSD4():
         plt.plot(my_x_ticks,VAR[:], 'red',label="VAR")
         plt.plot(my_x_ticks,VAR[:],'ro')
 
-        # plt.plot(my_x_ticks,SAR[:], 'green',label="SVR")
-        # plt.plot(my_x_ticks,SAR[:], 'go')
+        plt.plot(my_x_ticks,SVR[:], 'green',label="SVR")
+        plt.plot(my_x_ticks,SVR[:], 'go')
 
         plt.plot(my_x_ticks,DCRNN[:],'b',label="DCRNN")
         plt.plot(my_x_ticks,DCRNN[:], 'bo')
@@ -527,12 +530,12 @@ if __name__=='__main__':
     # PeMSD8.MAE()
     # PeMSD8.RMSE()
     # PeMSD8.MAPE()
-    # PeMSD4.MAE()
-    # PeMSD4.RMSE()
-    # PeMSD4.MAPE()
+    PeMSD4.MAE()
+    PeMSD4.RMSE()
+    PeMSD4.MAPE()
     # PeMSD7.MAE()
     # PeMSD7.RMSE()
     # PeMSD7.MAPE()
-    ablation_result.MAE()
-    ablation_result.RMSE()
-    ablation_result.MAPE()
+    # ablation_result.MAE()
+    # ablation_result.RMSE()
+    # ablation_result.MAPE()

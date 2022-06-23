@@ -33,6 +33,7 @@ class Spatial_Attention_layer(nn.Module):
         global device
         self.in_channels=c_in
         self.dropout = nn.Dropout(p=dropout)
+
         # self.conv1 = nn.Conv2d(num_node, num_node, (1, 3), bias=False)
         # self.conv2 = nn.Conv2d(num_node, num_node, (1, 3), bias=True)
         # #
@@ -133,6 +134,7 @@ class AVWGCN(nn.Module):
         self.cheb_k = cheb_k
         self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(adj)).to(torch.float32).to(torch.device('cuda'))
         self.sym_norm_Adj_matrix=F.softmax(self.sym_norm_Adj_matrix)
+        self.linear=nn.Linear(dim_in, dim_out,bias=True)
         # self.sym_norm_Adj_matrix=F.softmax(torch.Tensor(adj).to(torch.device('cuda')))
         # self.SA=Spatial_Attention_layer(170,dim_in,dim_in)
         self.weights_pool = nn.Parameter(torch.FloatTensor(embed_dim, cheb_k, dim_in, dim_out))
@@ -152,6 +154,7 @@ class AVWGCN(nn.Module):
         # 静态邻接矩阵
         x_static = torch.einsum("nm,bmc->bmc",torch.softmax(self.sym_norm_Adj_matrix,dim=-1),x)
         # x_static=F.relu(x_static)
+        x_static=self.linear(x_static)
 
 
         weights = torch.einsum('nd,dkio->nkio', node_embeddings, self.weights_pool)  #N, cheb_k, dim_in, dim_out

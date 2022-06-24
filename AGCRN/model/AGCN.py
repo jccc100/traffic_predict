@@ -43,7 +43,7 @@ class Spatial_Attention_layer(nn.Module):
         # nn.init.kaiming_uniform_(self.Wk.weight, nonlinearity="relu")
         self.Wv=nn.Linear(c_in,c_out,bias=False)
         # # nn.init.kaiming_uniform_(self.Wv.weight, nonlinearity="relu")
-    def forward(self, x,score_his=None):
+    def forward(self, x,adj,score_his=None):
         '''
         :param x: (batch_size, N, C)
         :return: (batch_size, N, C)
@@ -84,6 +84,7 @@ class Spatial_Attention_layer(nn.Module):
 
         score = torch.matmul(Q, K.transpose(1, 2))
         score=F.softmax(score,dim=1)
+        score=torch.einsum('bnn,nn->bnn',score,adj)
         score=torch.einsum("bnm,bmc->bnc",score,V)
         # score=torch.relu(score)
         # score=torch.einsum('bnn,bno->bno',score,V)#+x
@@ -153,7 +154,8 @@ class AVWGCN(nn.Module):
         supports = torch.stack(support_set, dim=0)
         # 静态邻接矩阵
         # x_static = torch.einsum("nm,bmc->bmc",torch.softmax(self.sym_norm_Adj_matrix,dim=-1),x)
-        x_static = self.SA(x)
+
+        x_static = self.SA(x,self.sym_norm_Adj_matrix)
         # x_static=F.relu(x_static)
         # x_static=self.linear(x_static)
 

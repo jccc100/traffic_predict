@@ -84,7 +84,7 @@ class Spatial_Attention_layer(nn.Module):
 
         score = torch.matmul(Q, K.transpose(1, 2))
         score=F.softmax(score,dim=1)
-        score=torch.einsum('bnm,mn->bnn',score,adj)
+        score=torch.einsum('bnm,mc->bnc',score,adj)
         score=torch.einsum("bnm,bmc->bnc",score,V)
         # score=torch.relu(score)
         # score=torch.einsum('bnn,bno->bno',score,V)#+x

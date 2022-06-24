@@ -152,9 +152,10 @@ class AVWGCN(nn.Module):
         #     support_set.append(torch.matmul(2 * supports, support_set[-1]) - support_set[-2])
         supports = torch.stack(support_set, dim=0)
         # 静态邻接矩阵
-        x_static = torch.einsum("nm,bmc->bmc",torch.softmax(self.sym_norm_Adj_matrix,dim=-1),x)
+        # x_static = torch.einsum("nm,bmc->bmc",torch.softmax(self.sym_norm_Adj_matrix,dim=-1),x)
+        x_static = self.SA(x)
         # x_static=F.relu(x_static)
-        x_static=self.linear(x_static)
+        # x_static=self.linear(x_static)
 
 
         weights = torch.einsum('nd,dkio->nkio', node_embeddings, self.weights_pool)  #N, cheb_k, dim_in, dim_out
@@ -166,7 +167,7 @@ class AVWGCN(nn.Module):
 
         x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in
         x_gconv = torch.einsum('bnki,nkio->bno', x_g, weights) + bias     #b, N, dim_out
-        return x_gconv+(F.tanh(x_gconv)+F.sigmoid(x_static))
+        return x_gconv+(torch.tanh(x_gconv)+torch.sigmoid(x_static))
 
 # class AVWGCN(nn.Module):
 #     def __init__(self, dim_in, dim_out, adj,cheb_k, embed_dim):

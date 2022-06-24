@@ -37,11 +37,11 @@ class Spatial_Attention_layer(nn.Module):
         # self.conv1 = nn.Conv2d(num_node, num_node, (1, 3), bias=False)
         # self.conv2 = nn.Conv2d(num_node, num_node, (1, 3), bias=True)
         # #
-        # self.Wq=nn.Linear(c_in,c_in,bias=True)
+        self.Wq=nn.Linear(c_in,c_out,bias=True)
         # nn.init.kaiming_uniform_(self.Wq.weight, nonlinearity="relu")
-        # self.Wk=nn.Linear(c_in,c_in,bias=True)
+        self.Wk=nn.Linear(c_in,c_out,bias=True)
         # nn.init.kaiming_uniform_(self.Wk.weight, nonlinearity="relu")
-        # self.Wv=nn.Linear(c_in,c_in,bias=False)
+        self.Wv=nn.Linear(c_in,c_out,bias=False)
         # # nn.init.kaiming_uniform_(self.Wv.weight, nonlinearity="relu")
     def forward(self, x,score_his=None):
         '''
@@ -51,15 +51,15 @@ class Spatial_Attention_layer(nn.Module):
         batch_size, num_of_vertices, in_channels = x.shape
 
         # Q K V 改之后
-        # Q=self.Wq(x)
-        Q=x
+        Q=self.Wq(x)
+        # Q=x
         # print("Q:",Q.shape)
-        # K=self.Wk(x)
-        K=x
+        K=self.Wk(x)
+        # K=x
         # print("K:", K.shape)
-        # V=self.Wv(x)
+        V=self.Wv(x)
         # V=self.conv2(x)
-        V=x
+        # V=x
 
         # Q=self.Wq(x)
         # Q=torch.split(Q,32,1)
@@ -85,7 +85,7 @@ class Spatial_Attention_layer(nn.Module):
         score = torch.matmul(Q, K.transpose(1, 2))
         score=F.softmax(score,dim=1)
         score=torch.einsum("bnm,bmc->bnc",score,V)
-        # score=F.relu(score)
+        # score=torch.relu(score)
         # score=torch.einsum('bnn,bno->bno',score,V)#+x
 
         # score=torch.matmul(score,V)
@@ -134,9 +134,9 @@ class AVWGCN(nn.Module):
         self.cheb_k = cheb_k
         self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(adj)).to(torch.float32).to(torch.device('cuda'))
         self.sym_norm_Adj_matrix=F.softmax(self.sym_norm_Adj_matrix)
-        self.linear=nn.Linear(dim_in, dim_out,bias=True)
+        # self.linear=nn.Linear(dim_in, dim_out,bias=True)
         # self.sym_norm_Adj_matrix=F.softmax(torch.Tensor(adj).to(torch.device('cuda')))
-        # self.SA=Spatial_Attention_layer(170,dim_in,dim_in)
+        self.SA=Spatial_Attention_layer(170,dim_in,dim_out)
         self.weights_pool = nn.Parameter(torch.FloatTensor(embed_dim, cheb_k, dim_in, dim_out))
         self.bias_pool = nn.Parameter(torch.FloatTensor(embed_dim, dim_out))
     def forward(self, x, node_embeddings):

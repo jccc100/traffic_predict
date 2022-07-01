@@ -8,7 +8,7 @@ class PeMSD8():
 
     def MAE(self):
         VAR  = [17.78, 18.93, 19.52, 20.45, 21.26, 22, 22.97, 23.72, 24.45, 25.04, 25.6, 26.19]
-        SAR  = [14.48, 16.26, 17.94,19.4, 20.92, 22.33, 23.98, 25.55, 27.03, 28.61, 30.39, 32.12]
+        SAR  = [14.48, 16.26, 17.94,19.4, 20.92, 22.33, 23.98, 25.55, 27.03, None,None,None]
         DCRNN  = [13.5,14.81,15.66,16.46,17.18,17.88,18.66,19.36,20.19,20.84,21.64,22.38]
         ASTGCN  = [14.35,15.59,16.48,17.24,18.05,18.69,19.36,20,20.62,21.15,21.89,22.41]
         STSGCN  = [14.45,15.28,15.67,16.08,16.5,16.95,17.38,17.81,18.14,18.61,18.94,19.49]
@@ -19,11 +19,11 @@ class PeMSD8():
         # my_x_ticks=['5','10']
 
         plt.title("PEMSD8 MAE")
-        plt.xlabel("Time")
-        plt.ylabel("MAE")
+        plt.xlabel("Prediction interval")
+        plt.ylabel("MAE for PEMSD8")
 
-        plt.plot(my_x_ticks,VAR [:], 'red',label="VAR")
-        plt.plot(my_x_ticks,VAR [:],'ro')
+        plt.plot(my_x_ticks,VAR [:], 'lime',label="VAR")
+        plt.plot(my_x_ticks,VAR [:],'o',color='lime')
 
         plt.plot(my_x_ticks,SAR [:], 'green',label="SVR")
         plt.plot(my_x_ticks,SAR [:], 'go')
@@ -43,8 +43,8 @@ class PeMSD8():
         plt.plot(my_x_ticks,AGCRN [:],'black', label="AGCRN")
         plt.plot(my_x_ticks,AGCRN [:], 'o',color='black')
 
-        plt.plot(my_x_ticks,Ours_model[:], 'lime',label="Ours")
-        plt.plot(my_x_ticks,Ours_model[:], 'o',color='lime')
+        plt.plot(my_x_ticks,Ours_model[:], 'red',label="Ours")
+        plt.plot(my_x_ticks,Ours_model[:], 'o',color='red')
 
 
 
@@ -52,7 +52,7 @@ class PeMSD8():
         plt.show()
     def RMSE(self):
         VAR = [26.99,28.77,29.77,31.09,32.19,33.41,34.51,35.71,36.62,37.47,38.28,39]
-        SAR = [22.16,25.17,27.74,30.27,31.41,34.53,36.68,38.86,40.95,42.86,45,59.12]
+        SAR = [22.16,25.17,27.74,30.27,31.41,34.53,36.68,38.86,40.95,None,None,None]
         DCRNN= [20.75,22.98,24.81,25.77,26.62,27.92,28.97,29.91,31.12,31.91,32.96,34.72]
         ASTGCN = [21.77,23.65,25.38,26.51,27.32,28.19,29.18,30.2,30.78,31.65,32.49,33.75]
         STSGCN= [22.3,23.85,24.34,25.24,25.92,26.59,27.3,28,28.48,29.06,29.62,30.51]
@@ -64,11 +64,11 @@ class PeMSD8():
         # my_x_ticks=['5','10']
 
         plt.title("PEMSD8 RMSE")
-        plt.xlabel("Time")
-        plt.ylabel("RMSE")
+        plt.xlabel("Prediction interval")
+        plt.ylabel("RMSE for PEMSD8")
 
-        plt.plot(my_x_ticks,VAR[:], 'red',label="VAR")
-        plt.plot(my_x_ticks,VAR[:],'ro')
+        plt.plot(my_x_ticks,VAR[:], 'lime',label="VAR")
+        plt.plot(my_x_ticks,VAR[:],'o',color='lime')
 
         plt.plot(my_x_ticks,SAR[:], 'green',label="SVR")
         plt.plot(my_x_ticks,SAR[:], 'go')
@@ -88,8 +88,8 @@ class PeMSD8():
         plt.plot(my_x_ticks,AGCRN[:],'black', label="AGCRN")
         plt.plot(my_x_ticks,AGCRN[:], 'o',color='black')
 
-        plt.plot(my_x_ticks,Ours_model[:], 'lime',label="Ours")
-        plt.plot(my_x_ticks,Ours_model[:], 'o',color='lime')
+        plt.plot(my_x_ticks,Ours_model[:], 'red',label="Ours")
+        plt.plot(my_x_ticks,Ours_model[:], 'o',color='red')
         # y_ticks=np.arange(20,50,5)
         # plt.yticks(y_ticks)
 
@@ -98,7 +98,7 @@ class PeMSD8():
         plt.show()
     def MAPE(self):
         VAR = [11.21,12.18,12.52,13.16,13.69,14.31,14.9,15.43,15.94,16.42,16.89,17.32]
-        SAR = [9.05,10.11,11.08,12,13,14.05,15.09,16.14,17.32,18.46,19.58,20.81]
+        SAR = [9.05,10.11,11.08,12,13,14.05,15.09,16.14,17.32,None,None,None]
         DCRNN= [8.86,9.5,10,10.46,10.89,11.34,11.82,12.32,12.75,13.12,13.63,14.21]
         ASTGCN = [9.95,10.57,11.03,11.48,11.82,12.25,12.7,13.1,13.52,13.92,14.5,15.23]
         STSGCN= [9.48,9.85,10.14,10.35,10.57,10.81,11.07,11.28,11.48,11.66,11.91,12.27]
@@ -109,11 +109,11 @@ class PeMSD8():
         # my_x_ticks=['5','10']
 
         plt.title("PEMSD8 MAPE")
-        plt.xlabel("Time")
-        plt.ylabel("MAPE(%)")
+        plt.xlabel("Prediction interval")
+        plt.ylabel("MAPE for PEMSD8")
 
-        plt.plot(my_x_ticks,VAR[:], 'red',label="VAR")
-        plt.plot(my_x_ticks,VAR[:],'ro')
+        plt.plot(my_x_ticks,VAR[:], 'lime',label="VAR")
+        plt.plot(my_x_ticks,VAR[:],'o',color='lime')
 
         plt.plot(my_x_ticks,SAR[:], 'green',label="SVR")
         plt.plot(my_x_ticks,SAR[:], 'go')
@@ -133,8 +133,8 @@ class PeMSD8():
         plt.plot(my_x_ticks,AGCRN[:],'black', label="AGCRN")
         plt.plot(my_x_ticks,AGCRN[:], 'o',color='black')
 
-        plt.plot(my_x_ticks,Ours_model[:], 'lime',label="Ours")
-        plt.plot(my_x_ticks,Ours_model[:], 'o',color='lime')
+        plt.plot(my_x_ticks,Ours_model[:], 'red',label="Ours")
+        plt.plot(my_x_ticks,Ours_model[:], 'o',color='red')
         # y_ticks=np.arange(20,50,5)
         # plt.yticks(y_ticks)
 
@@ -161,11 +161,11 @@ class PeMSD4():
         # plt.yticks([0,18,20,22,24,26,28,30])
 
         plt.title("PEMSD4 MAE")
-        plt.xlabel("Time")
-        plt.ylabel("MAE")
+        plt.xlabel("Prediction interval")
+        plt.ylabel("MAE for PEMSD4")
 
-        plt.plot(my_x_ticks,VAR [:], 'red',label="VAR")
-        plt.plot(my_x_ticks,VAR [:],'ro')
+        plt.plot(my_x_ticks,VAR [:], 'lime',label="VAR")
+        plt.plot(my_x_ticks,VAR [:],'o',color='lime')
 
         plt.plot(my_x_ticks,SVR [:], 'green',label="SVR")
         plt.plot(my_x_ticks,SVR [:], 'go')
@@ -185,8 +185,8 @@ class PeMSD4():
         plt.plot(my_x_ticks,AGCRN [:],'black', label="AGCRN")
         plt.plot(my_x_ticks,AGCRN [:], 'o',color='black')
 
-        plt.plot(my_x_ticks,Ours_model[:], 'lime',label="Ours")
-        plt.plot(my_x_ticks,Ours_model[:], 'o',color='lime')
+        plt.plot(my_x_ticks,Ours_model[:], 'red',label="Ours")
+        plt.plot(my_x_ticks,Ours_model[:], 'o',color='red')
 
 
 
@@ -207,11 +207,11 @@ class PeMSD4():
         # my_x_ticks=['5','10']
 
         plt.title("PEMSD4 RMSE")
-        plt.xlabel("Time")
-        plt.ylabel("RMSE")
+        plt.xlabel("Prediction interval")
+        plt.ylabel("RMSE for PEMSD4")
 
-        plt.plot(my_x_ticks,VAR[:], 'red',label="VAR")
-        plt.plot(my_x_ticks,VAR[:],'ro')
+        plt.plot(my_x_ticks,VAR[:], 'lime',label="VAR")
+        plt.plot(my_x_ticks,VAR[:],'o',color='lime')
 
         plt.plot(my_x_ticks,SVR[:], 'green',label="SVR")
         plt.plot(my_x_ticks,SVR[:], 'go')
@@ -231,8 +231,8 @@ class PeMSD4():
         plt.plot(my_x_ticks,AGCRN[:],'black', label="AGCRN")
         plt.plot(my_x_ticks,AGCRN[:], 'o',color='black')
 
-        plt.plot(my_x_ticks,Ours_model[:], 'lime',label="Ours")
-        plt.plot(my_x_ticks,Ours_model[:], 'o',color='lime')
+        plt.plot(my_x_ticks,Ours_model[:], 'red',label="Ours")
+        plt.plot(my_x_ticks,Ours_model[:], 'o',color='red')
         # y_ticks=np.arange(20,50,5)
         # plt.yticks(y_ticks)
 
@@ -254,11 +254,11 @@ class PeMSD4():
         # my_x_ticks=['5','10']
 
         plt.title("PEMSD4 MAPE")
-        plt.xlabel("Time")
-        plt.ylabel("MAPE(%)")
+        plt.xlabel("Prediction interval")
+        plt.ylabel("MAPE for PEMSD4")
 
-        plt.plot(my_x_ticks,VAR[:], 'red',label="VAR")
-        plt.plot(my_x_ticks,VAR[:],'ro')
+        plt.plot(my_x_ticks,VAR[:], 'lime',label="VAR")
+        plt.plot(my_x_ticks,VAR[:],'o',color='lime')
 
         plt.plot(my_x_ticks,SVR[:], 'green',label="SVR")
         plt.plot(my_x_ticks,SVR[:], 'go')
@@ -278,8 +278,8 @@ class PeMSD4():
         plt.plot(my_x_ticks,AGCRN[:],'black', label="AGCRN")
         plt.plot(my_x_ticks,AGCRN[:], 'o',color='black')
 
-        plt.plot(my_x_ticks,Ours_model[:], 'lime',label="Ours")
-        plt.plot(my_x_ticks,Ours_model[:], 'o',color='lime')
+        plt.plot(my_x_ticks,Ours_model[:], 'red',label="Ours")
+        plt.plot(my_x_ticks,Ours_model[:], 'o',color='red')
         # y_ticks=np.arange(20,50,5)
         # plt.yticks(y_ticks)
 
@@ -442,11 +442,11 @@ class ablation_result():
         # my_x_ticks=['5','10']
 
         plt.title("PEMSD8 MAE")
-        plt.xlabel("Time")
-        plt.ylabel("MAE")
+        plt.xlabel("Prediction interval")
+        plt.ylabel("MAE for PEMSD8")
 
-        plt.plot(my_x_ticks,TA_GCN_linear [:], 'red',label="TARGCN_linear")
-        plt.plot(my_x_ticks,TA_GCN_linear [:],'ro')
+        plt.plot(my_x_ticks,TA_GCN_linear [:], 'peru',label="TARGCN_linear")
+        plt.plot(my_x_ticks,TA_GCN_linear [:],'o',color='peru')
 
         plt.plot(my_x_ticks,TA_GCN_SA [:], 'green',label="TARGCN_SA")
         plt.plot(my_x_ticks,TA_GCN_SA [:], 'go')
@@ -454,8 +454,8 @@ class ablation_result():
         plt.plot(my_x_ticks,TA_GCN_noTA [:],'b',label="TARGCN_noTA")
         plt.plot(my_x_ticks,TA_GCN_noTA [:], 'bo')
 
-        plt.plot(my_x_ticks,TA_GCN [:], 'peru',label="TARGCN")
-        plt.plot(my_x_ticks,TA_GCN [:], 'o',color='peru')
+        plt.plot(my_x_ticks,TA_GCN [:], 'red',label="TARGCN")
+        plt.plot(my_x_ticks,TA_GCN [:], 'o',color='red')
 
 
 
@@ -472,11 +472,11 @@ class ablation_result():
         # my_x_ticks=['5','10']
 
         plt.title("PEMSD8 RMSE")
-        plt.xlabel("Time")
-        plt.ylabel("MAE")
+        plt.xlabel("Prediction interval")
+        plt.ylabel("RMSE for PEMSD8")
 
-        plt.plot(my_x_ticks, TA_GCN_linear[:], 'red', label="TARGCN_linear")
-        plt.plot(my_x_ticks, TA_GCN_linear[:], 'ro')
+        plt.plot(my_x_ticks, TA_GCN_linear[:], 'peru', label="TARGCN_linear")
+        plt.plot(my_x_ticks, TA_GCN_linear[:], 'o',color='peru')
 
         plt.plot(my_x_ticks, TA_GCN_SA[:], 'green', label="TARGCN_SA")
         plt.plot(my_x_ticks, TA_GCN_SA[:], 'go')
@@ -484,8 +484,8 @@ class ablation_result():
         plt.plot(my_x_ticks, TA_GCN_noTA[:], 'b', label="TARGCN_noTA")
         plt.plot(my_x_ticks, TA_GCN_noTA[:], 'bo')
 
-        plt.plot(my_x_ticks, TA_GCN[:], 'peru', label="TARGCN")
-        plt.plot(my_x_ticks, TA_GCN[:], 'o', color='peru')
+        plt.plot(my_x_ticks, TA_GCN[:], 'red', label="TARGCN")
+        plt.plot(my_x_ticks, TA_GCN[:], 'o', color='red')
 
 
         plt.legend()  # 显示图例
@@ -501,11 +501,11 @@ class ablation_result():
         # my_x_ticks=['5','10']
 
         plt.title("PEMSD8 MAPE")
-        plt.xlabel("Time")
-        plt.ylabel("MAE")
+        plt.xlabel("Prediction interval")
+        plt.ylabel("MAPE for PEMSD8")
 
-        plt.plot(my_x_ticks, TA_GCN_linear[:], 'red', label="TARGCN_linear")
-        plt.plot(my_x_ticks, TA_GCN_linear[:], 'ro')
+        plt.plot(my_x_ticks, TA_GCN_linear[:], 'peru', label="TARGCN_linear")
+        plt.plot(my_x_ticks, TA_GCN_linear[:], 'o',color='peru')
 
         plt.plot(my_x_ticks, TA_GCN_SA[:], 'green', label="TARGCN_SA")
         plt.plot(my_x_ticks, TA_GCN_SA[:], 'go')
@@ -513,8 +513,8 @@ class ablation_result():
         plt.plot(my_x_ticks, TA_GCN_noTA[:], 'b', label="TARGCN_noTA")
         plt.plot(my_x_ticks, TA_GCN_noTA[:], 'bo')
 
-        plt.plot(my_x_ticks, TA_GCN[:], 'peru', label="TARGCN")
-        plt.plot(my_x_ticks, TA_GCN[:], 'o', color='peru')
+        plt.plot(my_x_ticks, TA_GCN[:], 'red', label="TARGCN")
+        plt.plot(my_x_ticks, TA_GCN[:], 'o', color='red')
 
 
         plt.legend()  # 显示图例
@@ -530,12 +530,12 @@ if __name__=='__main__':
     # PeMSD8.MAE()
     # PeMSD8.RMSE()
     # PeMSD8.MAPE()
-    PeMSD4.MAE()
-    PeMSD4.RMSE()
-    PeMSD4.MAPE()
+    # PeMSD4.MAE()
+    # PeMSD4.RMSE()
+    # PeMSD4.MAPE()
     # PeMSD7.MAE()
     # PeMSD7.RMSE()
     # PeMSD7.MAPE()
-    # ablation_result.MAE()
-    # ablation_result.RMSE()
-    # ablation_result.MAPE()
+    ablation_result.MAE()
+    ablation_result.RMSE()
+    ablation_result.MAPE()

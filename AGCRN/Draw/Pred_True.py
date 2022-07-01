@@ -8,6 +8,8 @@ import numpy as np
 import matplotlib.dates as mdates
 from datetime import datetime
 
+from matplotlib import ticker
+
 file_path_D4=[r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD4\3.1\PEMSD4_pred.npy",
            r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD4\3.1\PEMSD4_true.npy"]
 
@@ -32,9 +34,9 @@ def D4():
     true_flow = true_flow.swapaxes(1, 2)
 
 
-    node = 285#285展示 78
+    node = 88#285展示 78
     day=1
-    shifting=230
+    shifting=250
     drow_pred_flow_15 = pred_flow[shifting:day*24 * 12+shifting, node, 2, :]
     drow_true_flow_15 = true_flow[shifting:day*24 * 12+shifting, node, 2, :]
 
@@ -44,7 +46,23 @@ def D4():
     drow_pred_flow_60 = pred_flow[shifting:day*24 * 12+shifting, node, 11, :]
     drow_true_flow_60 = true_flow[shifting:day*24 * 12+shifting, node, 11, :]
 
+
     # ax = plt.gca()   #表明设置图片的各个轴，plt.gcf()表示图片本身
+    my_x_ticks = np.arange(0, 288)
+    # print(my_x_ticks)
+    my_x_ticks2 = []
+    # my_x_ticks2.append('ss')
+    for i in my_x_ticks:
+        my_x_ticks2.append(i)
+    # print(my_x_ticks2)
+    # exit()
+    my_x_ticks2[0] = '0:00'
+    my_x_ticks2[48] = '4:00'
+    my_x_ticks2[96] = '8:00'
+    my_x_ticks2[144] = '12:00'
+    my_x_ticks2[192] = '16:00'
+    my_x_ticks2[240] = '20:00'
+    my_x_ticks2[287] = '24:00'
 
     # ax.xaxis.set_major_locator(mdates.HourLocator())  # 横坐标标签显示的日期格式
     # xs = ['00:00','03:00','06:00','09:00','12:00','15:00','18:00','21:00','24:00']
@@ -72,9 +90,11 @@ def D4():
     # #
     # # # 60 min
     # ax3=plt.subplot(3,1,3)
-    plt.plot(drow_pred_flow_60,label="Pred_flow")
-    plt.plot(drow_true_flow_60,label="Trurh_flow")
-    plt.title("PEMSD4")
+    ax = plt.axes()
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(48))
+    plt.plot(my_x_ticks2,drow_pred_flow_60,'red',label="TARGCN")
+    plt.plot(drow_true_flow_60,'green',label="Trurh")
+    plt.title("60-minute predict on PEMSD4")
     plt.xlabel("Time")
     plt.ylabel("Traffic Flow")
 
@@ -141,7 +161,7 @@ def D3():
     plt.savefig(r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD3\3.1\Pred_True_{}_day{}.png".format(str(node),str(day)))
     plt.show()
 
-def D8():
+def D8(predict_inerval='60'):
     pred_flow = np.load(file_path_D8[0])
     # pred_flow = pred_flow.reshape(3375, 307, 12)
     pred_flow=pred_flow.swapaxes(1,2)
@@ -151,7 +171,7 @@ def D8():
     pre_noTA = np.load(file_path_D8[2])
     pre_noTA=pre_noTA.swapaxes(1,2)
 
-    node = 137#126做noTA的对比 159做预测展示
+    node = 159#126做noTA的对比 159、137做预测展示
     day=1
     shifting=130
     drow_pred_flow_15 = pred_flow[shifting+9:day*24 * 12+shifting+9, node, 2, :]
@@ -167,6 +187,22 @@ def D8():
     drow_pre_noTA_60 = pre_noTA[shifting:day * 24 * 12 + shifting, node, 11, :]
 
     # ax = plt.gca()   #表明设置图片的各个轴，plt.gcf()表示图片本身
+    my_x_ticks = np.arange(0, 288)
+    # print(my_x_ticks)
+    my_x_ticks2 = []
+    # my_x_ticks2.append('ss')
+    for i in my_x_ticks:
+        my_x_ticks2.append(i)
+    # print(my_x_ticks2)
+    # exit()
+    my_x_ticks2[0] = '0:00'
+    my_x_ticks2[48] = '4:00'
+    my_x_ticks2[96] = '8:00'
+    my_x_ticks2[144] = '12:00'
+    my_x_ticks2[192] = '16:00'
+    my_x_ticks2[240] = '20:00'
+    my_x_ticks2[287] = '24:00'
+
 
     # ax.xaxis.set_major_locator(mdates.HourLocator())  # 横坐标标签显示的日期格式
     # xs = ['00:00','03:00','06:00','09:00','12:00','15:00','18:00','21:00','24:00']
@@ -182,11 +218,13 @@ def D8():
     # plt.plot(zuo_x, zuo_y, 'red', linewidth=2.0)
     # plt.plot(xia_x, xia_y, 'red', linewidth=2.0)
     # plt.plot(you_x, you_y, 'red', linewidth=2.0)
-    # plt.plot(drow_pred_flow_15, label="pred_flow_15")
-    # plt.plot(drow_true_flow_15, label="Truth_flow")
-    # plt.plot(drow_pre_noTA_15, 'red',label="pre_noTA")
+    # ax = plt.axes()
+    # ax.xaxis.set_major_locator(ticker.MultipleLocator(48))
+    # plt.plot(my_x_ticks2,drow_pred_flow_15,'red', label="TARGCN")
+    # plt.plot(drow_true_flow_15,'green', label="Truth")
+    # plt.plot(drow_pre_noTA_15, 'blue',label="TARGCN-noTA")
     #
-    # plt.title("PEMSD8 15min")
+    # plt.title("15-minute prediction on PEMSD8")
     # plt.xlabel("Time")
     # plt.ylabel("Traffic Flow")
     # plt.legend()  # 显示图例
@@ -199,10 +237,13 @@ def D8():
     # plt.plot(zuo_x, zuo_y, 'red', linewidth=2.0)
     # plt.plot(xia_x, xia_y, 'red', linewidth=2.0)
     # plt.plot(you_x, you_y, 'red', linewidth=2.0)
-    # plt.plot(drow_pred_flow_30, label="pred_flow")
-    # plt.plot(drow_true_flow_30, label="Truth_flow")
-    # # plt.plot(drow_pre_noTA_30, 'red', label="pre_noTA")
-    # plt.title("PEMSD8 30min")
+
+    # ax = plt.axes()
+    # ax.xaxis.set_major_locator(ticker.MultipleLocator(48))
+    # plt.plot(my_x_ticks2,drow_pred_flow_30,'red', label="TARGCN")
+    # plt.plot(drow_true_flow_30, 'green',label="Truth")
+    # plt.plot(drow_pre_noTA_30, 'blue', label="TARGCN-noTA")
+    # plt.title("30-minute prediction on PEMSD8")
     # plt.xlabel("Time")
     # plt.ylabel("Traffic Flow")
     # plt.legend()  # 显示图例
@@ -217,16 +258,42 @@ def D8():
     # plt.plot(you_x,you_y,'red',linewidth=2.0)
     #
     # # 画线
-    plt.plot(drow_pred_flow_60, label="Pred_flow")
-    plt.plot(drow_true_flow_60, label="Truth_flow")
-    # plt.plot(drow_pre_noTA_60, 'red', label="pre_noTA")
-    plt.title("PEMSD8")
+    my_x_ticks2 = []
+    my_x_ticks2.append('ss')
+    for i in my_x_ticks:
+        my_x_ticks2.append(i)
+    my_x_ticks2.append('ss')
+    # print(my_x_ticks2)
+    # exit()
+    my_x_ticks2[1] = '0:00'
+    my_x_ticks2[49] = '4:00'
+    my_x_ticks2[97] = '8:00'
+    my_x_ticks2[145] = '12:00'
+    my_x_ticks2[192] = '16:00'
+    my_x_ticks2[241] = '20:00'
+    my_x_ticks2[288] = '24:00'
+    # print(my_x_ticks2[1:289])
+
+    ax = plt.axes()
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(48))
+    print(drow_pred_flow_60.shape)
+    drow_pred_flow_60[0].append(None)
+    exit()
+
+    plt.plot(my_x_ticks2[1:], drow_pred_flow_60, 'red',label="TARGCN")
+    plt.plot(drow_true_flow_60, 'green',label="Truth")
+    # plt.plot(drow_pre_noTA_60, 'blue', label="TARGCN-noTA")
+
+    # plt.xlim(my_x_ticks)
+    plt.title("60-minute prediction on PEMSD8")
     plt.xlabel("Time")
     plt.ylabel("Traffic Flow")
     plt.legend()  # 显示图例
 
     # plt.savefig(r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\3.1\Pred_True_{}_day{}_15min.png".format(str(node),str(day)))
+
     plt.show()
+
 
 def different_node():
     true_flow = np.load(file_path_D8[1])
@@ -239,11 +306,34 @@ def different_node():
     drow_true_flow_3 = true_flow[shifting:day * 24 * 12 + shifting, 121, 11, :]
     drow_true_flow_4 = true_flow[shifting+560:day * 24 * 12 + shifting+560, 164, 11, :]
     fig = plt.figure(figsize=(18, 6))
+    my_x_ticks = np.arange(0, 864)
+    # print(my_x_ticks)
+    my_x_ticks2 = []
+    # my_x_ticks2.append('ss')
+    for i in my_x_ticks:
+        my_x_ticks2.append(str(i))
+    # print(my_x_ticks2)
+    # exit()
+    my_x_ticks2[0] = '0:00'
+    # # my_x_ticks2[48] = '4:00'
+    my_x_ticks2[144] = '12:00'
+    # my_x_ticks2[192] = '24:00'
+    my_x_ticks2[288] = '24:00'
+    # my_x_ticks2[385] = '24:00'
+    my_x_ticks2[432] = '12:00'
+    # my_x_ticks2[579] = '24:00'
+    my_x_ticks2[576] = '24:00'
+    my_x_ticks2[720] = '12:00'
+    my_x_ticks2[863] = '24:00'
+    ax = plt.axes()
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(144))
+
 
     # plt.plot(drow_true_flow_1, label="node1")
-    plt.plot(drow_true_flow_2, label="node1")
-    plt.plot(drow_true_flow_3, label="node2")
-    plt.plot(drow_true_flow_4, label="node3")
+    plt.plot(my_x_ticks2,drow_true_flow_2, label="nodeA")
+    plt.plot(drow_true_flow_3, label="nodeB")
+    plt.plot(drow_true_flow_4, label="nodeC")
+    # plt.xticks(my_x_ticks,144)
     # plt.title("PEMSD3 60min")
     plt.xlabel("Time")
     plt.ylabel("Traffic Flow")
@@ -275,5 +365,5 @@ def huakuang(shang,xia,zuo,you):
 if __name__=="__main__":
     # D3()
     # D4()
-    D8()
-    # different_node()
+    # D8()
+    different_node()

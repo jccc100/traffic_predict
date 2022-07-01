@@ -147,17 +147,13 @@ class AVWGCN(nn.Module):
         node_num = node_embeddings.shape[0]
         supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))), dim=1) # N N
         support_set = [torch.eye(node_num).to(supports.device), supports]
-        #default cheb_k = 3
-        # for k in range(2, self.cheb_k):
-        #     # print("cheb_kcheb_kcheb_kcheb_kcheb_k")
-        #     support_set.append(torch.matmul(2 * supports, support_set[-1]) - support_set[-2])
         supports = torch.stack(support_set, dim=0)
         # 静态邻接矩阵
         x_static = torch.einsum("nm,bmc->bmc",torch.softmax(self.sym_norm_Adj_matrix,dim=-1),x)
         #
         # x_static = self.SA(x,self.sym_norm_Adj_matrix)
         # x_static=F.relu(x_static)
-        # x_static=self.linear(x_static)
+        x_static=self.linear(x_static)
 
 
         weights = torch.einsum('nd,dkio->nkio', node_embeddings, self.weights_pool)  #N, cheb_k, dim_in, dim_out

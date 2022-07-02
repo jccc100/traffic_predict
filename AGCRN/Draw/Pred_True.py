@@ -34,7 +34,7 @@ def D4():
     true_flow = true_flow.swapaxes(1, 2)
 
 
-    node = 88#285展示 78
+    node = 6#285展示 78
     day=1
     shifting=250
     drow_pred_flow_15 = pred_flow[shifting:day*24 * 12+shifting, node, 2, :]
@@ -364,6 +364,6 @@ def huakuang(shang,xia,zuo,you):
 
 if __name__=="__main__":
     # D3()
-    # D4()
+    D4()
     # D8()
-    different_node()
+    # different_node()

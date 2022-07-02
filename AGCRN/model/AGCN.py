@@ -167,8 +167,8 @@ class AVWGCN(nn.Module):
         x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in
         x_gconv = torch.einsum('bnki,nkio->bno', x_g, weights) + bias     #b, N, dim_out
         # return x_gconv+(torch.tanh(x_gconv)+torch.sigmoid(x_static))
-        # return x_gconv+torch.sigmoid(x_static)*x_static
-        return x_gconv+torch.sigmoid(x_static)*x_static+torch.sigmoid(x_gconv)*x_gconv
+        return x_gconv+torch.sigmoid(x_static)*x_static
+        # return x_gconv+torch.sigmoid(x_static)*x_static+torch.sigmoid(x_gconv)*x_gconv
         # return torch.sigmoid(x_static)*x_static+(1-torch.sigmoid(x_static))*x_gconv
 
 # class AVWGCN(nn.Module):

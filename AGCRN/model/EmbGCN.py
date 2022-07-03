@@ -191,7 +191,7 @@ class EmbGCN_linear(nn.Module):
         # support_set = [torch.eye(node_num).to(supports.device), supports]
         # supports = torch.stack(support_set, dim=0)
         supports=torch.eye(node_num).to(supports.device)+supports # 1+A
-        print("supports:",supports.shape) #2 170 170
+        # print("supports:",supports.shape) #2 170 170
         # 静态邻接矩阵
         # x_static = torch.einsum("nm,bmc->bmc",torch.softmax(self.sym_norm_Adj_matrix,dim=-1),x)
         # x_static = self.linear(x_static)

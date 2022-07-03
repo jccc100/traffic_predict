@@ -1,8 +1,8 @@
 import torch
 import torch.nn as nn
-# from model.EmbGCN import EmbGCN as GCN
+from model.EmbGCN import EmbGCN as GCN
 # from model.EmbGCN import EmbGCN_linear as GCN
-from model.EmbGCN import EmbGCN_SA as GCN
+# from model.EmbGCN import EmbGCN_SA as GCN
 
 class AGCRNCell(nn.Module):
     def __init__(self, node_num, dim_in, dim_out,adj, cheb_k, embed_dim):

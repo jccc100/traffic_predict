@@ -188,8 +188,9 @@ class EmbGCN_linear(nn.Module):
         # x=self.SA(x)
         node_num = node_embeddings.shape[0]
         supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))), dim=1) # N N
-        support_set = [torch.eye(node_num).to(supports.device), supports]
-        supports = torch.stack(support_set, dim=0)
+        # support_set = [torch.eye(node_num).to(supports.device), supports]
+        # supports = torch.stack(support_set, dim=0)
+        supports=torch.eye(node_num)+supports # 1+A
         print("supports:",supports.shape) #2 170 170
         # 静态邻接矩阵
         # x_static = torch.einsum("nm,bmc->bmc",torch.softmax(self.sym_norm_Adj_matrix,dim=-1),x)
@@ -205,9 +206,9 @@ class EmbGCN_linear(nn.Module):
         # supports=torch.einsum('knm,mm->knm',supports,self.sym_norm_Adj_matrix)
         #加空注
 
-        x_g = torch.einsum("knm,bmc->bknc", supports, x)      #B, cheb_k, N, dim_in
+        x_g = torch.einsum("nm,bmc->bnc", supports, x)      #B, N, dim_in
 
-        x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in
+        # x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in
         # x_gconv = torch.einsum('bnki,nkio->bno', x_g, weights) + bias     #b, N, dim_out
         x_gconv=self.linear(x_g)
         return x_gconv

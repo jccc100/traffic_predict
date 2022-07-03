@@ -225,8 +225,8 @@ class EmbGCN_linear(nn.Module):
         self.linear=nn.Linear(dim_in, dim_out,bias=True)
         # self.sym_norm_Adj_matrix=F.softmax(torch.Tensor(adj).to(torch.device('cuda')))
         # self.SA=Spatial_Attention_layer(adj.shape[0],dim_in,dim_out)
-        self.linear_weight=nn.Parameter(torch.FloatTensor(170,cheb_k,dim_in,dim_out),requires_grad=True)
-        self.linear_b=nn.Parameter(torch.FloatTensor(170,dim_out),requires_grad=True)
+        # self.linear_weight=nn.Parameter(torch.FloatTensor(170,cheb_k,dim_in,dim_out),requires_grad=True)
+        # self.linear_b=nn.Parameter(torch.FloatTensor(170,dim_out),requires_grad=True)
     def forward(self, x, node_embeddings):
         #x shaped[B, N, C], node_embeddings shaped [N, D] -> supports shaped [N, N]
         #output shape [B, N, C]

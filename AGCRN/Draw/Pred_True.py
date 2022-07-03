@@ -16,8 +16,11 @@ file_path_D4=[r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD4\712nostatic
            r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD4\712nostatic\PEMSD4_true.npy"]
 
 file_path_D8=[
-                r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\3.1\PEMSD8_pred.npy",
-                r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\3.1\PEMSD8_true.npy",
+                # r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\3.1\PEMSD8_pred.npy",
+                # r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\3.1\PEMSD8_true.npy",
+                # r"C:\Users\jc\Desktop\毕业相关\实验数据\TA-GCN_noTA\PEMSD8_pred.npy"
+                r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\712static\PEMSD8_pred.npy",
+                r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\712static\PEMSD8_true.npy",
                 r"C:\Users\jc\Desktop\毕业相关\实验数据\TA-GCN_noTA\PEMSD8_pred.npy"
             ]
 
@@ -173,7 +176,7 @@ def D8(predict_inerval='60'):
     pre_noTA = np.load(file_path_D8[2])
     pre_noTA=pre_noTA.swapaxes(1,2)
 
-    node = 159#126做noTA的对比 159、137做预测展示
+    node = 98#126做noTA的对比 159、137做预测展示
     day=1
     shifting=130
     drow_pred_flow_15 = pred_flow[shifting+9:day*24 * 12+shifting+9, node, 2, :]
@@ -261,28 +264,28 @@ def D8(predict_inerval='60'):
     #
     # # 画线
     my_x_ticks2 = []
-    my_x_ticks2.append('ss')
+    # my_x_ticks2.append('ss')
     for i in my_x_ticks:
         my_x_ticks2.append(i)
-    my_x_ticks2.append('ss')
+    # my_x_ticks2.append('ss')
     # print(my_x_ticks2)
     # exit()
-    my_x_ticks2[1] = '0:00'
-    my_x_ticks2[49] = '4:00'
-    my_x_ticks2[97] = '8:00'
-    my_x_ticks2[145] = '12:00'
+    my_x_ticks2[0] = '0:00'
+    my_x_ticks2[48] = '4:00'
+    my_x_ticks2[96] = '8:00'
+    my_x_ticks2[144] = '12:00'
     my_x_ticks2[192] = '16:00'
-    my_x_ticks2[241] = '20:00'
-    my_x_ticks2[288] = '24:00'
+    my_x_ticks2[240] = '20:00'
+    my_x_ticks2[287] = '24:00'
     # print(my_x_ticks2[1:289])
 
     ax = plt.axes()
     ax.xaxis.set_major_locator(ticker.MultipleLocator(48))
-    print(drow_pred_flow_60.shape)
-    drow_pred_flow_60[0].append(None)
-    exit()
+    # print(drow_pred_flow_60.shape)
+    # drow_pred_flow_60[0].append(None)
+    # exit()
 
-    plt.plot(my_x_ticks2[1:], drow_pred_flow_60, 'red',label="TARGCN")
+    plt.plot(my_x_ticks2, drow_pred_flow_60, 'red',label="TARGCN")
     plt.plot(drow_true_flow_60, 'green',label="Truth")
     # plt.plot(drow_pre_noTA_60, 'blue', label="TARGCN-noTA")
 
@@ -366,6 +369,6 @@ def huakuang(shang,xia,zuo,you):
 
 if __name__=="__main__":
     # D3()
-    D4()
-    # D8()
+    # D4()
+    D8()
     # different_node()

@@ -11,7 +11,7 @@ device=torch.device('cuda')
 class AVWDCRNN(nn.Module):
     def __init__(self, node_num, dim_in, dim_out, cheb_k, embed_dim, adj,num_layers=1):
         super(AVWDCRNN, self).__init__()
-        assert num_layers >= 1, 'At least one DCRNN layer in the Encoder.'
+        assert num_layers >= 1, 'At least one GRU layer in the Encoder.'
         self.adj=adj
         self.node_num = node_num
         self.input_dim = dim_in
@@ -60,9 +60,9 @@ class AVWDCRNN(nn.Module):
             init_states.append(self.dcrnn_cells[i].init_hidden_state(batch_size))
         return torch.stack(init_states, dim=0)      #(num_layers, B, N, hidden_dim)
 
-class AGCRN(nn.Module):
+class TARGCN(nn.Module):
     def __init__(self, args,adj=None):
-        super(AGCRN, self).__init__()
+        super(TARGCN, self).__init__()
         self.num_node = args.num_nodes
         self.input_dim = args.input_dim
         self.hidden_dim = args.rnn_units

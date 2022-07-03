@@ -166,9 +166,9 @@ class EmbGCN(nn.Module):
 
         x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in
         x_gconv = torch.einsum('bnki,nkio->bno', x_g, weights) + bias     #b, N, dim_out
-        # return x_gconv
+        return x_gconv
         # return x_gconv+(torch.tanh(x_gconv)+torch.sigmoid(x_static))
-        return x_gconv+torch.sigmoid(x_static)*x_static
+        # return x_gconv+torch.sigmoid(x_static)*x_static
         # return x_gconv+torch.sigmoid(x_static)*x_static+torch.sigmoid(x_gconv)*x_gconv
         # return torch.sigmoid(x_static)*x_static+(1-torch.sigmoid(x_static))*x_gconv
 class EmbGCN_linear(nn.Module):
@@ -180,8 +180,8 @@ class EmbGCN_linear(nn.Module):
         self.linear=nn.Linear(dim_in, dim_out,bias=True)
         # self.sym_norm_Adj_matrix=F.softmax(torch.Tensor(adj).to(torch.device('cuda')))
         # self.SA=Spatial_Attention_layer(adj.shape[0],dim_in,dim_out)
-        # self.weights_pool = nn.Parameter(torch.FloatTensor(embed_dim, cheb_k, dim_in, dim_out))
-        # self.bias_pool = nn.Parameter(torch.FloatTensor(embed_dim, dim_out))
+        self.linear_weight=nn.Parameter(torch.FloatTensor(170,cheb_k,dim_in,dim_out),requires_grad=True)
+        self.linear_b=nn.Parameter(torch.FloatTensor(170,dim_out),requires_grad=True)
     def forward(self, x, node_embeddings):
         #x shaped[B, N, C], node_embeddings shaped [N, D] -> supports shaped [N, N]
         #output shape [B, N, C]
@@ -209,7 +209,8 @@ class EmbGCN_linear(nn.Module):
         x_g = torch.einsum("nm,bmc->bnc", supports, x)      #B, N, dim_in
 
         # x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in
-        # x_gconv = torch.einsum('bnki,nkio->bno', x_g, weights) + bias     #b, N, dim_out
+        # TARGCN_linear
+        # x_gconv=torch.einsum('bnki,nkio->bno',x_g,self.linear_weight)+self.linear_b
         x_gconv=self.linear(x_g)
         return x_gconv
         # return x_gconv+(torch.tanh(x_gconv)+torch.sigmoid(x_static))

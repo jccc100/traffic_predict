@@ -10,8 +10,10 @@ from datetime import datetime
 
 from matplotlib import ticker
 
-file_path_D4=[r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD4\3.1\PEMSD4_pred.npy",
-           r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD4\3.1\PEMSD4_true.npy"]
+# file_path_D4=[r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD4\3.1\PEMSD4_pred.npy",
+#            r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD4\3.1\PEMSD4_true.npy"]
+file_path_D4=[r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD4\712nostatic\PEMSD4_pred.npy",
+           r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD4\712nostatic\PEMSD4_true.npy"]
 
 file_path_D8=[
                 r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\3.1\PEMSD8_pred.npy",
@@ -34,7 +36,7 @@ def D4():
     true_flow = true_flow.swapaxes(1, 2)
 
 
-    node = 6#285展示 78
+    node = 78#285展示 78
     day=1
     shifting=250
     drow_pred_flow_15 = pred_flow[shifting:day*24 * 12+shifting, node, 2, :]
@@ -93,7 +95,7 @@ def D4():
     ax = plt.axes()
     ax.xaxis.set_major_locator(ticker.MultipleLocator(48))
     plt.plot(my_x_ticks2,drow_pred_flow_60,'red',label="TARGCN")
-    plt.plot(drow_true_flow_60,'green',label="Trurh")
+    plt.plot(drow_true_flow_60,'green',label="Truth")
     plt.title("60-minute predict on PEMSD4")
     plt.xlabel("Time")
     plt.ylabel("Traffic Flow")

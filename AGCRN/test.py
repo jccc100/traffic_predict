@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 import csv
 import pandas as pd
 
-from AGCRN.model.AGCN import Spatial_Attention_layer
+from AGCRN.model.EmbGCN import Spatial_Attention_layer
 # sa=Spatial_Attention_layer(170,3,3)
 # a=torch.randn(64,170,3)
 # res=sa(a)

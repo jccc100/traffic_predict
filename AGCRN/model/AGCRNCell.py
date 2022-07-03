@@ -1,6 +1,8 @@
 import torch
 import torch.nn as nn
-from model.AGCN import AVWGCN
+# from model.EmbGCN import EmbGCN as GCN
+# from model.EmbGCN import EmbGCN_linear as GCN
+from model.EmbGCN import EmbGCN_SA as GCN
 
 class AGCRNCell(nn.Module):
     def __init__(self, node_num, dim_in, dim_out,adj, cheb_k, embed_dim):
@@ -8,8 +10,8 @@ class AGCRNCell(nn.Module):
         self.adj=adj
         self.node_num = node_num
         self.hidden_dim = dim_out
-        self.gate = AVWGCN(dim_in+self.hidden_dim, 2*dim_out, self.adj, cheb_k, embed_dim)
-        self.update = AVWGCN(dim_in+self.hidden_dim, dim_out, self.adj, cheb_k, embed_dim)
+        self.gate = GCN(dim_in+self.hidden_dim, 2*dim_out, self.adj, cheb_k, embed_dim)
+        self.update = GCN(dim_in+self.hidden_dim, dim_out, self.adj, cheb_k, embed_dim)
 
     def forward(self, x, state, node_embeddings):
         #x: B, num_nodes, input_dim

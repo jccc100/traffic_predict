@@ -190,6 +190,7 @@ class EmbGCN_linear(nn.Module):
         supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))), dim=1) # N N
         support_set = [torch.eye(node_num).to(supports.device), supports]
         supports = torch.stack(support_set, dim=0)
+        print("supports:",supports.shape)
         # 静态邻接矩阵
         # x_static = torch.einsum("nm,bmc->bmc",torch.softmax(self.sym_norm_Adj_matrix,dim=-1),x)
         # x_static = self.linear(x_static)
@@ -375,6 +376,6 @@ if __name__=="__main__":
     x=torch.randn(64,170,1)
     adj=torch.randn(170,170)
     emb=torch.randn(170,2)
-    gcn=AVWGCN(1,1,adj,2,2)
+    gcn=EmbGCN(1,1,adj,2,2)
     out=gcn(x,emb)
     print(out.shape)

@@ -17,11 +17,9 @@ from lib.TrainInits import init_seed
 from lib.dataloader import get_dataloader
 from lib.TrainInits import print_model_parameters
 
-
-#*************************************************************************#
 Mode = 'train'
 DEBUG = 'True'
-DATASET = 'PEMSD8'      #PEMSD4 or PEMSD8
+DATASET = 'PEMSD8'
 DEVICE = 'cuda:0'
 MODEL = 'AGCRN'
 

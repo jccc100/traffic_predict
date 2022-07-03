@@ -172,6 +172,50 @@ class EmbGCN(nn.Module):
 
         # return x_gconv+torch.sigmoid(x_static)*x_static+torch.sigmoid(x_gconv)*x_gconv
         # return torch.sigmoid(x_static)*x_static+(1-torch.sigmoid(x_static))*x_gconv
+class EmbGCN2(nn.Module):
+    def __init__(self, dim_in, dim_out, adj,cheb_k, embed_dim):
+        super(EmbGCN, self).__init__()
+        self.cheb_k = cheb_k
+        self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(adj)).to(torch.float32).to(torch.device('cuda'))
+        self.sym_norm_Adj_matrix=F.softmax(self.sym_norm_Adj_matrix)
+        self.linear=nn.Linear(dim_in, dim_out,bias=True)
+        # self.sym_norm_Adj_matrix=F.softmax(torch.Tensor(adj).to(torch.device('cuda')))
+        # self.SA=Spatial_Attention_layer(adj.shape[0],dim_in,dim_out)
+        self.weights_pool = nn.Parameter(torch.FloatTensor(embed_dim, dim_in, dim_out))
+        self.bias_pool = nn.Parameter(torch.FloatTensor(embed_dim, dim_out))
+    def forward(self, x, node_embeddings):
+        #x shaped[B, N, C], node_embeddings shaped [N, D] -> supports shaped [N, N]
+        #output shape [B, N, C]
+        # x=self.SA(x)
+        node_num = node_embeddings.shape[0]
+        supports = F.softmax(F.relu(torch.mm(node_embeddings, node_embeddings.transpose(0, 1))), dim=1) # N N
+        supports = torch.eye(node_num).to(supports.device)+supports
+        # support_set = [torch.eye(node_num).to(supports.device), supports]
+        # supports = torch.stack(support_set, dim=0)
+        # 静态邻接矩阵
+        x_static = torch.einsum("nm,bmc->bmc",torch.softmax(self.sym_norm_Adj_matrix,dim=-1),x)
+        x_static = self.linear(x_static)
+        #
+        # x_static = self.SA(x,self.sym_norm_Adj_matrix)
+        # x_static=F.relu(x_static)
+
+
+
+        weights = torch.einsum('nd,dio->nio', node_embeddings, self.weights_pool)  #N, cheb_k, dim_in, dim_out
+        bias = torch.matmul(node_embeddings, self.bias_pool)#N, dim_out
+        # supports=torch.einsum('knm,mm->knm',supports,self.sym_norm_Adj_matrix)
+        #加空注
+
+        x_g = torch.einsum("nm,bmc->bnc", supports, x)      #B, cheb_k, N, dim_in
+
+        # x_g = x_g.permute(0, 2, 1, 3)  # B, N, cheb_k, dim_in
+        x_gconv = torch.einsum('bni,nio->bno', x_g, weights) + bias     #b, N, dim_out
+        # return x_gconv
+        return x_gconv+torch.sigmoid(x_static)*x_static
+        # return x_gconv+(torch.tanh(x_gconv)+torch.sigmoid(x_static))
+
+        # return x_gconv+torch.sigmoid(x_static)*x_static+torch.sigmoid(x_gconv)*x_gconv
+        # return torch.sigmoid(x_static)*x_static+(1-torch.sigmoid(x_static))*x_gconv
 class EmbGCN_linear(nn.Module):
     def __init__(self, dim_in, dim_out, adj,cheb_k, embed_dim):
         super(EmbGCN_linear, self).__init__()

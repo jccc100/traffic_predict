@@ -173,7 +173,7 @@ class EmbGCN(nn.Module):
         # return torch.sigmoid(x_static)*x_static+(1-torch.sigmoid(x_static))*x_gconv
 class EmbGCN_linear(nn.Module):
     def __init__(self, dim_in, dim_out, adj,cheb_k, embed_dim):
-        super(EmbGCN, self).__init__()
+        super(EmbGCN_linear, self).__init__()
         self.cheb_k = cheb_k
         # self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(adj)).to(torch.float32).to(torch.device('cuda'))
         # self.sym_norm_Adj_matrix=F.softmax(self.sym_norm_Adj_matrix)
@@ -216,7 +216,7 @@ class EmbGCN_linear(nn.Module):
         # return torch.sigmoid(x_static)*x_static+(1-torch.sigmoid(x_static))*x_gconv
 class EmbGCN_SA(nn.Module):
     def __init__(self, dim_in, dim_out, adj,cheb_k, embed_dim):
-        super(EmbGCN, self).__init__()
+        super(EmbGCN_SA, self).__init__()
         self.cheb_k = cheb_k
         self.sym_norm_Adj_matrix = torch.from_numpy(sym_norm_Adj(adj)).to(torch.float32).to(torch.device('cuda'))
         self.sym_norm_Adj_matrix=F.softmax(self.sym_norm_Adj_matrix)

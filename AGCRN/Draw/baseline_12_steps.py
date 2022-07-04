@@ -15,7 +15,13 @@ class PeMSD8():
         STGCN  = [13.13,14.29,15.38,16.11,16.9,17.73,18.52,19.32,20.16,20.87,21.51,22.36]
         AGCRN  = [14.12,14.45,15.01,15.35,15.68,16.02,16.5,16.85,17.16,17.47,17.91,18.53]
         # Ours_model=[13.46,13.85,14.25,14.58,14.87,15.15,15.42,15.70,15.95,16.17,16.46,16.86] # 622
-        Ours_model=[13.57,13.86,14.22,14.49,14.73,14.99,15.28,15.58,15.81,15.95,16.13,16.52] # 712
+        Ours_model=[13.43, 13.87, 14.25, 14.35, 14.67, 15.00, 15.28, 15.50, 15.85, 16.10, 16.52, 16.86]
+        # Ours_model=[13.57,13.86,14.22,14.49,14.73,14.99,15.28,15.58,15.81,15.95,16.13,16.52] # 712
+        average = 0
+        for i in Ours_model:
+            average = average + i
+        print("RMSE:", average / 12)
+
         my_x_ticks=np.arange(5,65,5)
         # my_x_ticks=['5','10']
 
@@ -61,7 +67,12 @@ class PeMSD8():
         AGCRN = [21.95,22.78,23.61,24.21,24.88,25.58,26.22,26.8,27.33,27.84,28.5,29.4]
 
         # Ours_model=[21.05,21.85,22.66,23.25,23.72,24.22,24.85,25.25,25.6,26.01,26.38,26.94]
-        Ours_model=[21.16,21.85,22.55,23.13,23.63,24.12,24.62,25.11,25.54,25.86,26.20,26.73]
+        # Ours_model=[21.16,21.85,22.55,23.13,23.63,24.12,24.62,25.11,25.54,25.86,26.20,26.73]# 712
+        Ours_model =[21.01,21.97,22.85,23.62,24.20,24.65,25.20,25.64,26.12,26.48,26.84,27.35]
+        average_RMSE=0
+        for i in Ours_model:
+            average_RMSE=average_RMSE+i
+        print("RMSE:",average_RMSE/12)
         my_x_ticks=np.arange(5,65,5)
         # my_x_ticks=['5','10']
 
@@ -107,7 +118,12 @@ class PeMSD8():
         STGCN = [8.66,9.28,9.77,10.23,10.61,11.05,11.46,11.85,12.26,12.64,12.95,13.34]
         AGCRN = [9.27,9.45,9.7,9.82,10.02,10.25,10.51,10.74,10.85,11.08,11.33,11.69]
         # Ours_model=[8.73,8.93,9.15,9.32,9.51,9.68,9.91,10.12,10.27,10.50,10.71,11.01]
-        Ours_model=[9.03,9.13,9.32,9.47,9.57,9.75,9.89,10.04,10.16,10.29,10.42,10.69]
+        # Ours_model=[9.03,9.13,9.32,9.47,9.57,9.75,9.89,10.04,10.16,10.29,10.42,10.69]
+        Ours_model=[9.10, 9.31, 9.43, 9.62, 9.77, 9.91, 10.08, 10.18, 10.27, 10.38, 10.45, 10.65]
+        average=0
+        for i in Ours_model:
+            average=average+i
+        print("MAPE:",average/12)
         my_x_ticks=np.arange(5,65,5)
         # my_x_ticks=['5','10']
 
@@ -439,10 +455,25 @@ class ablation_result():
         super(ablation_result,self).__init__()
 
     def MAE(self):
-        TA_GCN_linear  = [17.04,17.16,17.35,17.66,17.97,18.33,18.81,19.27,19.56,19.92,20.45,21.24]
-        TA_GCN_SA  =     [14.47,15.2,15.8,16.23,16.57,16.86,17.23,17.59,17.9,18.21,18.65,19.33]
-        TA_GCN_noTA  =   [13.79,14.37,14.64,14.97,15.43,15.62,15.95,16.25,16.56,16.82,17.29,17.64]
-        TA_GCN=         [13.46,13.85,14.25,14.58,14.87,15.15,15.42,15.70,15.95,16.17,16.46,16.86]
+        # TA_GCN_linear  = [17.04,17.16,17.35,17.66,17.97,18.33,18.81,19.27,19.56,19.92,20.45,21.24]
+        # TA_GCN_SA  =     [14.47,15.2,15.8,16.23,16.57,16.86,17.23,17.59,17.9,18.21,18.65,19.33]
+        # TA_GCN_noTA  =   [13.79,14.37,14.64,14.97,15.43,15.62,15.95,16.25,16.56,16.82,17.29,17.64]
+        # TARGCN=         [13.46,13.85,14.25,14.58,14.87,15.15,15.42,15.70,15.95,16.17,16.46,16.86]
+        TA_GCN_linear = [14.14,14.87,15.57,16.17,16.70,17.25,17.78,18.27,18.66,19.07,19.55,20.23]
+        TA_GCN_SA = [14.47, 15.2, 15.8, 16.23, 16.57, 16.86, 17.23, 17.59, 17.9, 18.21, 18.65, 19.33]
+        TA_GCN_noTA = [13.49, 14.01, 14.33, 14.81, 15.12, 15.45, 15.86, 16.22, 16.49, 16.78, 17.12, 17.55]
+        TARGCN =      [13.43, 13.87, 14.25, 14.35, 14.67, 15.00, 15.28, 15.50, 15.85, 16.10, 16.52, 16.86]
+        linear = 0
+        sa = 0
+        nota = 0
+        our = 0
+        for i in range(12):
+            linear = linear + TA_GCN_linear[i]
+            sa = sa + TA_GCN_SA[i]
+            nota = nota + TA_GCN_noTA[i]
+            our = our + TARGCN[i]
+        print("MAE:")
+        print("linear:", linear / 12, "sa:", sa / 12, "nota:", nota / 12, "our:", our / 12)
         my_x_ticks=np.arange(5,65,5)
         # my_x_ticks=['5','10']
 
@@ -450,17 +481,17 @@ class ablation_result():
         plt.xlabel("Prediction interval")
         plt.ylabel("MAE for PEMSD8")
 
-        plt.plot(my_x_ticks,TA_GCN_linear [:], 'peru',label="TARGCN_linear")
+        plt.plot(my_x_ticks,TA_GCN_linear [:], 'peru',label="TARGCN-linear")
         plt.plot(my_x_ticks,TA_GCN_linear [:],'o',color='peru')
 
-        plt.plot(my_x_ticks,TA_GCN_SA [:], 'green',label="TARGCN_SA")
+        plt.plot(my_x_ticks,TA_GCN_SA [:], 'green',label="TARGCN-SA")
         plt.plot(my_x_ticks,TA_GCN_SA [:], 'go')
 
-        plt.plot(my_x_ticks,TA_GCN_noTA [:],'b',label="TARGCN_noTA")
+        plt.plot(my_x_ticks,TA_GCN_noTA [:],'b',label="TARGCN-noTA")
         plt.plot(my_x_ticks,TA_GCN_noTA [:], 'bo')
 
-        plt.plot(my_x_ticks,TA_GCN [:], 'red',label="TARGCN")
-        plt.plot(my_x_ticks,TA_GCN [:], 'o',color='red')
+        plt.plot(my_x_ticks,TARGCN [:], 'red',label="TARGCN")
+        plt.plot(my_x_ticks,TARGCN [:], 'o',color='red')
 
 
 
@@ -469,10 +500,25 @@ class ablation_result():
         plt.legend()  # 显示图例
         plt.show()
     def RMSE(self):
-        TA_GCN_linear = [26.37,26.63,27,27.49,27.97,28.45,29.01,29.51,29.86,30.28,30.93,31.89]
+        # TA_GCN_linear = [26.37,26.63,27,27.49,27.97,28.45,29.01,29.51,29.86,30.28,30.93,31.89]
+        # TA_GCN_SA = [22.48,23.74,24.75,25.47,26.02,26.49,27.02,27.52,27.97,28.43,29.08,30.04]
+        # TA_GCN_noTA = [21.68,22.45,23.15,23.92,24.37,24.74,25.46,25.97,26.46,26.82,27.23,27.94]
+        # TA_GCN = [21.05,21.85,22.66,23.25,23.72,24.22,24.85,25.25,25.6,26.01,26.38,26.94]
+        TA_GCN_linear = [22.04,23.50,24.79,25.92,26.90,27.83,28.72,29.54,30.23,30.94,31.73,32.77]
         TA_GCN_SA = [22.48,23.74,24.75,25.47,26.02,26.49,27.02,27.52,27.97,28.43,29.08,30.04]
-        TA_GCN_noTA = [21.68,22.45,23.15,23.92,24.37,24.74,25.46,25.97,26.46,26.82,27.23,27.94]
-        TA_GCN = [21.05,21.85,22.66,23.25,23.72,24.22,24.85,25.25,25.6,26.01,26.38,26.94]
+        TA_GCN_noTA = [21.29,22.17,22.99,23.88,24.35,24.95,25.62,25.98,26.55,26.95,27.38,27.86]
+        TA_GCN =      [21.01,21.97,22.85,23.62,24.20,24.65,25.20,25.64,26.12,26.48,26.84,27.35]
+        linear = 0
+        sa = 0
+        nota = 0
+        our = 0
+        for i in range(12):
+            linear = linear + TA_GCN_linear[i]
+            sa = sa + TA_GCN_SA[i]
+            nota = nota + TA_GCN_noTA[i]
+            our = our + TA_GCN[i]
+        print("RMSE:")
+        print("linear:", linear / 12, "sa:", sa / 12, "nota:", nota / 12, "our:", our / 12)
         my_x_ticks = np.arange(5, 65, 5)
         # my_x_ticks=['5','10']
 
@@ -480,13 +526,13 @@ class ablation_result():
         plt.xlabel("Prediction interval")
         plt.ylabel("RMSE for PEMSD8")
 
-        plt.plot(my_x_ticks, TA_GCN_linear[:], 'peru', label="TARGCN_linear")
+        plt.plot(my_x_ticks, TA_GCN_linear[:], 'peru', label="TARGCN-linear")
         plt.plot(my_x_ticks, TA_GCN_linear[:], 'o',color='peru')
 
-        plt.plot(my_x_ticks, TA_GCN_SA[:], 'green', label="TARGCN_SA")
+        plt.plot(my_x_ticks, TA_GCN_SA[:], 'green', label="TARGCN-SA")
         plt.plot(my_x_ticks, TA_GCN_SA[:], 'go')
 
-        plt.plot(my_x_ticks, TA_GCN_noTA[:], 'b', label="TARGCN_noTA")
+        plt.plot(my_x_ticks, TA_GCN_noTA[:], 'b', label="TARGCN-noTA")
         plt.plot(my_x_ticks, TA_GCN_noTA[:], 'bo')
 
         plt.plot(my_x_ticks, TA_GCN[:], 'red', label="TARGCN")
@@ -498,10 +544,26 @@ class ablation_result():
         plt.show()
 
     def MAPE(self):
-        TA_GCN_linear = [11.23,11.23,11.28,11.41,11.56,11.77,12.14,12.67,12.99,13.44,13.76,14.37]
+        # TA_GCN_linear = [11.23,11.23,11.28,11.41,11.56,11.77,12.14,12.67,12.99,13.44,13.76,14.37]
+        # TA_GCN_SA = [9.49,9.82,10.13,10.40,10.62,10.84,11.09,11.32,11.55,11.79,12.14,12.65]
+        # TA_GCN_noTA = [9.12,9.41,9.56,9.77,9.98,10.12,10.34,10.56,10.72,10.83,11.02,11.30]
+        # TA_GCN = [8.73,8.93,9.15,9.32,9.51,9.68,9.91,10.12,10.27,10.50,10.71,11.01]
+        TA_GCN_linear = [9.35,9.85,10.32,10.72,11.08,11.44,11.68,12.03,12.31,12.52,12.85,13.33]
         TA_GCN_SA = [9.49,9.82,10.13,10.40,10.62,10.84,11.09,11.32,11.55,11.79,12.14,12.65]
-        TA_GCN_noTA = [9.12,9.41,9.56,9.77,9.98,10.12,10.34,10.56,10.72,10.83,11.02,11.30]
-        TA_GCN = [8.73,8.93,9.15,9.32,9.51,9.68,9.91,10.12,10.27,10.50,10.71,11.01]
+        TA_GCN_noTA = [8.85,9.04,9.28,9.48,9.66,9.95,10.36,10.45,10.65,10.82,10.93,11.22]
+        TA_GCN = [9.10,9.31,9.43,9.62,9.77,9.91,10.08,10.18,10.27,10.38,10.45,10.65]
+        linear=0
+        sa=0
+        nota=0
+        our=0
+        for i in range(12):
+            linear=linear+TA_GCN_linear[i]
+            sa=sa+TA_GCN_SA[i]
+            nota=nota+TA_GCN_noTA[i]
+            our=our+TA_GCN[i]
+        print("MAPE:")
+        print("linear:",linear/12,"sa:",sa/12,"nota:",nota/12,"our:",our/12)
+
         my_x_ticks = np.arange(5, 65, 5)
         # my_x_ticks=['5','10']
 
@@ -509,13 +571,13 @@ class ablation_result():
         plt.xlabel("Prediction interval")
         plt.ylabel("MAPE for PEMSD8")
 
-        plt.plot(my_x_ticks, TA_GCN_linear[:], 'peru', label="TARGCN_linear")
+        plt.plot(my_x_ticks, TA_GCN_linear[:], 'peru', label="TARGCN-linear")
         plt.plot(my_x_ticks, TA_GCN_linear[:], 'o',color='peru')
 
-        plt.plot(my_x_ticks, TA_GCN_SA[:], 'green', label="TARGCN_SA")
+        plt.plot(my_x_ticks, TA_GCN_SA[:], 'green', label="TARGCN-SA")
         plt.plot(my_x_ticks, TA_GCN_SA[:], 'go')
 
-        plt.plot(my_x_ticks, TA_GCN_noTA[:], 'b', label="TARGCN_noTA")
+        plt.plot(my_x_ticks, TA_GCN_noTA[:], 'b', label="TARGCN-noTA")
         plt.plot(my_x_ticks, TA_GCN_noTA[:], 'bo')
 
         plt.plot(my_x_ticks, TA_GCN[:], 'red', label="TARGCN")
@@ -532,8 +594,8 @@ if __name__=='__main__':
     PeMSD4=PeMSD4()
     PeMSD7 = PeMSD7()
     ablation_result=ablation_result()
-    PeMSD8.MAE()
-    PeMSD8.RMSE()
+    # PeMSD8.MAE()
+    # PeMSD8.RMSE()
     PeMSD8.MAPE()
     # PeMSD4.MAE()
     # PeMSD4.RMSE()

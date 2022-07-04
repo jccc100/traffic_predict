@@ -13,6 +13,10 @@ import matplotlib.pyplot as plt
 import csv
 import pandas as pd
 
+data = np.load("data/PEMSD8/pems08.npz")['data'][:, :, 0]
+print(data.size)
+exit()
+
 from AGCRN.model.EmbGCN import Spatial_Attention_layer
 # sa=Spatial_Attention_layer(170,3,3)
 # a=torch.randn(64,170,3)

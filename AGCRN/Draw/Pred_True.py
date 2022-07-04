@@ -19,9 +19,9 @@ file_path_D8=[
                 # r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\3.1\PEMSD8_pred.npy",
                 # r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\3.1\PEMSD8_true.npy",
                 # r"C:\Users\jc\Desktop\毕业相关\实验数据\TA-GCN_noTA\PEMSD8_pred.npy"
-                r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\712static\PEMSD8_pred.npy",
-                r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\712static\PEMSD8_true.npy",
-                r"C:\Users\jc\Desktop\毕业相关\实验数据\TA-GCN_noTA\PEMSD8_pred.npy"
+                r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\622static_7.03\chebk\PEMSD8_pred.npy",
+                r"C:\Users\jc\Desktop\毕业相关\实验数据\PEMSD8\622static_7.03\chebk\PEMSD8_true.npy",
+                r"C:\Users\jc\Desktop\毕业相关\实验数据\TA-GCN_noTA\622static\PEMSD8_pred.npy"
             ]
 
 file_path_D8_noTA=[r"C:\Users\jc\Desktop\毕业相关\实验数据\TA-GCN_noTA\PEMSD8_pred.npy",
@@ -176,7 +176,7 @@ def D8(predict_inerval='60'):
     pre_noTA = np.load(file_path_D8[2])
     pre_noTA=pre_noTA.swapaxes(1,2)
 
-    node = 98#126做noTA的对比 159、137做预测展示
+    node = 159#126做noTA的对比 159、137,77,127做预测展示
     day=1
     shifting=130
     drow_pred_flow_15 = pred_flow[shifting+9:day*24 * 12+shifting+9, node, 2, :]
@@ -223,6 +223,7 @@ def D8(predict_inerval='60'):
     # plt.plot(zuo_x, zuo_y, 'red', linewidth=2.0)
     # plt.plot(xia_x, xia_y, 'red', linewidth=2.0)
     # plt.plot(you_x, you_y, 'red', linewidth=2.0)
+
     # ax = plt.axes()
     # ax.xaxis.set_major_locator(ticker.MultipleLocator(48))
     # plt.plot(my_x_ticks2,drow_pred_flow_15,'red', label="TARGCN")
@@ -289,7 +290,6 @@ def D8(predict_inerval='60'):
     plt.plot(drow_true_flow_60, 'green',label="Truth")
     # plt.plot(drow_pre_noTA_60, 'blue', label="TARGCN-noTA")
 
-    # plt.xlim(my_x_ticks)
     plt.title("60-minute prediction on PEMSD8")
     plt.xlabel("Time")
     plt.ylabel("Traffic Flow")
